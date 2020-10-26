@@ -122,11 +122,11 @@ uint64_t CaffAnimation::getDuration() {
 }
 
 void CaffAnimation::setCiff(unique_ptr<Ciff> c) {
-	make_unique<Ciff>(c);
+	ciff = std::move(c);
 }
 
-unique_ptr<Ciff> CaffAnimation::getCiff() {
-	return make_unique<Ciff>(ciff);
+const Ciff& CaffAnimation::getCiff() {
+	return *ciff;
 }
 
 

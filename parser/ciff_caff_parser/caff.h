@@ -82,7 +82,7 @@ public:
 	uint64_t getDuration();
 
 	void setCiff(unique_ptr<Ciff> c);
-	unique_ptr<Ciff> getCiff();
+	const Ciff& getCiff();
 };
 
 struct Caff {
