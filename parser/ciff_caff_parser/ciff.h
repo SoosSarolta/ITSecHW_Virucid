@@ -29,32 +29,32 @@ private:
 	uint64_t content_size;
 	uint64_t width;
 	uint64_t height;
-	char* caption;
+	string caption;
 	vector<string> tags;
 
 public:
 	CiffHeader();
 	~CiffHeader();
 
-	void setMagic(char* magic);
+	void setMagic(char* m);
 	char* getMagic();
 
-	void setHeaderSize(uint64_t header_size);
+	void setHeaderSize(uint64_t hs);
 	uint64_t getHeaderSize();
 
-	void setContentSize(uint64_t content_size);
+	void setContentSize(uint64_t cs);
 	uint64_t getContentSize();
 
-	void setWidth(uint64_t width);
+	void setWidth(uint64_t w);
 	uint64_t getWidth();
 
-	void setHeight(uint64_t height);
+	void setHeight(uint64_t h);
 	uint64_t getHeight();
 
-	void setCaption(char* caption);
-	char* getCaption();
+	void setCaption(string c);
+	string getCaption();
 
-	void setTags(vector<string> tags);
+	void setTags(vector<string> t);
 	vector<string> getTags();
 };
 
@@ -66,7 +66,7 @@ public:
 	CiffContent();
 	~CiffContent();
 
-	void setPixels(vector<vector<RGB>> pixels);
+	void setPixels(vector<vector<RGB>> p);
 	vector<vector<RGB>> getPixels();
 };
 
@@ -78,4 +78,6 @@ private:
 public:
 	Ciff();
 	~Ciff();
+
+	void saveCiffPartsToVariables();
 };

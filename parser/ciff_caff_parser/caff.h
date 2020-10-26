@@ -23,13 +23,13 @@ public:
 	CaffHeader();
 	~CaffHeader();
 
-	void setMagic(char* magic);
+	void setMagic(char* m);
 	char* getMagic();
 
-	void setHeaderSize(uint64_t header_size);
+	void setHeaderSize(uint64_t hs);
 	uint64_t getHeaderSize();
 
-	void setNumAnim(uint64_t num_anim);
+	void setNumAnim(uint64_t na);
 	uint64_t getNumAnim();
 };
 
@@ -41,32 +41,32 @@ private:
 	uint8_t creation_hour;
 	uint8_t creation_minute;
 	uint64_t creator_len;
-	char* creator;
+	string creator;
 
 public:
 	CaffCredits();
 	~CaffCredits();
 
-	void setCreationYear(uint16_t creation_year);
+	void setCreationYear(uint16_t cy);
 	uint16_t getCreationYear();
 
-	void setCreationMonth(uint8_t creation_month);
+	void setCreationMonth(uint8_t cm);
 	uint8_t getCreationMonth();
 
-	void setCreationDay(uint8_t creation_day);
+	void setCreationDay(uint8_t cd);
 	uint8_t getCreationDay();
 
-	void setCreationHour(uint8_t creation_hour);
+	void setCreationHour(uint8_t ch);
 	uint8_t getCreationHour();
 
-	void setCreationMinute(uint8_t creation_minute);
+	void setCreationMinute(uint8_t cm);
 	uint8_t getCreationMinute();
 
-	void setCreatorLen(uint64_t creator_len);
+	void setCreatorLen(uint64_t cl);
 	uint64_t getCreatorLen();
 
-	void setCreator(char* creator);
-	char* getCreator();
+	void setCreator(string c);
+	string getCreator();
 };
 
 struct CaffAnimation {
@@ -78,10 +78,10 @@ public:
 	CaffAnimation();
 	~CaffAnimation();
 
-	void setDuration(uint64_t duration);
+	void setDuration(uint64_t d);
 	uint64_t getDuration();
 
-	void setCiff(unique_ptr<Ciff> ciff);
+	void setCiff(unique_ptr<Ciff> c);
 	unique_ptr<Ciff> getCiff();
 };
 
@@ -94,4 +94,7 @@ private:
 public:
 	Caff();
 	~Caff();
+
+	void saveCaffPartsToVariables();
+	void createPreview();
 };
