@@ -19,9 +19,17 @@ void parseCredits(vector<char>, uint64_t block_length);
 void parseAnimation(vector<char>, uint64_t block_length);
 
 int main(void) {
-    const char fileName[] = "caff_files\\3.caff";
+    const char fileName[] = "caff_files/3.caff";
 
-    vector<char> content = readFile(fileName);
+    vector<char> content;
+
+    try {
+        content = readFile(fileName);
+    }
+    catch (string e) {
+        cout << e << "\n";
+        return -1;
+    }
 
     uint64_t index = 0;
 
@@ -36,7 +44,7 @@ vector<char> readFile(string fileName) {
     in.open(fileName, ios::in | ios::binary);
 
     if (!in.is_open()) {
-        throw exception("Cannot open file");
+        throw "Cannot open file"s;
     }
 
     streampos start = in.tellg();
