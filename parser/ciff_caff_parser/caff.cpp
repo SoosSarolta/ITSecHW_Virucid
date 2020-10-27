@@ -167,7 +167,7 @@ uint64_t Caff::parseBlock(vector<char> content, uint64_t index) {
 	vector<char> block = slice(content, index + 9, index + 9 + block_length - 1);
 
 	if (block_type == 1) {
-		printf("HEADER\n");
+		printf("\nHEADER\n");
 		printf("Block length: %" PRIu64 "\n", block_length);
 		parseHeader(block, block_length);
 	}
@@ -260,12 +260,13 @@ void Caff::parseCredits(vector<char> block, uint64_t block_length) {
 }
 
 void Caff::parseAnimation(vector<char> block, uint64_t block_length) {
-	uint64_t duration = vector_to_int(slice(block, 0, 8));
+	uint64_t duration = vector_to_int(slice(block, 0, 7));
 	caff_animation.setDuration(duration);
 	printf("Duration: %" PRIu64 "\n", duration);
 
-	char* ciffs = vector_to_string(slice(block, 9, block_length - 1));
-	// caff_animation.setCiffs(?);
+	char* ciffs = vector_to_string(slice(block, 8, block_length - 1));
+	printf("Ciffs: %s\n", ciffs);
+	// TODO create Ciff object and parse into its parts
 }
 
 void Caff::createPreview() {
