@@ -8,6 +8,9 @@
 #include <vector>
 #include <string>
 #include <cctype>
+#include <fstream>
+#include <iterator>
+#include <inttypes.h>
 
 #include "ciff.h"
 
@@ -15,7 +18,7 @@ using namespace std;
 
 struct CaffHeader {
 private:
-	char magic[4];
+	char magic[5];
 	uint64_t header_size;
 	uint64_t num_anim;
 
@@ -72,7 +75,7 @@ public:
 struct CaffAnimation {
 private:
 	uint64_t duration;
-	unique_ptr<Ciff> ciff;
+	vector<Ciff*> ciffs;	// ??
 
 public:
 	CaffAnimation();
@@ -81,20 +84,29 @@ public:
 	void setDuration(uint64_t d);
 	uint64_t getDuration();
 
-	void setCiff(unique_ptr<Ciff> c);
-	const Ciff& getCiff();
+	void setCiffs(vector<Ciff*> cs);
+	const vector<Ciff*> getCiffs();
 };
 
 struct Caff {
 private:
 	CaffHeader caff_header;
 	CaffCredits caff_credits;
-	vector<CaffAnimation> caff_animations;
+	CaffAnimation caff_animation;
 
 public:
 	Caff();
 	~Caff();
 
-	void saveCaffPartsToVariables();
+	vector<char> readFile(string fileName);
+	uint64_t parseBlock(vector<char> content, uint64_t index);
+	vector<char> slice(vector<char> const& in, int from, int to);
+	char* vector_to_string(vector<char> in);
+	uint64_t vector_to_int(vector<char> in);
+
+	void parseHeader(vector<char> block, uint64_t block_length);
+	void parseCredits(vector<char> block, uint64_t block_length);
+	void parseAnimation(vector<char> block, uint64_t block_length);
+
 	void createPreview();
 };

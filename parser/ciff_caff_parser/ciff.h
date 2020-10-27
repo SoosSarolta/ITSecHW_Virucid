@@ -24,7 +24,7 @@ public:
 
 struct CiffHeader {
 private:
-	char magic[4];
+	char magic[5];
 	uint64_t header_size;
 	uint64_t content_size;
 	uint64_t width;

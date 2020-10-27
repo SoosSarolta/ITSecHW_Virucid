@@ -154,7 +154,6 @@
   <ItemGroup>
     <ClInclude Include="caff.h" />
     <ClInclude Include="ciff.h" />
-    <ClInclude Include="ciff_caff_parser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

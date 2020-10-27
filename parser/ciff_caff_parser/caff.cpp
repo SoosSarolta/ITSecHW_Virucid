@@ -5,7 +5,7 @@
 using namespace std;
 
 CaffHeader::CaffHeader() {
-	magic[0] = magic[1] = magic[2] = magic[3] = 0;
+	magic[0] = magic[1] = magic[2] = magic[3] = magic[4] = 0;
 	header_size = 0;
 	num_anim = 0;
 }
@@ -13,7 +13,7 @@ CaffHeader::CaffHeader() {
 CaffHeader::~CaffHeader() {}
 
 void CaffHeader::setMagic(char* m) {
-	strncpy_s(magic, 4, m, 4);
+	strncpy_s(magic, 5, m, 5);
 }
 
 char* CaffHeader::getMagic() {
@@ -108,7 +108,7 @@ string CaffCredits::getCreator() {
 
 CaffAnimation::CaffAnimation() {
 	duration = 0;
-	ciff = nullptr;
+	ciffs = vector<Ciff*>();
 }
 
 CaffAnimation::~CaffAnimation() {}
@@ -121,25 +121,151 @@ uint64_t CaffAnimation::getDuration() {
 	return duration;
 }
 
-void CaffAnimation::setCiff(unique_ptr<Ciff> c) {
-	ciff = std::move(c);
+void CaffAnimation::setCiffs(vector<Ciff*> cs) {
+	ciffs = cs;
 }
 
-const Ciff& CaffAnimation::getCiff() {
-	return *ciff;
+const vector<Ciff*> CaffAnimation::getCiffs() {
+	return ciffs;
 }
 
 
 Caff::Caff() {
 	caff_header = CaffHeader::CaffHeader();
 	caff_credits = CaffCredits::CaffCredits();
-	caff_animations = vector<CaffAnimation>();
+	caff_animation = CaffAnimation::CaffAnimation();
 }
 
 Caff::~Caff() {}
 
-void Caff::saveCaffPartsToVariables() {
-	// TODO parse CAFF input and save the parts into the suitable variables
+vector<char> Caff::readFile(string fileName) {
+	ifstream in;
+
+	in.open(fileName, ios::in | ios::binary);
+
+	if (!in.is_open()) {
+		throw "Cannot open file"s;
+	}
+
+	streampos start = in.tellg();
+
+	in.seekg(0, std::ios::end);
+	streampos end = in.tellg();
+
+	in.seekg(0, std::ios::beg);
+
+	vector<char> contents;
+	contents.resize(static_cast<size_t>(end - start));
+	in.read(&contents[0], contents.size());
+
+	return contents;
+}
+
+uint64_t Caff::parseBlock(vector<char> content, uint64_t index) {
+	uint64_t block_type = content[index];
+	uint64_t block_length = vector_to_int(slice(content, index + 1, index + 8));
+	vector<char> block = slice(content, index + 9, index + 9 + block_length - 1);
+
+	if (block_type == 1) {
+		printf("HEADER\n");
+		printf("Block length: %" PRIu64 "\n", block_length);
+		parseHeader(block, block_length);
+	}
+	else if (block_type == 2) {
+		printf("\nCREDITS\n");
+		printf("Block length: %" PRIu64 "\n", block_length);
+		parseCredits(block, block_length);
+	}
+	else if (block_type == 3) {
+		printf("\nANIMATION\n");
+		printf("Block length: %" PRIu64 "\n", block_length);
+		parseAnimation(block, block_length);
+	}
+
+	return index + 9 + block_length;
+}
+
+vector<char> Caff::slice(vector<char> const& in, int from, int to) {
+	auto start = in.begin() + from;
+	auto end = in.begin() + to + 1;
+	vector<char> vec(start, end);
+
+	return vec;
+}
+
+char* Caff::vector_to_string(vector<char> in) {
+	int size = in.size();
+	char* tmp = new char[size + 1];
+
+	for (int i = 0; i < size; i++)
+	{
+		tmp[i] = in[i];
+	}
+
+	tmp[size] = '\0';
+	return tmp;
+}
+
+uint64_t Caff::vector_to_int(vector<char> in) {
+	return *((uint64_t*)vector_to_string(in));
+}
+
+void Caff::parseHeader(vector<char> block, uint64_t block_length) {
+	char* magic = vector_to_string(slice(block, 0, 3));
+	caff_header.setMagic(magic);
+	printf("Magic: %s\n", magic);
+
+	uint64_t header_size = vector_to_int(slice(block, 4, 11));
+	caff_header.setHeaderSize(header_size);
+	printf("Header size: %" PRIu64 "\n", header_size);
+
+	uint64_t num_anim = vector_to_int(slice(block, 12, block_length - 1));
+	caff_header.setNumAnim(num_anim);
+	printf("Number of animations: %" PRIu64 "\n", num_anim);
+}
+
+void Caff::parseCredits(vector<char> block, uint64_t block_length) {
+	uint16_t year = vector_to_int(slice(block, 0, 1));
+	caff_credits.setCreationYear(year);
+	printf("Year: %" PRIu16 "\n", year);
+
+	uint8_t month = block[2];
+	caff_credits.setCreationMonth(month);
+	printf("Month: %" PRIu8 "\n", month);
+
+	uint8_t day = block[3];
+	caff_credits.setCreationDay(day);
+	printf("Day: %" PRIu8 "\n", day);
+
+	uint8_t hour = block[4];
+	caff_credits.setCreationHour(hour);
+	printf("Hour: %" PRIu8 "\n", hour);
+
+	uint8_t minute = block[5];
+	caff_credits.setCreationMinute(minute);
+	printf("Minute: %" PRIu8 "\n", minute);
+
+	uint64_t creator_len = vector_to_int(slice(block, 6, 13));
+	caff_credits.setCreatorLen(creator_len);
+	printf("Creator len: %" PRIu64 "\n", creator_len);
+
+	char* creator = vector_to_string(slice(block, 14, block_length - 1));
+	if (creator_len != 0) {
+		caff_credits.setCreator(string(creator));
+	}
+	else {
+		caff_credits.setCreator(string(""));
+	}
+	printf("Creator: %s\n", creator);
+}
+
+void Caff::parseAnimation(vector<char> block, uint64_t block_length) {
+	uint64_t duration = vector_to_int(slice(block, 0, 8));
+	caff_animation.setDuration(duration);
+	printf("Duration: %" PRIu64 "\n", duration);
+
+	char* ciffs = vector_to_string(slice(block, 9, block_length - 1));
+	// caff_animation.setCiffs(?);
 }
 
 void Caff::createPreview() {

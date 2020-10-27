@@ -14,7 +14,7 @@ RGB::~RGB() {}
 
 
 CiffHeader::CiffHeader() {
-	magic[0] = magic[1] = magic[2] = magic[3] = 0;
+	magic[0] = magic[1] = magic[2] = magic[3] = magic[4] = 0;
 	header_size = 0;
 	content_size = 0;
 	width = 0;
@@ -26,7 +26,7 @@ CiffHeader::CiffHeader() {
 CiffHeader::~CiffHeader() {}
 
 void CiffHeader::setMagic(char* m) {
-	strncpy_s(magic, 4, m, 4);
+	strncpy_s(magic, 5, m, 5);
 }
 
 char* CiffHeader::getMagic() {
