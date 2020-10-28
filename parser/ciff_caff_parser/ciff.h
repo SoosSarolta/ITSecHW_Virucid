@@ -12,12 +12,11 @@
 using namespace std;
 
 struct RGB {
-private:
+public:
 	unsigned char R;
 	unsigned char G;
 	unsigned char B;
 
-public:
 	RGB();
 	~RGB();
 };
