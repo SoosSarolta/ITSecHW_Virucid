@@ -81,9 +81,15 @@ private:
 	uint64_t parseCaption(vector<char> in, uint64_t from);
 	void parseTags(vector<char> in, uint64_t from, uint64_t to);
 	void parseContent(vector<char> in, uint64_t from, uint64_t to, uint64_t width, uint64_t height);
+	
+	void initBitmap(uint64_t height, uint64_t width);
+	unsigned char* createBitmapFileHeader(uint64_t height, uint64_t stride);
+	unsigned char* createBitmapInfoHeader(uint64_t height, uint64_t width);
+
 public:
 	Ciff();
 	~Ciff();
 
 	void saveCiffPartsToVariables(vector<char> animation);
+	void generateBitmapImage(unsigned char* image, uint64_t height, uint64_t width, char* imageFileName);
 };

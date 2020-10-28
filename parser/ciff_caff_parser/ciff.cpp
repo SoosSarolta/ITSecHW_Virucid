@@ -226,6 +226,134 @@ void Ciff::parseContent(vector<char> in, uint64_t from, uint64_t to, uint64_t wi
 	}
 
 	rows.push_back(pixel_row);
-
 	ciff_content.setPixels(rows);
+
+	initBitmap(height, width);
+}
+
+// TODO create coloured image :)
+// TODO change from static to dynamic 'image' array allocation!
+const int h = 667;
+const int w = 1000;
+unsigned char image[h][w][3];
+
+void Ciff::initBitmap(uint64_t height, uint64_t width) {
+	/*unsigned char*** image = new unsigned char** [height];
+	int i, j;
+	for (i = 0; i < height; i++) {
+		image[i] = new unsigned char* [width];
+		for (j = 0; j < width; j++) {
+			image[i][j] = new unsigned char[3];
+		}
+	}*/
+
+	char* imageFileName = (char*)"ciffBitmapImage.bmp";
+
+	vector <vector<RGB>> rows = ciff_content.getPixels();
+
+	int x, y;
+	for (x = 0; x < height; x++) {
+		for (y = 0; y < width; y++) {
+			image[x][y][2] = (unsigned char)((rows.at(x)).at(y)).B;
+			image[x][y][1] = (unsigned char)((rows.at(x)).at(y)).G;
+			image[x][y][0] = (unsigned char)((rows.at(x)).at(y)).R;
+		}
+	}
+
+	generateBitmapImage((unsigned char*)image, height, width, imageFileName);
+	printf("\nBitmap image generated!\n");
+
+	/*for (i = 0; i < width; i++) {
+		for (j = 0; j < height; j++) {
+			delete[] image[i][j];
+		}
+		delete[] image[i];
+	}
+	delete image;*/
+}
+
+void Ciff::generateBitmapImage(unsigned char* image, uint64_t height, uint64_t width, char* imageFileName) {
+	int widthInBytes = width * 3;
+
+	unsigned char padding[3] = { 0, 0, 0 };
+	int paddingSize = (4 - (widthInBytes) % 4) % 4;
+
+	int stride = (widthInBytes) + paddingSize;
+
+	FILE* imageFile;
+	errno_t err = fopen_s(&imageFile, imageFileName, "wb");
+	if (err != 0) {
+		printf("File could not be opened!");
+		return;
+	}
+
+	if (imageFile != nullptr) {
+		unsigned char* fileHeader = createBitmapFileHeader(height, stride);
+		fwrite(fileHeader, 1, 14, imageFile);
+
+		unsigned char* infoHeader = createBitmapInfoHeader(height, width);
+		fwrite(infoHeader, 1, 40, imageFile);
+
+		int i;
+		for (i = 0; i < height; i++) {
+			fwrite(image + (i * widthInBytes), 3, width, imageFile);
+			fwrite(padding, 1, paddingSize, imageFile);
+		}
+
+		fclose(imageFile);
+	}
+}
+
+unsigned char* Ciff::createBitmapFileHeader(uint64_t height, uint64_t stride) {
+	int fileSize = 14 + 40 + (stride * height);
+
+	static unsigned char fileHeader[] = {
+		0, 0,
+		0, 0, 0, 0,
+		0, 0, 0, 0,
+		0, 0, 0, 0,
+	};
+
+	fileHeader[0] = (unsigned char)('B');
+	fileHeader[1] = (unsigned char)('M');
+	fileHeader[2] = (unsigned char)(fileSize);
+	fileHeader[3] = (unsigned char)(fileSize >> 8);
+	fileHeader[4] = (unsigned char)(fileSize >> 16);
+	fileHeader[5] = (unsigned char)(fileSize >> 24);
+	fileHeader[10] = (unsigned char)(14 + 40);
+
+	return fileHeader;
+}
+
+unsigned char* Ciff::createBitmapInfoHeader(uint64_t height, uint64_t width) {
+	static unsigned char infoHeader[] = {
+		0, 0, 0, 0,
+		0, 0, 0, 0,
+		0, 0, 0, 0,
+		0, 0,
+		0, 0,
+		0, 0, 0, 0,
+		0, 0, 0, 0,
+		0, 0, 0, 0,
+		0, 0, 0, 0,
+		0, 0, 0, 0,
+		0, 0, 0, 0,
+	};
+
+	// bmp is originally stored upside-down => turn it around
+	int h = height * (-1);
+
+	infoHeader[0] = (unsigned char)(40);
+	infoHeader[4] = (unsigned char)(width);
+	infoHeader[5] = (unsigned char)(width >> 8);
+	infoHeader[6] = (unsigned char)(width >> 16);
+	infoHeader[7] = (unsigned char)(width >> 24);
+	infoHeader[8] = (unsigned char)(h);
+	infoHeader[9] = (unsigned char)(h >> 8);
+	infoHeader[10] = (unsigned char)(h >> 16);
+	infoHeader[11] = (unsigned char)(h >> 24);
+	infoHeader[12] = (unsigned char)(1);
+	infoHeader[14] = (unsigned char)(3 * 8);
+
+	return infoHeader;
 }

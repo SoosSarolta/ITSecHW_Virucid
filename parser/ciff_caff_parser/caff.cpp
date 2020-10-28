@@ -277,7 +277,3 @@ void Caff::parseAnimation(vector<char> block, uint64_t block_length) {
 	ciff->saveCiffPartsToVariables(animation);
 	caff_animation.addCiff(ciff);
 }
-
-void Caff::createPreview() {
-	// TODO parse CAFF and create preview image for webshop use
-}
