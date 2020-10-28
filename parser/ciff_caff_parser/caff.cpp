@@ -271,9 +271,11 @@ void Caff::parseAnimation(vector<char> block, uint64_t block_length) {
 	caff_animation.setDuration(duration);
 	printf("Duration: %" PRIu64 "\n", duration);
 
-	char* ciffs = vector_to_string(slice(block, 8, block_length - 1));
-	printf("Ciffs: %s\n", ciffs);
-	// TODO create Ciff object and parse into its parts
+	vector<char> animation = slice(block, 8, block_length - 1);
+
+	Ciff* ciff = new Ciff();
+	ciff->saveCiffPartsToVariables(animation);
+	caff_animation.addCiff(ciff);
 }
 
 void Caff::createPreview() {

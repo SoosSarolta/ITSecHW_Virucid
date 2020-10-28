@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <cctype>
+#include <inttypes.h>
 
 using namespace std;
 
@@ -74,9 +75,15 @@ private:
 	CiffHeader ciff_header;
 	CiffContent ciff_content;
 
+	vector<char> slice(vector<char> const& in, uint64_t from, uint64_t to);
+	char* vectorToString(vector<char> in);
+	uint64_t vectorToInt(vector<char> in);
+	uint64_t parseCaption(vector<char> in, uint64_t from);
+	void parseTags(vector<char> in, uint64_t from, uint64_t to);
+	void parseContent(vector<char> in, uint64_t from, uint64_t to, uint64_t width, uint64_t height);
 public:
 	Ciff();
 	~Ciff();
 
-	void saveCiffPartsToVariables();
+	void saveCiffPartsToVariables(vector<char> animation);
 };
