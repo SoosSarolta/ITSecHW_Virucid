@@ -129,6 +129,13 @@ const vector<Ciff*> CaffAnimation::getCiffs() {
 	return ciffs;
 }
 
+void CaffAnimation::addCiff(Ciff* c) {
+	ciffs.push_back(c);
+}
+
+const Ciff* CaffAnimation::getCiff(uint64_t index) {
+	return ciffs[index];
+}
 
 Caff::Caff() {
 	caff_header = CaffHeader::CaffHeader();

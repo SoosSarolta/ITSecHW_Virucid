@@ -86,6 +86,9 @@ public:
 
 	void setCiffs(vector<Ciff*> cs);
 	const vector<Ciff*> getCiffs();
+
+	void addCiff(Ciff* c);
+	const Ciff* getCiff(uint64_t index);
 };
 
 struct Caff {
