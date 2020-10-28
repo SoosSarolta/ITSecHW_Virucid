@@ -94,19 +94,19 @@ private:
 	CaffCredits caff_credits;
 	CaffAnimation caff_animation;
 
+	vector<char> slice(vector<char> const& in, uint64_t from, uint64_t to);
+	char* vectorToString(vector<char> in);
+	uint64_t vectorToInt(vector<char> in);
+
+	void parseHeader(vector<char> block, uint64_t block_length);
+	void parseCredits(vector<char> block, uint64_t block_length);
+	void parseAnimation(vector<char> block, uint64_t block_length);
 public:
 	Caff();
 	~Caff();
 
 	vector<char> readFile(string fileName);
 	uint64_t parseBlock(vector<char> content, uint64_t index);
-	vector<char> slice(vector<char> const& in, int from, int to);
-	char* vector_to_string(vector<char> in);
-	uint64_t vector_to_int(vector<char> in);
-
-	void parseHeader(vector<char> block, uint64_t block_length);
-	void parseCredits(vector<char> block, uint64_t block_length);
-	void parseAnimation(vector<char> block, uint64_t block_length);
 
 	void createPreview();
 };
