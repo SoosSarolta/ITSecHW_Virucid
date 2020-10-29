@@ -168,7 +168,7 @@ vector<char> Caff::readFile(string fileName) {
 	return contents;
 }
 
-uint64_t Caff::parseBlock(vector<char> content, uint64_t index) {
+uint64_t Caff::parseBlock(vector<char> content, uint64_t index, int filenameIndex) {
 	uint64_t block_type = content[index];
 	uint64_t block_length = vectorToInt(slice(content, index + 1, index + 8));
 	vector<char> block = slice(content, index + 9, index + 9 + block_length - 1);
@@ -186,7 +186,7 @@ uint64_t Caff::parseBlock(vector<char> content, uint64_t index) {
 	else if (block_type == 3) {
 		printf("\nANIMATION\n");
 		printf("Block length: %" PRIu64 "\n", block_length);
-		parseAnimation(block, block_length);
+		parseAnimation(block, block_length, filenameIndex);
 	}
 
 	return index + 9 + block_length;
@@ -266,7 +266,7 @@ void Caff::parseCredits(vector<char> block, uint64_t block_length) {
 	printf("Creator: %s\n", creator);
 }
 
-void Caff::parseAnimation(vector<char> block, uint64_t block_length) {
+void Caff::parseAnimation(vector<char> block, uint64_t block_length, int filenameIndex) {
 	uint64_t duration = vectorToInt(slice(block, 0, 7));
 	caff_animation.setDuration(duration);
 	printf("Duration: %" PRIu64 "\n", duration);
@@ -274,6 +274,6 @@ void Caff::parseAnimation(vector<char> block, uint64_t block_length) {
 	vector<char> animation = slice(block, 8, block_length - 1);
 
 	Ciff* ciff = new Ciff();
-	ciff->saveCiffPartsToVariables(animation);
+	ciff->saveCiffPartsToVariables(animation, filenameIndex);
 	caff_animation.addCiff(ciff);
 }

@@ -26,8 +26,10 @@ int main(void) {
     }
 
     uint64_t index = 0;
+    int i = 0;
 
     while (index < content.size()) {
-        index = caff->parseBlock(content, index);
+        index = caff->parseBlock(content, index, i);
+        i++;
     }
 }

@@ -104,7 +104,7 @@ Ciff::Ciff() {
 
 Ciff::~Ciff() {}
 
-void Ciff::saveCiffPartsToVariables(vector<char> animation) {
+void Ciff::saveCiffPartsToVariables(vector<char> animation, int filenameIndex) {
 	printf("*******************\n");
 	printf("CIFF PARSING\n");
 
@@ -132,7 +132,7 @@ void Ciff::saveCiffPartsToVariables(vector<char> animation) {
 
 	parseTags(animation, index + 1, header_size);
 
-	parseContent(animation, header_size, animation.size(), width, height);
+	parseContent(animation, header_size, animation.size(), width, height, filenameIndex);
 
 	printf("*******************\n");
 }
@@ -202,7 +202,7 @@ void Ciff::parseTags(vector<char> in, uint64_t from, uint64_t to) {
 	cout << "\n";
 }
 
-void Ciff::parseContent(vector<char> in, uint64_t from, uint64_t to, uint64_t width, uint64_t height) {
+void Ciff::parseContent(vector<char> in, uint64_t from, uint64_t to, uint64_t width, uint64_t height, int filenameIndex) {
 	uint64_t row = 0;
 	uint64_t col = 0;
 
@@ -228,7 +228,7 @@ void Ciff::parseContent(vector<char> in, uint64_t from, uint64_t to, uint64_t wi
 	rows.push_back(pixel_row);
 	ciff_content.setPixels(rows);
 
-	initBitmap(height, width);
+	initBitmap(height, width, filenameIndex);
 }
 
 // TODO create coloured image :)
@@ -237,7 +237,7 @@ const int h = 667;
 const int w = 1000;
 unsigned char image[h][w][3];
 
-void Ciff::initBitmap(uint64_t height, uint64_t width) {
+void Ciff::initBitmap(uint64_t height, uint64_t width, int filenameIndex) {
 	/*unsigned char*** image = new unsigned char** [height];
 	int i, j;
 	for (i = 0; i < height; i++) {
@@ -247,7 +247,7 @@ void Ciff::initBitmap(uint64_t height, uint64_t width) {
 		}
 	}*/
 
-	char* imageFileName = (char*)"ciffBitmapImage.bmp";
+	char* imageFileName = (char*)"ciffBitmapImage.bmp" + filenameIndex;
 
 	vector <vector<RGB>> rows = ciff_content.getPixels();
 
@@ -294,7 +294,7 @@ void Ciff::generateBitmapImage(unsigned char* image, uint64_t height, uint64_t w
 		unsigned char* infoHeader = createBitmapInfoHeader(height, width);
 		fwrite(infoHeader, 1, 40, imageFile);
 
-		int i;
+		uint64_t i;
 		for (i = 0; i < height; i++) {
 			fwrite(image + (i * widthInBytes), 3, width, imageFile);
 			fwrite(padding, 1, paddingSize, imageFile);

@@ -103,12 +103,12 @@ private:
 
 	void parseHeader(vector<char> block, uint64_t block_length);
 	void parseCredits(vector<char> block, uint64_t block_length);
-	void parseAnimation(vector<char> block, uint64_t block_length);
+	void parseAnimation(vector<char> block, uint64_t block_length, int filenameIndex);
 
 public:
 	Caff();
 	~Caff();
 
 	vector<char> readFile(string fileName);
-	uint64_t parseBlock(vector<char> content, uint64_t index);
+	uint64_t parseBlock(vector<char> content, uint64_t index, int filenameIndex);
 };
