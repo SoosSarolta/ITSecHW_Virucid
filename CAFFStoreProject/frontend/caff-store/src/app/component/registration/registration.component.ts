@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ValidationErrors, FormControl } from '@angular/forms';
+import { User } from 'src/app/model/user';
+import { NetworkService } from 'src/app/service/network/network.service';
 
 @Component({
   selector: 'app-registration',
@@ -10,9 +12,7 @@ export class RegistrationComponent implements OnInit {
   hidePassword = true;
   hideRepeatPassword = true;
   showDetails: boolean = true;
-  name: string;
-  email: string;
-  password: string;
+  user: User;
   nameFormControl = new FormControl('', [
     Validators.required,
     Validators.minLength(2)
@@ -30,8 +30,11 @@ export class RegistrationComponent implements OnInit {
   emailRegex = '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,20}$';
 
   constructor(
-    private _formBuilder: FormBuilder
-  ) { }
+    private _formBuilder: FormBuilder,
+    private _network: NetworkService
+  ) {
+    this.user = new User();
+  }
 
   ngOnInit(): void {
     this.registerForm = this._formBuilder.group({
@@ -49,7 +52,10 @@ export class RegistrationComponent implements OnInit {
   }
 
   register() {
-    console.log(this.name, this.email, this.password);
+    console.log(this.user);
+    this._network.register(this.user).then(data => {
+      console.log("response: ", data);
+    });
   }
 
 }

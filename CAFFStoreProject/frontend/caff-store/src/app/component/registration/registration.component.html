@@ -2,7 +2,7 @@
     <div>
         <mat-form-field style="width:20vw" appearance="outline" [hideRequiredMarker]="true">
             <mat-label>Name</mat-label>
-            <input type="text" matInput placeholder="Enter your name" [(ngModel)]="name"
+            <input type="text" matInput placeholder="Enter your name" [(ngModel)]="user.personName"
                 [formControl]="nameFormControl">
             <mat-error *ngIf="nameFormControl.hasError('required')">
                 Name is <strong>required</strong>
@@ -12,7 +12,7 @@
     <form class="example-form">
         <mat-form-field style="width:20vw" appearance="outline" class="example-full-width">
             <mat-label>Email</mat-label>
-            <input matInput type="text" maxlength="100" [(ngModel)]="email" [formControl]="emailFormControl"
+            <input matInput type="text" maxlength="100" [(ngModel)]="user.email" [formControl]="emailFormControl"
                 placeholder="exapmle@exapmle.com">
             <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
                 Please enter a valid email address
@@ -27,7 +27,7 @@
         <mat-form-field appearance="outline" style="width:20vw" [color]="passwordComponent.color">
             <mat-label>Password</mat-label>
             <mat-pass-toggle-visibility #toggle matSuffix></mat-pass-toggle-visibility>
-            <input matInput #password [type]="toggle.type" required placeholder="Password"
+            <input matInput #password [type]="toggle.type" required placeholder="Password" [(ngModel)]="user.password"
                 [formControl]="passwordFormControl">
             <mat-error *ngIf="passwordFormControl.hasError('required')">
                 Password is <strong>required</strong>

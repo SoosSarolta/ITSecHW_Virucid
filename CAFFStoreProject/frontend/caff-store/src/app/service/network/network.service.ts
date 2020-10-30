@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { User } from 'src/app/model/user';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,9 @@ export class NetworkService {
 
   constructor(private _http: HttpClient) { }
 
-  register(name: string, email: string, password: string): Promise<any> {
-    return this.getJSON(this.serverAddress, this.registerURL + '?name=' + name + '&email=' + email + '&password=' + password);
+  register(user: User): Promise<any> {
+    var json = JSON.stringify(user);
+    return this.postJSON(this.serverAddress, this.registerURL, json);
   }
 
   login(email: string, password: string): Promise<any> {
