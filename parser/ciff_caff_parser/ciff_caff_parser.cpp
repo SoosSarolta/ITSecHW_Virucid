@@ -10,15 +10,17 @@
 
 using namespace std;
 
-int main(void) {
-    const char fileName[] = "caff_files/3.caff";
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        printf("No filename specified, exiting...\n");
+        return -1;
+    }
 
     vector<char> content;
-
     Caff *caff = new Caff();
 
     try {
-        content = caff->readFile(fileName);
+        content = caff->readFile(argv[1]);
     }
     catch (string e) {
         cout << e << "\n";
@@ -32,4 +34,6 @@ int main(void) {
         index = caff->parseBlock(content, index, i);
         i++;
     }
+
+    return 0;
 }
