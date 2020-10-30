@@ -41,7 +41,7 @@ public class UserController {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        if(newUser != null){
+        if (newUser != null) {
             userRepo.save(newUser);
             return new ResponseEntity<>(null, HttpStatus.OK);
         }
