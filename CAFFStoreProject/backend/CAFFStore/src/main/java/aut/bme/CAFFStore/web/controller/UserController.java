@@ -16,10 +16,10 @@ import java.util.Optional;
 @RestController
 public class UserController {
     @Autowired
-    UserRepo userRepo;
+    private UserRepo userRepo;
 
     @Autowired
-    private EntityBuilder entityBuilder = new EntityBuilder();
+    private final EntityBuilder entityBuilder = new EntityBuilder();
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<String> register(@RequestBody Map<String, Object> body) {
@@ -52,9 +52,9 @@ public class UserController {
     public ResponseEntity<Object> login(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password) {
         Optional<User> user = userRepo.findByEmail(email);
 
-        if (!user.isPresent())
+        if (user.isEmpty())
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        if (user.isPresent() && PasswordManager.match(user.get().getPassword(), password, user.get().getSalt())) {
+        if (PasswordManager.match(user.get().getPassword(), password, user.get().getSalt())) {
             User newUser = userRepo.save(user.get());
             return new ResponseEntity<>(newUser, HttpStatus.OK);
         }
