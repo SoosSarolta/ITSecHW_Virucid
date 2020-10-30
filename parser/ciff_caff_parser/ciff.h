@@ -91,5 +91,5 @@ public:
 	~Ciff();
 
 	void saveCiffPartsToVariables(vector<char> animation, int filenameIndex);
-	void generateBitmapImage(unsigned char* image, uint64_t height, uint64_t width, char* imageFileName);
+	void generateBitmapImage(unsigned char* image, uint64_t height, uint64_t width, const char* imageFileName);
 };

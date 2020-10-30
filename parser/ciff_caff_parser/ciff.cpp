@@ -234,7 +234,13 @@ void Ciff::parseContent(vector<char> in, uint64_t from, uint64_t to, uint64_t wi
 void Ciff::initBitmap(uint64_t height, uint64_t width, int filenameIndex) {
 	unsigned char* image = new unsigned char[height * width * 3];
 
-	char* imageFileName = (char*)"ciffBitmapImage.bmp" + filenameIndex;
+	string imageFileNameFirst = "ciffBitmapImage";
+	string imageFileNameIndex = to_string(filenameIndex);
+	string imageFileNameBmp = ".bmp";
+
+	string imageFileNameString = imageFileNameFirst + imageFileNameIndex + imageFileNameBmp;
+
+	const char* imageFileName = imageFileNameString.c_str();
 
 	vector <vector<RGB>> rows = ciff_content.getPixels();
 
@@ -247,11 +253,11 @@ void Ciff::initBitmap(uint64_t height, uint64_t width, int filenameIndex) {
 		}
 	}
 
-	generateBitmapImage((unsigned char*)image, height, width, imageFileName);
+	generateBitmapImage((unsigned char*)image, height, width, (const char*)imageFileName);
 	printf("\nBitmap image generated!\n");
 }
 
-void Ciff::generateBitmapImage(unsigned char* image, uint64_t height, uint64_t width, char* imageFileName) {
+void Ciff::generateBitmapImage(unsigned char* image, uint64_t height, uint64_t width, const char* imageFileName) {
 	int widthInBytes = width * 3;
 
 	unsigned char padding[3] = { 0, 0, 0 };
