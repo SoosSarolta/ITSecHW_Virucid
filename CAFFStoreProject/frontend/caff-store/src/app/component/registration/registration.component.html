@@ -37,8 +37,7 @@
             </mat-hint>
         </mat-form-field>
         <!--@angular-material-extensions/password-strength's main component-->
-        <mat-password-strength #passwordComponent (onStrengthChanged)="onStrengthChanged($event)"
-            [password]="password.value">
+        <mat-password-strength #passwordComponent [password]="password.value">
         </mat-password-strength>
         <!--Password's strength info-->
         <mat-password-strength-info *ngIf="showDetails" [passwordComponent]="passwordComponent">

@@ -1,1 +1,32 @@
-<p>login works!</p>
+<div class="container">
+    <form class="example-form">
+        <mat-form-field style="width:20vw" appearance="outline" class="example-full-width">
+            <mat-label>Email</mat-label>
+            <input matInput type="text" maxlength="100" [(ngModel)]="email" [formControl]="emailFormControl"
+                placeholder="exapmle@exapmle.com">
+            <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+                Please enter a valid email address
+            </mat-error>
+            <mat-error *ngIf="emailFormControl.hasError('required')">
+                Email is <strong>required</strong>
+            </mat-error>
+        </mat-form-field>
+    </form>
+    <div>
+        <!--password input filed-->
+        <mat-form-field appearance="outline" style="width:20vw">
+            <mat-label>Password</mat-label>
+            <mat-pass-toggle-visibility #toggle matSuffix></mat-pass-toggle-visibility>
+            <input matInput #password [type]="toggle.type" required placeholder="Password"
+                [formControl]="passwordFormControl">
+            <mat-error *ngIf="passwordFormControl.hasError('required')">
+                Password is <strong>required</strong>
+            </mat-error>
+        </mat-form-field>
+    </div>
+    <br>
+    <div>
+        <button mat-raised-button style="width:5vw" [disabled]="passwordFormControl.invalid || emailFormControl.invalid"
+            color="primary" (click)=login()>Login</button>
+    </div>
+</div>

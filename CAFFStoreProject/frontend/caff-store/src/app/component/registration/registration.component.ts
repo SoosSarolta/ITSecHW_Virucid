@@ -48,12 +48,8 @@ export class RegistrationComponent implements OnInit {
     });
   }
 
-  onStrengthChanged(strength: number) {
-    console.log('password strength = ', strength);
-  }
-
   register() {
-    console.log(this.name, this.email);
+    console.log(this.name, this.email, this.password);
   }
 
 }
