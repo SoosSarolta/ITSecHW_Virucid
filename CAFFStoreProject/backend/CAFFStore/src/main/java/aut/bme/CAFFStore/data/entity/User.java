@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user")
@@ -14,6 +15,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "sequence_uuid")
     @Column(name = "id", unique = true, nullable = false, updatable = false)
     private String id;
+
+    @Column(name = "create_date", nullable = false)
+    private LocalDateTime createDate;
 
     @Column(name = "person_name", nullable = false)
     private String personName;
@@ -35,6 +39,14 @@ public class User {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public LocalDateTime getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
     }
 
     public String getPersonName() {
