@@ -146,7 +146,7 @@ vector<char> Ciff::slice(vector<char> const& in, uint64_t from, uint64_t to) {
 }
 
 char* Ciff::vectorToString(vector<char> in) {
-	int size = in.size();
+	uint64_t size = in.size();
 	char* tmp = new char[size + 1];
 
 	for (int i = 0; i < size; i++) {
@@ -231,45 +231,24 @@ void Ciff::parseContent(vector<char> in, uint64_t from, uint64_t to, uint64_t wi
 	initBitmap(height, width, filenameIndex);
 }
 
-// TODO create coloured image :)
-// TODO change from static to dynamic 'image' array allocation!
-const int h = 667;
-const int w = 1000;
-unsigned char image[h][w][3];
-
 void Ciff::initBitmap(uint64_t height, uint64_t width, int filenameIndex) {
-	/*unsigned char*** image = new unsigned char** [height];
-	int i, j;
-	for (i = 0; i < height; i++) {
-		image[i] = new unsigned char* [width];
-		for (j = 0; j < width; j++) {
-			image[i][j] = new unsigned char[3];
-		}
-	}*/
+	unsigned char* image = new unsigned char[height * width * 3];
 
 	char* imageFileName = (char*)"ciffBitmapImage.bmp" + filenameIndex;
 
 	vector <vector<RGB>> rows = ciff_content.getPixels();
 
-	int x, y;
+	uint64_t x, y;
 	for (x = 0; x < height; x++) {
 		for (y = 0; y < width; y++) {
-			image[x][y][2] = (unsigned char)((rows.at(x)).at(y)).B;
-			image[x][y][1] = (unsigned char)((rows.at(x)).at(y)).G;
-			image[x][y][0] = (unsigned char)((rows.at(x)).at(y)).R;
+			image[x * 3 * width + y * 3 + 2] = (unsigned char)((rows.at(x)).at(y)).B;
+			image[x * 3 * width + y * 3 + 1] = (unsigned char)((rows.at(x)).at(y)).G;
+			image[x * 3 * width + y * 3 + 0] = (unsigned char)((rows.at(x)).at(y)).R;
 		}
 	}
 
 	generateBitmapImage((unsigned char*)image, height, width, imageFileName);
 	printf("\nBitmap image generated!\n");
-
-	/*for (i = 0; i < width; i++) {
-		for (j = 0; j < height; j++) {
-			delete[] image[i][j];
-		}
-		delete[] image[i];
-	}
-	delete image;*/
 }
 
 void Ciff::generateBitmapImage(unsigned char* image, uint64_t height, uint64_t width, char* imageFileName) {
