@@ -90,6 +90,9 @@ public:
 	Ciff();
 	~Ciff();
 
+	CiffHeader getCiffHeader();
+	CiffContent getCiffContent();
+
 	void saveCiffPartsToVariables(vector<char> animation, int filenameIndex);
 	void generateBitmapImage(unsigned char* image, uint64_t height, uint64_t width, const char* imageFileName);
 };

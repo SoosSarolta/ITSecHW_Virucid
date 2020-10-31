@@ -104,6 +104,14 @@ Ciff::Ciff() {
 
 Ciff::~Ciff() {}
 
+CiffHeader Ciff::getCiffHeader() {
+	return ciff_header;
+}
+
+CiffContent Ciff::getCiffContent() {
+	return ciff_content;
+}
+
 void Ciff::saveCiffPartsToVariables(vector<char> animation, int filenameIndex) {
 	printf("*******************\n");
 	printf("CIFF PARSING\n");
