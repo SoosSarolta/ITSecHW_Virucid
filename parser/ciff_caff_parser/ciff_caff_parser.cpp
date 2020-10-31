@@ -36,35 +36,30 @@ int main(int argc, char* argv[]) {
         i++;
     }
 
+    printf("All blocks are parsed, generating images...\n");
+
     vector<Ciff*> ciffs = caff->getCaffAnimation().getCiffs();
     int numOfCiffs = ciffs.size();
 
     uint64_t width = ciffs[0]->getCiffHeader().getWidth();
     uint64_t height = ciffs[0]->getCiffHeader().getHeight();
     for (int i = 0; i < numOfCiffs; i++) {
+        printf("\nGenerating the %d. bitmap image...\n", i + 1);
         vector <vector<RGB>> rows = ciffs[i]->getCiffContent().getPixels();
         uint64_t x, y;
 
-        unsigned char* image = new unsigned char[height * width * 3];
-
-        string imageFileNameFirst = "ciffBitmapImage";
-        string imageFileNameIndex = to_string(i);
-        string imageFileNameBmp = ".bmp";
-
-        string imageFileNameString = imageFileNameFirst + imageFileNameIndex + imageFileNameBmp;
-
-        const char* imageFileName = imageFileNameString.c_str();
+        Bitmap* bitmap = new Bitmap(new unsigned char[height * width * 3]);
+        bitmap->setFileNameIndex(i);
 
         for (x = 0; x < height; x++) {
             for (y = 0; y < width; y++) {
-                image[x * 3 * width + y * 3 + 2] = (unsigned char)((rows.at(x)).at(y)).B;
-                image[x * 3 * width + y * 3 + 1] = (unsigned char)((rows.at(x)).at(y)).G;
-                image[x * 3 * width + y * 3 + 0] = (unsigned char)((rows.at(x)).at(y)).R;
+                bitmap->getImage()[x * 3 * width + y * 3 + 2] = (unsigned char)((rows.at(x)).at(y)).B;
+                bitmap->getImage()[x * 3 * width + y * 3 + 1] = (unsigned char)((rows.at(x)).at(y)).G;
+                bitmap->getImage()[x * 3 * width + y * 3 + 0] = (unsigned char)((rows.at(x)).at(y)).R;
 
             }
         }
-        Bitmap* bitmap = new Bitmap();
-        bitmap->generateBitmapImage((unsigned char*)image, height, width, (const char*)imageFileName);
+        bitmap->generateBitmapImage((unsigned char*)bitmap->getImage(), height, width, bitmap->getFileName().c_str());
         printf("\nBitmap image generated!\n");
     }
     return 0;

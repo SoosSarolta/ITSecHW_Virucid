@@ -1,5 +1,30 @@
 #include "bitmap.h"
 
+
+Bitmap::Bitmap(unsigned char* image) {
+	this->image = image;
+
+	namePrefix = "ciffBitmapImage";
+	nameIndex = "0";
+	namePostfix = ".bmp";
+}
+
+Bitmap::~Bitmap() {}
+
+unsigned char* Bitmap::getImage() {
+	return image;
+}
+
+void Bitmap::setFileNameIndex(int index) {
+	this->nameIndex = to_string(index);
+}
+
+string Bitmap::getFileName() {
+	string imageFileNameString = namePrefix + nameIndex + namePostfix;
+	return imageFileNameString;
+}
+
+
 void Bitmap::generateBitmapImage(unsigned char* image, uint64_t height, uint64_t width, const char* imageFileName) {
 	int widthInBytes = width * 3;
 
