@@ -8,6 +8,7 @@
 
 #include "caff.h"
 #include "bitmap.h"
+#include "gif.h"
 
 using namespace std;
 
@@ -43,6 +44,14 @@ int main(int argc, char* argv[]) {
 
     uint64_t width = ciffs[0]->getCiffHeader().getWidth();
     uint64_t height = ciffs[0]->getCiffHeader().getHeight();
+
+    auto fileName = "caff.gif";
+    vector<uint8_t> gifImage;
+    int delay = 10;
+    GifWriter g;
+
+    GifBegin(&g, fileName, width, height, delay);
+
     for (int i = 0; i < numOfCiffs; i++) {
         printf("\nGenerating the %d. bitmap image...\n", i + 1);
         vector <vector<RGB>> rows = ciffs[i]->getCiffContent().getPixels();
@@ -57,10 +66,20 @@ int main(int argc, char* argv[]) {
                 bitmap->getImage()[x * 3 * width + y * 3 + 1] = (unsigned char)((rows.at(x)).at(y)).G;
                 bitmap->getImage()[x * 3 * width + y * 3 + 0] = (unsigned char)((rows.at(x)).at(y)).R;
 
+                gifImage.push_back((uint8_t)((rows.at(x)).at(y)).B);
+                gifImage.push_back((uint8_t)((rows.at(x)).at(y)).G);
+                gifImage.push_back((uint8_t)((rows.at(x)).at(y)).R);
+                gifImage.push_back((uint8_t)0);
             }
         }
         bitmap->generateBitmapImage((unsigned char*)bitmap->getImage(), height, width, bitmap->getFileName().c_str());
         printf("\nBitmap image generated!\n");
+
+        GifWriteFrame(&g, gifImage.data(), width, height, delay);
     }
+
+    GifEnd(&g);
+    printf("\nGif animation generated!\n");
+
     return 0;
 }

@@ -151,11 +151,13 @@
     <ClCompile Include="caff.cpp" />
     <ClCompile Include="ciff.cpp" />
     <ClCompile Include="ciff_caff_parser.cpp" />
+    <ClCompile Include="gif.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bitmap.h" />
     <ClInclude Include="caff.h" />
     <ClInclude Include="ciff.h" />
+    <ClInclude Include="gif.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
