@@ -1,6 +1,5 @@
 #include "bitmap.h"
 
-
 Bitmap::Bitmap(unsigned char* image) {
 	this->image = image;
 
@@ -23,7 +22,6 @@ string Bitmap::getFileName() {
 	string imageFileNameString = namePrefix + nameIndex + namePostfix;
 	return imageFileNameString;
 }
-
 
 void Bitmap::generateBitmapImage(unsigned char* image, uint64_t height, uint64_t width, const char* imageFileName) {
 	int widthInBytes = width * 3;
