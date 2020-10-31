@@ -147,11 +147,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="bitmap.cpp" />
     <ClCompile Include="caff.cpp" />
     <ClCompile Include="ciff.cpp" />
     <ClCompile Include="ciff_caff_parser.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bitmap.h" />
     <ClInclude Include="caff.h" />
     <ClInclude Include="ciff.h" />
   </ItemGroup>
