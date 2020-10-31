@@ -49,11 +49,9 @@ int main(int argc, char* argv[]) {
     vector<uint8_t> gifImage;
     int delay = 10;
 
-    GIF* g = new GIF();
+    GIF* g = new GIF(width, height);
 
-    GifWriter gw;
-
-    g->GifBegin(&gw, fileName, width, height, delay);
+    g->GifBegin(fileName, delay);
 
     for (int i = 0; i < numOfCiffs; i++) {
         printf("\nGenerating the %d. bitmap image...\n", i + 1);
@@ -78,10 +76,10 @@ int main(int argc, char* argv[]) {
         bitmap->generateBitmapImage((unsigned char*)bitmap->getImage(), height, width, bitmap->getFileName().c_str());
         printf("\nBitmap image generated!\n");
 
-        g->GifWriteFrame(&gw, gifImage.data(), width, height, delay);
+        g->GifWriteFrame(gifImage.data(), delay);
     }
 
-    g->GifEnd(&gw);
+    g->GifEnd();
     printf("\nGif animation generated!\n");
 
     return 0;

@@ -32,7 +32,7 @@
 
 const int kGifTransIndex = 0;
 
-struct GifPalette {
+struct Palette {
 public:
     int bitDepth;
 
@@ -49,7 +49,7 @@ public:
 
 // Simple structure to write out the LZW-compressed portion of the image
 // one bit at a time
-struct GifBitStatus {
+struct BitStatus {
     uint8_t bitIndex;  // how many bits in the partial byte written so far
     uint8_t byte;      // current partial byte
 
@@ -71,33 +71,38 @@ struct GifWriter {
 
 struct GIF {
 private:
-    GifPalette* palette;
+    Palette palette;
+    GifWriter* writer;
+    BitStatus bitStatus;
+
+    uint32_t width;
+    uint32_t height;
 
     int GifIMax(int l, int r);
     int GifIMin(int l, int r);
     int GifIAbs(int i);
 
-    void GifGetClosestPaletteColor(GifPalette* pPal, int r, int g, int b, int& bestInd, int& bestDiff, int treeRoot = 1);
+    void GifGetClosestPaletteColor(int r, int g, int b, int& bestInd, int& bestDiff, int treeRoot = 1);
     void GifSwapPixels(uint8_t* image, int pixA, int pixB);
     int GifPartition(uint8_t* image, const int left, const int right, const int elt, int pivotIndex);
     void GifPartitionByMedian(uint8_t* image, int left, int right, int com, int neededCenter);
-    void GifSplitPalette(uint8_t* image, int numPixels, int firstElt, int lastElt, int splitElt, int splitDist, int treeNode, bool buildForDither, GifPalette* pal);
+    void GifSplitPalette(uint8_t* image, int numPixels, int firstElt, int lastElt, int splitElt, int splitDist, int treeNode, bool buildForDither);
     int GifPickChangedPixels(const uint8_t* lastFrame, uint8_t* frame, int numPixels);
-    void GifMakePalette(const uint8_t* lastFrame, const uint8_t* nextFrame, uint32_t width, uint32_t height, int bitDepth, bool buildForDither, GifPalette* pPal);
-    void GifDitherImage(const uint8_t* lastFrame, const uint8_t* nextFrame, uint8_t* outFrame, uint32_t width, uint32_t height, GifPalette* pPal);
-    void GifThresholdImage(const uint8_t* lastFrame, const uint8_t* nextFrame, uint8_t* outFrame, uint32_t width, uint32_t height, GifPalette* pPal);
-    void GifWriteBit(GifBitStatus& stat, uint32_t bit);
-    void GifWriteChunk(FILE* f, GifBitStatus& stat);
-    void GifWriteCode(FILE* f, GifBitStatus& stat, uint32_t code, uint32_t length);
-    void GifWritePalette(const GifPalette* pPal, FILE* f);
-    void GifWriteLzwImage(FILE* f, uint8_t* image, uint32_t left, uint32_t top, uint32_t width, uint32_t height, uint32_t delay, GifPalette* pPal);
+    void GifMakePalette(const uint8_t* lastFrame, const uint8_t* nextFrame, int bitDepth, bool buildForDither);
+    void GifDitherImage(const uint8_t* lastFrame, const uint8_t* nextFrame, uint8_t* outFrame);
+    void GifThresholdImage(const uint8_t* lastFrame, const uint8_t* nextFrame, uint8_t* outFrame);
+    void GifWriteBit(uint32_t bit);
+    void GifWriteChunk(FILE* f);
+    void GifWriteCode(FILE* f, uint32_t code, uint32_t length);
+    void GifWritePalette(FILE* f);
+    void GifWriteLzwImage(FILE* f, uint8_t* image, uint32_t left, uint32_t top, uint32_t delay);
 public:
-    GIF();
+    GIF(uint32_t width, uint32_t height);
     ~GIF();
 
-    bool GifBegin(GifWriter* writer, const char* filename, uint32_t width, uint32_t height, uint32_t delay, int32_t bitDepth = 8, bool dither = false);
-    bool GifEnd(GifWriter* writer);
-    bool GifWriteFrame(GifWriter* writer, const uint8_t* image, uint32_t width, uint32_t height, uint32_t delay, int bitDepth = 8, bool dither = false);
+    bool GifBegin(const char* filename, uint32_t delay, int32_t bitDepth = 8, bool dither = false);
+    bool GifEnd();
+    bool GifWriteFrame(const uint8_t* image, uint32_t delay, int bitDepth = 8, bool dither = false);
 };
 
 
