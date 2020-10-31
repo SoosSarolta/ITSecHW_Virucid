@@ -109,6 +109,7 @@ public:
 	Caff();
 	~Caff();
 
+	CaffAnimation getCaffAnimation();
 	vector<char> readFile(string fileName);
 	uint64_t parseBlock(vector<char> content, uint64_t index, int filenameIndex);
 };

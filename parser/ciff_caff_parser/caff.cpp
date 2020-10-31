@@ -145,6 +145,10 @@ Caff::Caff() {
 
 Caff::~Caff() {}
 
+CaffAnimation Caff::getCaffAnimation() {
+	return caff_animation;
+}
+
 vector<char> Caff::readFile(string fileName) {
 	ifstream in;
 
