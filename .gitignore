@@ -1,5 +1,12 @@
+*
+!*.*
+!*/
+!MakeFile
+!Dockerfile
+
 .vs
 Debug
 *.user
 *.bmp
 *.gif
+*.o

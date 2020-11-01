@@ -1,0 +1,9 @@
+version: '3'
+services:
+  ciffcaff:
+    image: ciffcaff
+    build: ./
+    volumes:
+      - ./:/usr/src/app
+    working_dir: /usr/src/app
+    command: ./run.sh
