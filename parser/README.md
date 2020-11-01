@@ -27,6 +27,7 @@ The folder contains the following files:
         - `make memcheck` will build and run the parser with Valgrind to check for memory leaks
         - `make fuzz` will build and fuzz the parser with afl
 - `compile.sh`: compiles the parser (to be able to compile from a Windows host)
+- `.sln`, `.vcxproj` and `.vcxproj.filter`: These files are used by Visual Studio, because the project was initially built there
 
 ## Test Results
 
