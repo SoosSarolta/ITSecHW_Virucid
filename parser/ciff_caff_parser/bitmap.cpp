@@ -8,7 +8,9 @@ Bitmap::Bitmap(unsigned char* image) {
 	namePostfix = ".bmp";
 }
 
-Bitmap::~Bitmap() {}
+Bitmap::~Bitmap() {
+	delete image;
+}
 
 unsigned char* Bitmap::getImage() {
 	return image;

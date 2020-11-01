@@ -16,6 +16,7 @@ private:
 
 	unsigned char* createBitmapFileHeader(uint64_t height, uint64_t stride);
 	unsigned char* createBitmapInfoHeader(uint64_t height, uint64_t width);
+
 public:
 	Bitmap(unsigned char* image);
 	~Bitmap();
@@ -25,5 +26,4 @@ public:
 	string getFileName();
 
 	void generateBitmapImage(unsigned char* image, uint64_t height, uint64_t width, const char* imageFileName);
-
 };

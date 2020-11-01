@@ -75,8 +75,8 @@ private:
     GifWriter* writer;
     BitStatus bitStatus;
 
-    uint32_t width;
-    uint32_t height;
+    uint64_t width;
+    uint64_t height;
 
     int GifIMax(int l, int r);
     int GifIMin(int l, int r);
@@ -96,13 +96,12 @@ private:
     void GifWriteCode(FILE* f, uint32_t code, uint32_t length);
     void GifWritePalette(FILE* f);
     void GifWriteLzwImage(FILE* f, uint8_t* image, uint32_t left, uint32_t top, uint32_t delay);
+
 public:
-    GIF(uint32_t width, uint32_t height);
+    GIF(uint64_t width, uint64_t height);
     ~GIF();
 
     bool GifBegin(const char* filename, uint32_t delay, int32_t bitDepth = 8, bool dither = false);
     bool GifEnd();
     bool GifWriteFrame(const uint8_t* image, uint32_t delay, int bitDepth = 8, bool dither = false);
 };
-
-

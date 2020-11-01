@@ -75,7 +75,7 @@ public:
 struct CaffAnimation {
 private:
 	uint64_t duration;
-	vector<Ciff*> ciffs;	// ??
+	vector<Ciff*> ciffs;
 
 public:
 	CaffAnimation();

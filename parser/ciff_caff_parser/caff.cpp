@@ -143,7 +143,11 @@ Caff::Caff() {
 	caff_animation = CaffAnimation::CaffAnimation();
 }
 
-Caff::~Caff() {}
+Caff::~Caff() {
+	for (int i = 0; i < caff_animation.getCiffs().size(); i++) {
+		delete caff_animation.getCiffs().at(i);
+	}
+}
 
 CaffAnimation Caff::getCaffAnimation() {
 	return caff_animation;
@@ -205,7 +209,7 @@ vector<char> Caff::slice(vector<char> const& in, uint64_t from, uint64_t to) {
 }
 
 char* Caff::vectorToString(vector<char> in) {
-	int size = in.size();
+	uint64_t size = in.size();
 	char* tmp = new char[size + 1];
 
 	for (int i = 0; i < size; i++)

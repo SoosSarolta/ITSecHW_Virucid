@@ -1,6 +1,6 @@
 #include "gif.h"
 
-GIF::GIF(uint32_t width, uint32_t height) {
+GIF::GIF(uint64_t width, uint64_t height) {
     this->width = width;
     this->height = height;
 
@@ -9,7 +9,11 @@ GIF::GIF(uint32_t width, uint32_t height) {
     bitStatus = BitStatus();
 }
 
-GIF::~GIF() {}
+GIF::~GIF() {
+    delete writer->oldImage;
+    delete writer->f;
+    delete writer;
+}
 
 int GIF::GifIMax(int l, int r) { return l > r ? l : r; }
 int GIF::GifIMin(int l, int r) { return l < r ? l : r; }
@@ -218,8 +222,8 @@ void GIF::GifSplitPalette(uint8_t* image, int numPixels, int firstElt, int lastE
     if (bRange > gRange) splitCom = 2;
     if (rRange > bRange&& rRange > gRange) splitCom = 0;
 
-    int subPixelsA = numPixels * (splitElt - firstElt) / (lastElt - firstElt);
-    int subPixelsB = numPixels - subPixelsA;
+    uint64_t subPixelsA = numPixels * (splitElt - firstElt) / (lastElt - firstElt);
+    uint64_t subPixelsB = numPixels - subPixelsA;
 
     GifPartitionByMedian(image, 0, numPixels, splitCom, subPixelsA);
 
@@ -264,7 +268,10 @@ void GIF::GifMakePalette(const uint8_t* lastFrame, const uint8_t* nextFrame, int
     // we must create a copy of the image for it to destroy
     size_t imageSize = (size_t)(width * height * 4 * sizeof(uint8_t));
     uint8_t* destroyableImage = (uint8_t*)GIF_TEMP_MALLOC(imageSize);
-    memcpy(destroyableImage, nextFrame, imageSize);
+
+    if (destroyableImage != nullptr) {
+        memcpy(destroyableImage, nextFrame, imageSize);
+    }
 
     int numPixels = (int)(width * height);
     if (lastFrame)
@@ -342,10 +349,10 @@ void GIF::GifDitherImage(const uint8_t* lastFrame, const uint8_t* nextFrame, uin
 
             // Propagate the error to the four adjacent locations
             // that we haven't touched yet
-            int quantloc_7 = (int)(yy * width + xx + 1);
-            int quantloc_3 = (int)(yy * width + width + xx - 1);
-            int quantloc_5 = (int)(yy * width + width + xx);
-            int quantloc_1 = (int)(yy * width + width + xx + 1);
+            uint64_t quantloc_7 = (int)(yy * width + xx + 1);
+            uint64_t quantloc_3 = (int)(yy * width + width + xx - 1);
+            uint64_t quantloc_5 = (int)(yy * width + width + xx);
+            uint64_t quantloc_1 = (int)(yy * width + width + xx + 1);
 
             if (quantloc_7 < numPixels) {
                 int32_t* pix7 = quantPixels + 4 * quantloc_7;
@@ -510,77 +517,80 @@ void GIF::GifWriteLzwImage(FILE* f, uint8_t* image, uint32_t left, uint32_t top,
 
     GifLzwNode* codetree = (GifLzwNode*)GIF_TEMP_MALLOC(sizeof(GifLzwNode) * 4096);
 
-    memset(codetree, 0, sizeof(GifLzwNode) * 4096);
-    int32_t curCode = -1;
-    uint32_t codeSize = (uint32_t)minCodeSize + 1;
-    uint32_t maxCode = clearCode + 1;
+    if (codetree != nullptr) {
+        memset(codetree, 0, sizeof(GifLzwNode) * 4096);
 
-    bitStatus.byte = 0;
-    bitStatus.bitIndex = 0;
-    bitStatus.chunkIndex = 0;
+        int32_t curCode = -1;
+        uint32_t codeSize = (uint32_t)minCodeSize + 1;
+        uint32_t maxCode = clearCode + 1;
 
-    GifWriteCode(f, clearCode, codeSize);  // start with a fresh LZW dictionary
+        bitStatus.byte = 0;
+        bitStatus.bitIndex = 0;
+        bitStatus.chunkIndex = 0;
 
-    for (uint32_t yy = 0; yy < height; ++yy) {
-        for (uint32_t xx = 0; xx < width; ++xx) {
+        GifWriteCode(f, clearCode, codeSize);  // start with a fresh LZW dictionary
+
+        for (uint32_t yy = 0; yy < height; ++yy) {
+            for (uint32_t xx = 0; xx < width; ++xx) {
 #ifdef GIF_FLIP_VERT
-            // bottom-left origin image (such as an OpenGL capture)
-            uint8_t nextValue = image[((height - 1 - yy) * width + xx) * 4 + 3];
+                // bottom-left origin image (such as an OpenGL capture)
+                uint8_t nextValue = image[((height - 1 - yy) * width + xx) * 4 + 3];
 #else
-            // top-left origin
-            uint8_t nextValue = image[(yy * width + xx) * 4 + 3];
+                // top-left origin
+                uint8_t nextValue = image[(yy * width + xx) * 4 + 3];
 #endif
 
-            // "loser mode" - no compression, every single code is followed immediately by a clear
-            //WriteCode( f, stat, nextValue, codeSize );
-            //WriteCode( f, stat, 256, codeSize );
+                // "loser mode" - no compression, every single code is followed immediately by a clear
+                //WriteCode( f, stat, nextValue, codeSize );
+                //WriteCode( f, stat, 256, codeSize );
 
-            if (curCode < 0) {
-                // first value in a new run
-                curCode = nextValue;
-            }
-            else if (codetree[curCode].m_next[nextValue]) {
-                // current run already in the dictionary
-                curCode = codetree[curCode].m_next[nextValue];
-            }
-            else {
-                // finish the current run, write a code
-                GifWriteCode(f, (uint32_t)curCode, codeSize);
-
-                // insert the new run into the dictionary
-                codetree[curCode].m_next[nextValue] = (uint16_t)++maxCode;
-
-                if (maxCode >= (1ul << codeSize)) {
-                    // dictionary entry count has broken a size barrier,
-                    // we need more bits for codes
-                    codeSize++;
+                if (curCode < 0) {
+                    // first value in a new run
+                    curCode = nextValue;
                 }
-                if (maxCode == 4095) {
-                    // the dictionary is full, clear it out and begin anew
-                    GifWriteCode(f, clearCode, codeSize); // clear tree
-
-                    memset(codetree, 0, sizeof(GifLzwNode) * 4096);
-                    codeSize = (uint32_t)(minCodeSize + 1);
-                    maxCode = clearCode + 1;
+                else if (codetree[curCode].m_next[nextValue]) {
+                    // current run already in the dictionary
+                    curCode = codetree[curCode].m_next[nextValue];
                 }
+                else {
+                    // finish the current run, write a code
+                    GifWriteCode(f, (uint32_t)curCode, codeSize);
 
-                curCode = nextValue;
+                    // insert the new run into the dictionary
+                    codetree[curCode].m_next[nextValue] = (uint16_t)++maxCode;
+
+                    if (maxCode >= (1ul << codeSize)) {
+                        // dictionary entry count has broken a size barrier,
+                        // we need more bits for codes
+                        codeSize++;
+                    }
+                    if (maxCode == 4095) {
+                        // the dictionary is full, clear it out and begin anew
+                        GifWriteCode(f, clearCode, codeSize); // clear tree
+
+                        memset(codetree, 0, sizeof(GifLzwNode) * 4096);
+                        codeSize = (uint32_t)(minCodeSize + 1);
+                        maxCode = clearCode + 1;
+                    }
+
+                    curCode = nextValue;
+                }
             }
         }
+
+        // compression footer
+        GifWriteCode(f, (uint32_t)curCode, codeSize);
+        GifWriteCode(f, clearCode, codeSize);
+        GifWriteCode(f, clearCode + 1, (uint32_t)minCodeSize + 1);
+
+        // write out the last partial chunk
+        while (bitStatus.bitIndex) GifWriteBit(0);
+        if (bitStatus.chunkIndex) GifWriteChunk(f);
+
+        fputc(0, f); // image block terminator
+
+        GIF_TEMP_FREE(codetree);
     }
-
-    // compression footer
-    GifWriteCode(f, (uint32_t)curCode, codeSize);
-    GifWriteCode(f, clearCode, codeSize);
-    GifWriteCode(f, clearCode + 1, (uint32_t)minCodeSize + 1);
-
-    // write out the last partial chunk
-    while (bitStatus.bitIndex) GifWriteBit(0);
-    if (bitStatus.chunkIndex) GifWriteChunk(f);
-
-    fputc(0, f); // image block terminator
-
-    GIF_TEMP_FREE(codetree);
 }
 
 // Creates a gif file.
