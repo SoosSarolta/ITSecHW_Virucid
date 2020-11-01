@@ -1,12 +1,16 @@
 #include "gif.h"
 
-GIF::GIF(uint64_t width, uint64_t height) {
+GIF::GIF(uint64_t width, uint64_t height) : palette(Palette()), bitStatus(BitStatus()) {
     this->width = width;
     this->height = height;
 
-	palette = Palette();
     writer = new GifWriter();
-    bitStatus = BitStatus();
+}
+GIF::GIF(const GIF& g) : palette(g.palette), bitStatus(g.bitStatus) {
+    this->width = g.width;
+    this->height = g.height;
+
+    writer = new GifWriter();
 }
 
 GIF::~GIF() {
@@ -515,7 +519,7 @@ void GIF::GifWriteLzwImage(FILE* f, uint8_t* image, uint32_t left, uint32_t top,
 
     fputc(minCodeSize, f); // min code size 8 bits
 
-    GifLzwNode* codetree = (GifLzwNode*)GIF_TEMP_MALLOC(sizeof(GifLzwNode) * 4096);
+    GifLzwNode* codetree = static_cast<GifLzwNode*>(GIF_TEMP_MALLOC(sizeof(GifLzwNode) * 4096));
 
     if (codetree != nullptr) {
         memset(codetree, 0, sizeof(GifLzwNode) * 4096);

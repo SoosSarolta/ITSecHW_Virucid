@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
     try {
         content = caff->readFile(argv[1]);
     }
-    catch (string e) {
+    catch (string& e) {
         cout << e << "\n";
         return -1;
     }
@@ -53,13 +53,13 @@ int main(int argc, char* argv[]) {
 
     g->GifBegin(fileName, delay);
 
-    for (int i = 0; i < numOfCiffs; i++) {
-        printf("\nGenerating the %d. bitmap image...\n", i + 1);
-        vector <vector<RGB>> rows = ciffs[i]->getCiffContent().getPixels();
+    for (int j = 0; j < numOfCiffs; j++) {
+        printf("\nGenerating the %d. bitmap image...\n", j + 1);
+        vector <vector<RGB>> rows = ciffs[j]->getCiffContent().getPixels();
         uint64_t x, y;
 
-        Bitmap* bitmap = new Bitmap(new unsigned char[height * width * 3]);
-        bitmap->setFileNameIndex(i);
+        Bitmap* bitmap = new Bitmap(new unsigned char[height * width * 3], "ciffBitmapImage", "0", ".bmp");
+        bitmap->setFileNameIndex(j);
 
         for (x = 0; x < height; x++) {
             for (y = 0; y < width; y++) {

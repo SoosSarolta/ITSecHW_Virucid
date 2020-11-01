@@ -1,11 +1,11 @@
 #include "bitmap.h"
 
-Bitmap::Bitmap(unsigned char* image) {
+Bitmap::Bitmap(unsigned char* image, const string& namePrefix, const string& nameIndex, const string& namePostfix) {
 	this->image = image;
 
-	namePrefix = "ciffBitmapImage";
-	nameIndex = "0";
-	namePostfix = ".bmp";
+	this->namePrefix = namePrefix;
+	this->nameIndex = nameIndex;
+	this->namePostfix = namePostfix;
 }
 
 Bitmap::~Bitmap() {
@@ -28,7 +28,6 @@ string Bitmap::getFileName() {
 void Bitmap::generateBitmapImage(unsigned char* image, uint64_t height, uint64_t width, const char* imageFileName) {
 	int widthInBytes = width * 3;
 
-	unsigned char padding[3] = { 0, 0, 0 };
 	int paddingSize = (4 - (widthInBytes) % 4) % 4;
 
 	int stride = (widthInBytes)+paddingSize;
@@ -40,12 +39,14 @@ void Bitmap::generateBitmapImage(unsigned char* image, uint64_t height, uint64_t
 		return;
 	}
 
-	if (imageFile != nullptr) {
+	else {
 		unsigned char* fileHeader = createBitmapFileHeader(height, stride);
 		fwrite(fileHeader, 1, 14, imageFile);
 
 		unsigned char* infoHeader = createBitmapInfoHeader(height, width);
 		fwrite(infoHeader, 1, 40, imageFile);
+
+		unsigned char padding[3] = { 0, 0, 0 };
 
 		uint64_t i;
 		for (i = 0; i < height; i++) {

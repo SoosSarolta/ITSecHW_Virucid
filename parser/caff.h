@@ -69,7 +69,7 @@ public:
 	void setCreatorLen(uint64_t cl);
 	uint64_t getCreatorLen();
 
-	void setCreator(string c);
+	void setCreator(const string& c);
 	string getCreator();
 };
 
@@ -85,7 +85,7 @@ public:
 	void setDuration(uint64_t d);
 	uint64_t getDuration();
 
-	void setCiffs(vector<Ciff*> cs);
+	void setCiffs(const vector<Ciff*>& cs);
 	const vector<Ciff*> getCiffs();
 
 	void addCiff(Ciff* c);
@@ -100,11 +100,11 @@ private:
 
 	vector<char> slice(vector<char> const& in, uint64_t from, uint64_t to);
 	char* vectorToString(vector<char> in);
-	uint64_t vectorToInt(vector<char> in);
+	uint64_t vectorToInt(const vector<char>& in);
 
-	void parseHeader(vector<char> block, uint64_t block_length);
+	void parseHeader(const vector<char>& block, uint64_t block_length);
 	void parseCredits(vector<char> block, uint64_t block_length);
-	void parseAnimation(vector<char> block, uint64_t block_length, int filenameIndex);
+	void parseAnimation(const vector<char>& block, uint64_t block_length, int filenameIndex);
 
 public:
 	Caff();

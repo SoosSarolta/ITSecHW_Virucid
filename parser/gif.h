@@ -99,6 +99,7 @@ private:
 
 public:
     GIF(uint64_t width, uint64_t height);
+    GIF(const GIF& g);
     ~GIF();
 
     bool GifBegin(const char* filename, uint32_t delay, int32_t bitDepth = 8, bool dither = false);

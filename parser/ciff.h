@@ -52,10 +52,10 @@ public:
 	void setHeight(uint64_t h);
 	uint64_t getHeight();
 
-	void setCaption(string c);
+	void setCaption(const string& c);
 	string getCaption();
 
-	void setTags(vector<string> t);
+	void setTags(const vector<string>& t);
 	vector<string> getTags();
 };
 
@@ -67,7 +67,7 @@ public:
 	CiffContent();
 	~CiffContent();
 
-	void setPixels(vector<vector<RGB>> p);
+	void setPixels(const vector<vector<RGB>>& p);
 	vector<vector<RGB>> getPixels();
 };
 
@@ -78,7 +78,7 @@ private:
 
 	vector<char> slice(vector<char> const& in, uint64_t from, uint64_t to);
 	char* vectorToString(vector<char> in);
-	uint64_t vectorToInt(vector<char> in);
+	uint64_t vectorToInt(const vector<char>& in);
 	uint64_t parseCaption(vector<char> in, uint64_t from);
 	void parseTags(vector<char> in, uint64_t from, uint64_t to);
 	void parseContent(vector<char> in, uint64_t from, uint64_t to, uint64_t width, uint64_t height, int filenameIndex);

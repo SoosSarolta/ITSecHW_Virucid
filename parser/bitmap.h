@@ -18,7 +18,7 @@ private:
 	unsigned char* createBitmapInfoHeader(uint64_t height, uint64_t width);
 
 public:
-	Bitmap(unsigned char* image);
+	Bitmap(unsigned char* image, const string& namePrefix, const string& nameIndex, const string& namePostfix);
 	~Bitmap();
 
 	unsigned char* getImage();

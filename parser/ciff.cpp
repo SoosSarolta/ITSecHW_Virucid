@@ -11,14 +11,12 @@ RGB::RGB() {
 RGB::~RGB() {}
 
 
-CiffHeader::CiffHeader() {
+CiffHeader::CiffHeader() : caption(string("")), tags(vector<string>(0)) {
 	magic[0] = magic[1] = magic[2] = magic[3] = magic[4] = 0;
 	header_size = 0;
 	content_size = 0;
 	width = 0;
 	height = 0;
-	caption = string("");
-	tags = vector<string>(0);
 }
 
 CiffHeader::~CiffHeader() {}
@@ -63,7 +61,7 @@ uint64_t CiffHeader::getHeight() {
 	return height;
 }
 
-void CiffHeader::setCaption(string c) {
+void CiffHeader::setCaption(const string& c) {
 	caption = c;
 }
 
@@ -71,7 +69,7 @@ string CiffHeader::getCaption() {
 	return caption;
 }
 
-void CiffHeader::setTags(vector<string> t) {
+void CiffHeader::setTags(const vector<string>& t) {
 	tags = t;
 }
 
@@ -80,13 +78,11 @@ vector<string> CiffHeader::getTags() {
 }
 
 
-CiffContent::CiffContent() {
-	pixels = vector<vector<RGB>>(0);
-}
+CiffContent::CiffContent() : pixels(vector<vector<RGB>>(0)) {}
 
 CiffContent::~CiffContent() {}
 
-void CiffContent::setPixels(vector<vector<RGB>> p) {
+void CiffContent::setPixels(const vector<vector<RGB>>& p) {
 	pixels = p;
 }
 
@@ -95,10 +91,7 @@ vector<vector<RGB>> CiffContent::getPixels() {
 }
 
 
-Ciff::Ciff() {
-	ciff_header = CiffHeader();
-	ciff_content = CiffContent();
-}
+Ciff::Ciff() : ciff_header(CiffHeader()), ciff_content(CiffContent()) {}
 
 Ciff::~Ciff() {}
 
@@ -164,7 +157,7 @@ char* Ciff::vectorToString(vector<char> in) {
 	return tmp;
 }
 
-uint64_t Ciff::vectorToInt(vector<char> in) {
+uint64_t Ciff::vectorToInt(const vector<char>& in) {
 	char* tmp = vectorToString(in);
 	uint64_t ret = *((uint64_t*)tmp);
 	delete[] tmp;
