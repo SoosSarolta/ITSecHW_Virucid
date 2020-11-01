@@ -13,7 +13,7 @@ CaffHeader::CaffHeader() {
 CaffHeader::~CaffHeader() {}
 
 void CaffHeader::setMagic(char* m) {
-	strncpy_s(magic, 5, m, 5);
+	strncpy(magic, m, 5);
 }
 
 char* CaffHeader::getMagic() {
@@ -138,9 +138,9 @@ const Ciff* CaffAnimation::getCiff(uint64_t index) {
 }
 
 Caff::Caff() {
-	caff_header = CaffHeader::CaffHeader();
-	caff_credits = CaffCredits::CaffCredits();
-	caff_animation = CaffAnimation::CaffAnimation();
+	caff_header = CaffHeader();
+	caff_credits = CaffCredits();
+	caff_animation = CaffAnimation();
 }
 
 Caff::~Caff() {
@@ -222,13 +222,17 @@ char* Caff::vectorToString(vector<char> in) {
 }
 
 uint64_t Caff::vectorToInt(vector<char> in) {
-	return *((uint64_t*)vectorToString(in));
+	char* tmp = vectorToString(in);
+	uint64_t ret = *((uint64_t*)tmp);
+	delete[] tmp;
+	return ret;
 }
 
 void Caff::parseHeader(vector<char> block, uint64_t block_length) {
 	char* magic = vectorToString(slice(block, 0, 3));
 	caff_header.setMagic(magic);
 	printf("Magic: %s\n", magic);
+	delete[] magic;
 
 	uint64_t header_size = vectorToInt(slice(block, 4, 11));
 	caff_header.setHeaderSize(header_size);
@@ -272,6 +276,7 @@ void Caff::parseCredits(vector<char> block, uint64_t block_length) {
 		caff_credits.setCreator(string(""));
 	}
 	printf("Creator: %s\n", creator);
+	delete[] creator;
 }
 
 void Caff::parseAnimation(vector<char> block, uint64_t block_length, int filenameIndex) {

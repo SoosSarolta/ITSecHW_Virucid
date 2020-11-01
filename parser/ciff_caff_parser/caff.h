@@ -11,6 +11,7 @@
 #include <fstream>
 #include <iterator>
 #include <inttypes.h>
+#include <cstring>
 
 #include "ciff.h"
 

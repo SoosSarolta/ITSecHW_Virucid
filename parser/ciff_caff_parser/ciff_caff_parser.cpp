@@ -77,10 +77,14 @@ int main(int argc, char* argv[]) {
         printf("\nBitmap image generated!\n");
 
         g->GifWriteFrame(gifImage.data(), delay);
+        delete bitmap;
     }
 
     g->GifEnd();
     printf("\nGif animation generated!\n");
+
+    delete caff;
+    delete g;
 
     return 0;
 }

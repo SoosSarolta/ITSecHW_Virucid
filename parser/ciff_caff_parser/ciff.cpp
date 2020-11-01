@@ -2,8 +2,6 @@
 
 #include "ciff.h"
 
-using namespace std;
-
 RGB::RGB() {
 	R = 0;
 	G = 0;
@@ -26,7 +24,7 @@ CiffHeader::CiffHeader() {
 CiffHeader::~CiffHeader() {}
 
 void CiffHeader::setMagic(char* m) {
-	strncpy_s(magic, 5, m, 5);
+	strncpy(magic, m, 5);
 }
 
 char* CiffHeader::getMagic() {
@@ -98,8 +96,8 @@ vector<vector<RGB>> CiffContent::getPixels() {
 
 
 Ciff::Ciff() {
-	ciff_header = CiffHeader::CiffHeader();
-	ciff_content = CiffContent::CiffContent();
+	ciff_header = CiffHeader();
+	ciff_content = CiffContent();
 }
 
 Ciff::~Ciff() {}
@@ -119,6 +117,7 @@ void Ciff::saveCiffPartsToVariables(vector<char> animation, int filenameIndex) {
 	char* magic = vectorToString(slice(animation, 0, 3));
 	ciff_header.setMagic(magic);
 	printf("Magic: %s\n", magic);
+	delete[] magic;
 
 	uint64_t header_size = vectorToInt(slice(animation, 4, 11));
 	ciff_header.setHeaderSize(header_size);
@@ -166,7 +165,10 @@ char* Ciff::vectorToString(vector<char> in) {
 }
 
 uint64_t Ciff::vectorToInt(vector<char> in) {
-	return *((uint64_t*)vectorToString(in));
+	char* tmp = vectorToString(in);
+	uint64_t ret = *((uint64_t*)tmp);
+	delete[] tmp;
+	return ret;
 }
 
 uint64_t Ciff::parseCaption(vector<char> in, uint64_t from) {
@@ -185,6 +187,8 @@ uint64_t Ciff::parseCaption(vector<char> in, uint64_t from) {
 	ciff_header.setCaption(tmp);
 	printf("Caption: %s", tmp);
 
+	delete[] tmp;
+
 	return i;
 }
 
@@ -200,6 +204,8 @@ void Ciff::parseTags(vector<char> in, uint64_t from, uint64_t to) {
 			index = -1;
 		}
 	}
+
+	delete[] tmp;
 
 	ciff_header.setTags(tags);
 

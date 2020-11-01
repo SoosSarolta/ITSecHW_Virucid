@@ -9,6 +9,7 @@
 #include <string>
 #include <cctype>
 #include <inttypes.h>
+#include <cstring>
 
 using namespace std;
 

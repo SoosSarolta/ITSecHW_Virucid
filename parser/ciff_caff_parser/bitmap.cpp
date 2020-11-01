@@ -9,7 +9,7 @@ Bitmap::Bitmap(unsigned char* image) {
 }
 
 Bitmap::~Bitmap() {
-	delete image;
+	delete[] image;
 }
 
 unsigned char* Bitmap::getImage() {
@@ -33,9 +33,9 @@ void Bitmap::generateBitmapImage(unsigned char* image, uint64_t height, uint64_t
 
 	int stride = (widthInBytes)+paddingSize;
 
-	FILE* imageFile;
-	errno_t err = fopen_s(&imageFile, imageFileName, "wb");
-	if (err != 0) {
+	FILE* imageFile = nullptr;
+	imageFile = fopen(imageFileName, "wb");
+	if (imageFile == nullptr) {
 		printf("File could not be opened!");
 		return;
 	}
