@@ -38,3 +38,21 @@ Running the parser with Valgrind showed that the code does not contain any memor
   <br>
   Output of Valgrind with input file 3.caff
 </p>
+<br>
+
+Since SonarQube for C++ is not available for free, we had to change our original plan related to static analysis tools. 
+We analised the parser with the help of Cppcheck, which at first showed the following warnings:
+
+<p align="center">
+   <img src="https://github.com/SoosSarolta/ITSecHW_Virucid/blob/main/images/cppcheck_before.JPG">
+   <br>
+   Output of Cppcheck with input file 3.caff
+</p>
+
+After we eliminated the warnings and fixed the performance issues, the output changed. In our case, the = operator is not necessary for the GIF class, and multiplying with -1 in the Bitmap class is fully intentional. Every other code smell disappeared:
+
+<p align="center">
+   <img src="https://github.com/SoosSarolta/ITSecHW_Virucid/blob/main/images/cppcheck_after.JPG">
+   <br>
+   Output of Cppcheck after fixing bugs with input file 3.caff
+</p>
