@@ -105,46 +105,39 @@ string CaffCredits::getCreator() {
 }
 
 
-CaffAnimation::CaffAnimation() : ciffs(vector<Ciff*>()){
+CaffAnimation::CaffAnimation() {
+	ciff = nullptr;
 	duration = 0;
 }
 
 CaffAnimation::~CaffAnimation() {}
 
-void CaffAnimation::setDuration(uint64_t d) {
+void CaffAnimation::setDuration(uint32_t d) {
 	duration = d;
 }
 
-uint64_t CaffAnimation::getDuration() {
+uint32_t CaffAnimation::getDuration() {
 	return duration;
 }
 
-void CaffAnimation::setCiffs(const vector<Ciff*>& cs) {
-	ciffs = cs;
+void CaffAnimation::setCiff(Ciff* c) {
+	ciff = c;
 }
 
-const vector<Ciff*> CaffAnimation::getCiffs() {
-	return ciffs;
+Ciff* CaffAnimation::getCiff() {
+	return ciff;
 }
 
-void CaffAnimation::addCiff(Ciff* c) {
-	ciffs.push_back(c);
-}
-
-const Ciff* CaffAnimation::getCiff(uint64_t index) {
-	return ciffs[index];
-}
-
-Caff::Caff() : caff_header(CaffHeader()), caff_credits(CaffCredits()), caff_animation(CaffAnimation()) {}
+Caff::Caff() : caff_header(CaffHeader()), caff_credits(CaffCredits()), caff_animations(vector<CaffAnimation>()) {}
 
 Caff::~Caff() {
-	for (int i = 0; i < caff_animation.getCiffs().size(); i++) {
-		delete caff_animation.getCiffs().at(i);
+	for (int i = 0; i < caff_animations.size(); i++) {
+		delete caff_animations.at(i).getCiff();
 	}
 }
 
-CaffAnimation Caff::getCaffAnimation() {
-	return caff_animation;
+vector<CaffAnimation> Caff::getCaffAnimations() {
+	return caff_animations;
 }
 
 vector<char> Caff::readFile(string fileName) {
@@ -274,13 +267,17 @@ void Caff::parseCredits(vector<char> block, uint64_t block_length) {
 }
 
 void Caff::parseAnimation(const vector<char>& block, uint64_t block_length, int filenameIndex) {
-	uint64_t duration = vectorToInt(slice(block, 0, 7));
-	caff_animation.setDuration(duration);
-	printf("Duration: %" PRIu64 "\n", duration);
+	CaffAnimation caffAnimation = CaffAnimation();
+
+	uint32_t duration = vectorToInt(slice(block, 0, 7));
+	caffAnimation.setDuration(duration);
+	printf("Duration: %" PRIu32 "\n", duration);
 
 	vector<char> animation = slice(block, 8, block_length - 1);
 
 	Ciff* ciff = new Ciff();
 	ciff->saveCiffPartsToVariables(animation, filenameIndex);
-	caff_animation.addCiff(ciff);
+	caffAnimation.setCiff(ciff);
+
+	caff_animations.push_back(caffAnimation);
 }

@@ -39,15 +39,15 @@ int main(int argc, char* argv[]) {
 
     printf("All blocks are parsed, generating images...\n");
 
-    vector<Ciff*> ciffs = caff->getCaffAnimation().getCiffs();
-    int numOfCiffs = ciffs.size();
+    vector<CaffAnimation> animations = caff->getCaffAnimations();
+    int numOfCiffs = animations.size();
 
-    uint64_t width = ciffs[0]->getCiffHeader().getWidth();
-    uint64_t height = ciffs[0]->getCiffHeader().getHeight();
+    uint64_t width = animations[0].getCiff()->getCiffHeader().getWidth();
+    uint64_t height = animations[0].getCiff()->getCiffHeader().getHeight();
+    uint64_t delay = animations[0].getDuration();
 
     auto fileName = "caff.gif";
     vector<uint8_t> gifImage;
-    int delay = 10;
 
     GIF* g = new GIF(width, height);
 
@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
 
     for (int j = 0; j < numOfCiffs; j++) {
         printf("\nGenerating the %d. bitmap image...\n", j + 1);
-        vector <vector<RGB>> rows = ciffs[j]->getCiffContent().getPixels();
+        vector <vector<RGB>> rows = animations[j].getCiff()->getCiffContent().getPixels();
         uint64_t x, y;
 
         Bitmap* bitmap = new Bitmap(new unsigned char[height * width * 3], "ciffBitmapImage", "0", ".bmp");
@@ -75,6 +75,8 @@ int main(int argc, char* argv[]) {
         }
         bitmap->generateBitmapImage((unsigned char*)bitmap->getImage(), height, width, bitmap->getFileName().c_str());
         printf("\nBitmap image generated!\n");
+
+        delay = animations[j].getDuration();
 
         g->GifWriteFrame(gifImage.data(), delay);
         delete bitmap;

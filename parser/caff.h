@@ -76,27 +76,24 @@ public:
 struct CaffAnimation {
 private:
 	uint64_t duration;
-	vector<Ciff*> ciffs;
+	Ciff* ciff;
 
 public:
 	CaffAnimation();
 	~CaffAnimation();
 
-	void setDuration(uint64_t d);
-	uint64_t getDuration();
+	void setDuration(uint32_t d);
+	uint32_t getDuration();
 
-	void setCiffs(const vector<Ciff*>& cs);
-	const vector<Ciff*> getCiffs();
-
-	void addCiff(Ciff* c);
-	const Ciff* getCiff(uint64_t index);
+	void setCiff(Ciff* c);
+	Ciff* getCiff();
 };
 
 struct Caff {
 private:
 	CaffHeader caff_header;
 	CaffCredits caff_credits;
-	CaffAnimation caff_animation;
+	vector<CaffAnimation> caff_animations;
 
 	vector<char> slice(vector<char> const& in, uint64_t from, uint64_t to);
 	char* vectorToString(vector<char> in);
@@ -110,7 +107,7 @@ public:
 	Caff();
 	~Caff();
 
-	CaffAnimation getCaffAnimation();
+	vector<CaffAnimation> getCaffAnimations();
 	vector<char> readFile(string fileName);
 	uint64_t parseBlock(vector<char> content, uint64_t index, int filenameIndex);
 };
