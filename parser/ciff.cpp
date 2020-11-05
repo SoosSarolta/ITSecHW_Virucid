@@ -103,7 +103,7 @@ CiffContent Ciff::getCiffContent() {
 	return ciff_content;
 }
 
-void Ciff::saveCiffPartsToVariables(vector<char> animation, int filenameIndex) {
+void Ciff::saveCiffPartsToVariables(vector<char> animation) {
 	printf("*******************\n");
 	printf("CIFF PARSING\n");
 
@@ -132,7 +132,7 @@ void Ciff::saveCiffPartsToVariables(vector<char> animation, int filenameIndex) {
 
 	parseTags(animation, index + 1, header_size);
 
-	parseContent(animation, header_size, animation.size(), width, height, filenameIndex);
+	parseContent(animation, header_size, animation.size(), width, height);
 
 	printf("*******************\n");
 }
@@ -209,7 +209,7 @@ void Ciff::parseTags(vector<char> in, uint64_t from, uint64_t to) {
 	cout << "\n";
 }
 
-void Ciff::parseContent(vector<char> in, uint64_t from, uint64_t to, uint64_t width, uint64_t height, int filenameIndex) {
+void Ciff::parseContent(vector<char> in, uint64_t from, uint64_t to, uint64_t width, uint64_t height) {
 	uint64_t row = 0;
 	uint64_t col = 0;
 

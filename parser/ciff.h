@@ -81,7 +81,7 @@ private:
 	uint64_t vectorToInt(const vector<char>& in);
 	uint64_t parseCaption(vector<char> in, uint64_t from);
 	void parseTags(vector<char> in, uint64_t from, uint64_t to);
-	void parseContent(vector<char> in, uint64_t from, uint64_t to, uint64_t width, uint64_t height, int filenameIndex);
+	void parseContent(vector<char> in, uint64_t from, uint64_t to, uint64_t width, uint64_t height);
 	
 public:
 	Ciff();
@@ -90,5 +90,5 @@ public:
 	CiffHeader getCiffHeader();
 	CiffContent getCiffContent();
 
-	void saveCiffPartsToVariables(vector<char> animation, int filenameIndex);
+	void saveCiffPartsToVariables(vector<char> animation);
 };
