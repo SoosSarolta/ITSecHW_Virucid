@@ -63,13 +63,13 @@ int main(int argc, char* argv[]) {
 
         for (x = 0; x < height; x++) {
             for (y = 0; y < width; y++) {
-                bitmap->getImage()[x * 3 * width + y * 3 + 2] = (unsigned char)((rows.at(x)).at(y)).B;
+                bitmap->getImage()[x * 3 * width + y * 3 + 0] = (unsigned char)((rows.at(x)).at(y)).B;
                 bitmap->getImage()[x * 3 * width + y * 3 + 1] = (unsigned char)((rows.at(x)).at(y)).G;
-                bitmap->getImage()[x * 3 * width + y * 3 + 0] = (unsigned char)((rows.at(x)).at(y)).R;
+                bitmap->getImage()[x * 3 * width + y * 3 + 2] = (unsigned char)((rows.at(x)).at(y)).R;
 
-                gifImage.push_back((uint8_t)((rows.at(x)).at(y)).B);
-                gifImage.push_back((uint8_t)((rows.at(x)).at(y)).G);
                 gifImage.push_back((uint8_t)((rows.at(x)).at(y)).R);
+                gifImage.push_back((uint8_t)((rows.at(x)).at(y)).G);
+                gifImage.push_back((uint8_t)((rows.at(x)).at(y)).B);
                 gifImage.push_back((uint8_t)0);
             }
         }
@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
 
         delay = animations[j].getDuration();
 
-        g->GifWriteFrame(gifImage.data(), delay);
+        g->GifWriteFrame(gifImage.data(), delay / 10);
         delete bitmap;
     }
 
