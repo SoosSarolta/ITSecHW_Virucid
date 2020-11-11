@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
     int i = 0;
 
     while (index < content.size()) {
-        index = caff->parseBlock(content, index, i);
+        index = caff->parseBlock(content, index);
         i++;
     }
 
