@@ -1,0 +1,36 @@
+package aut.bme.CAFFStore.web.controller;
+
+import aut.bme.CAFFStore.data.dto.CaffDTO;
+import aut.bme.CAFFStore.data.dto.CaffDetailsDTO;
+import aut.bme.CAFFStore.data.entity.Caff;
+import aut.bme.CAFFStore.data.repository.CaffRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.websocket.server.PathParam;
+import java.util.Optional;
+
+@RestController
+public class CaffController {
+
+    @Autowired
+    private CaffRepo caffRepo;
+
+    @RequestMapping(value = "/caffs", method = RequestMethod.GET)
+    public ResponseEntity<Object> getAllCaffFiles() {
+        return new ResponseEntity<>(CaffDTO.createCaffDTOs(caffRepo.findAll()), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/caffs/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Object> getCaffDetailsById(@PathParam("id") String id) {
+        Optional<Caff> caff = caffRepo.findById(id);
+        if (caff.isPresent()) {
+            return new ResponseEntity<>(CaffDetailsDTO.createCaffDetailsDTO(caff.get()), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    }
+}

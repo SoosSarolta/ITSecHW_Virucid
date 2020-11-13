@@ -1,11 +1,15 @@
 package aut.bme.CAFFStore.data.dto;
 
+import aut.bme.CAFFStore.data.entity.User;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @EqualsAndHashCode
 @ToString
@@ -25,5 +29,15 @@ public class UserDTO {
 
         this.id = id;
         this.username = username;
+    }
+
+    public static UserDTO createUserDTO(User user) {
+        return new UserDTO(
+                user.getId(),
+                user.getPersonName());
+    }
+
+    public static List<UserDTO> createUserDTOs(List<User> users) {
+        return users.stream().map(UserDTO::createUserDTO).collect(Collectors.toList());
     }
 }

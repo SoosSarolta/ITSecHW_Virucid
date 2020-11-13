@@ -49,14 +49,15 @@ public class User {
     private byte[] salt;
 
     @ElementCollection
-    @Column(name = "caff_ids", nullable = false)
+    @Column(name = "caff_file_names", nullable = false)
     @Getter
     @Setter
-    private List<String> caffIds;
+    private List<String> caffFileNames;
 
     @ElementCollection
+    @OneToMany
     @Column(name = "comment_ids", nullable = false)
     @Getter
     @Setter
-    private List<String> commentIds;
+    private List<Comment> comments;
 }
