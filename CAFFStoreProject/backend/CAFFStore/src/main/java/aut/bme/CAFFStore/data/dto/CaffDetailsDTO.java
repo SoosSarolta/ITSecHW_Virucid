@@ -1,6 +1,5 @@
 package aut.bme.CAFFStore.data.dto;
 
-import aut.bme.CAFFStore.data.entity.Comment;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
@@ -28,13 +27,13 @@ public class CaffDetailsDTO {
 
     @Getter
     @Setter
-    private List<Comment> comments;
+    private List<CommentDTO> comments;
 
     @JsonCreator
     public CaffDetailsDTO(@JsonProperty("id") String id,
                           @JsonProperty("gifFileName") String gifFileName,
                           @JsonProperty("caffFileName") String caffFileName,
-                          @JsonProperty("comments") List<Comment> comments) {
+                          @JsonProperty("comments") List<CommentDTO> comments) {
         this.id = id;
         this.gifFileName = gifFileName;
         this.caffFileName = caffFileName;
