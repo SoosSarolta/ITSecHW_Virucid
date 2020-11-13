@@ -48,11 +48,13 @@ public class User {
     @Setter
     private byte[] salt;
 
+    @ElementCollection
     @Column(name = "caff_ids", nullable = false)
     @Getter
     @Setter
     private List<String> caffIds;
 
+    @ElementCollection
     @Column(name = "comment_ids", nullable = false)
     @Getter
     @Setter
