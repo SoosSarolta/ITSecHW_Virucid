@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -46,4 +47,14 @@ public class User {
     @Getter
     @Setter
     private byte[] salt;
+
+    @Column(name = "caff_ids", nullable = false)
+    @Getter
+    @Setter
+    private List<String> caffIds;
+
+    @Column(name = "comment_ids", nullable = false)
+    @Getter
+    @Setter
+    private List<String> commentIds;
 }
