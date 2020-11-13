@@ -12,7 +12,7 @@ import java.util.List;
 
 @EqualsAndHashCode
 @ToString
-public class UserDetailsDTO {
+public class CaffDetailsDTO {
 
     @Getter
     @Setter
@@ -20,30 +20,24 @@ public class UserDetailsDTO {
 
     @Getter
     @Setter
-    private String username;
+    private String gifFileName;
 
     @Getter
     @Setter
-    private String email;
+    private String caffFileName;
 
     @Getter
     @Setter
     private List<Comment> comments;
 
-    @Getter
-    @Setter
-    private List<String> caffFileNames;
-
     @JsonCreator
-    public UserDetailsDTO(@JsonProperty("id") String id,
-                          @JsonProperty("username") String username,
-                          @JsonProperty("email") String email,
-                          @JsonProperty("comments") List<Comment> comments,
-                          @JsonProperty("caffFileNames") List<String> caffFileNames) {
-
+    public CaffDetailsDTO(@JsonProperty("id") String id,
+                          @JsonProperty("gifFileName") String gifFileName,
+                          @JsonProperty("caffFileName") String caffFileName,
+                          @JsonProperty("comments") List<Comment> comments) {
         this.id = id;
-        this.username = username;
-        this.email = email;
+        this.gifFileName = gifFileName;
+        this.caffFileName = caffFileName;
         this.comments = comments;
     }
 }
