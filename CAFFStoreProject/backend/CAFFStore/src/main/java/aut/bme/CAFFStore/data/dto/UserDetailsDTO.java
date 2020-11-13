@@ -3,11 +3,15 @@ package aut.bme.CAFFStore.data.dto;
 import aut.bme.CAFFStore.data.entity.Comment;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
+@EqualsAndHashCode
+@ToString
 public class UserDetailsDTO {
 
     @Getter
