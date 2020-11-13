@@ -1,0 +1,25 @@
+package aut.bme.CAFFStore.data.entity;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "comment")
+public class Comment {
+
+    @Id
+    @GenericGenerator(name = "sequence_uuid", strategy = "aut.bme.CAFFStore.data.util.UUIDGenerator")
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "sequence_uuid")
+    @Column(name = "id", unique = true, nullable = false, updatable = false)
+    @Getter
+    @Setter
+    private String id;
+
+    @Column(name = "comment", nullable = false)
+    @Getter
+    @Setter
+    private String comment;
+}
