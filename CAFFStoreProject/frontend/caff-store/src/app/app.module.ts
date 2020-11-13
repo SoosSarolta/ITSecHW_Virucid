@@ -15,12 +15,18 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegistrationComponent } from './component/registration/registration.component';
 import { LoginComponent } from './component/login/login.component';
 import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
+import { MainComponent } from './component/main/main.component';
+import { AdminComponent } from './component/admin/admin.component';
+import { DetailComponent } from './component/detail/detail.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RegistrationComponent,
-    LoginComponent
+    LoginComponent,
+    MainComponent,
+    AdminComponent,
+    DetailComponent
   ],
   imports: [
     BrowserModule,
