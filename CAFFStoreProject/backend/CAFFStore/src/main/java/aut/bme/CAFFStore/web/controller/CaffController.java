@@ -37,21 +37,19 @@ public class CaffController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<CaffDetailsDTO> getCaffDetailsById(@PathVariable String id) {
-        logger.info("Finding caff file by id");
+        logger.info("Finding caff file with id: " + id);
         Optional<Caff> caff = caffRepo.findById(id);
-        if (caff.isPresent()) {
-            return new ResponseEntity<>(CaffDetailsDTO.createCaffDetailsDTO(caff.get()), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return caff.map(value -> new ResponseEntity<>(CaffDetailsDTO.createCaffDetailsDTO(value), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Object> deleteCaff(@PathVariable String id) {
-        logger.info("Deleting caff file by id");
+    public ResponseEntity<String> deleteCaff(@PathVariable String id) {
+        logger.info("Deleting caff file with id: " + id);
         if (caffRepo.findById(id).isPresent()) {
             caffRepo.deleteById(id);
-            return new ResponseEntity<>(null, HttpStatus.OK);
+            return new ResponseEntity<>("Successful deletion.", HttpStatus.OK);
         }
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }

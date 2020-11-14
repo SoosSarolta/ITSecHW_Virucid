@@ -1,6 +1,7 @@
 package aut.bme.CAFFStore.web.controller;
 
 import aut.bme.CAFFStore.data.dto.UserDTO;
+import aut.bme.CAFFStore.data.dto.UserDetailsDTO;
 import aut.bme.CAFFStore.data.entity.User;
 import aut.bme.CAFFStore.data.repository.UserRepo;
 import aut.bme.CAFFStore.data.util.password.PasswordManager;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.web.bind.annotation.*;
@@ -71,6 +73,28 @@ public class UserController {
             UserDTO userDTO = UserDTO.createUserDTO(userRepo.save(user.get()));
             userDTO.setToken(getJWTToken(userDTO.getUsername(), user.get().getRole().toString()));
             return new ResponseEntity<>(userDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping(value = "users/{id}", method = RequestMethod.GET)
+    public ResponseEntity<UserDetailsDTO> getUserDetailsById(@PathVariable String id) {
+        logger.info("Getting user with id: " + id);
+        Optional<User> user = userRepo.findById(id);
+        return user.map(value -> new ResponseEntity<>(UserDetailsDTO.createUserDetailsDTO(value), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @RequestMapping(value = "users/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<String> updateUserName(@PathVariable String id, @RequestParam String username) {
+        logger.info("Updating username to " + username + "for user with id: " + id);
+        Optional<User> user = userRepo.findById(id);
+        if (user.isPresent()) {
+            user.get().setPersonName(username);
+            userRepo.save(user.get());
+            return new ResponseEntity<>("Successful update.", HttpStatus.OK);
         }
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
