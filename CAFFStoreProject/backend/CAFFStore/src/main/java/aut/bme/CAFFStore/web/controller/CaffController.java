@@ -7,6 +7,7 @@ import aut.bme.CAFFStore.data.repository.CaffRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,11 +22,13 @@ public class CaffController {
     @Autowired
     private CaffRepo caffRepo;
 
+    @PreAuthorize("hasRole(ADMIN) or hasRole(USER)")
     @RequestMapping(value = "/caffs", method = RequestMethod.GET)
     public ResponseEntity<List<CaffDTO>> getAllCaffFiles() {
         return new ResponseEntity<>(CaffDTO.createCaffDTOs(caffRepo.findAll()), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole(ADMIN) or hasRole(USER)")
     @RequestMapping(value = "/caffs/{id}", method = RequestMethod.GET)
     public ResponseEntity<CaffDetailsDTO> getCaffDetailsById(@PathParam("id") String id) {
         Optional<Caff> caff = caffRepo.findById(id);
@@ -35,6 +38,7 @@ public class CaffController {
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
+    @PreAuthorize("hasRole(ADMIN)")
     @RequestMapping(value = "/caffs/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Object> deleteCaff(@PathParam("id") String id) {
         if (caffRepo.findById(id) != null) {
