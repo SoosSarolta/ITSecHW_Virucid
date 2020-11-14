@@ -17,19 +17,20 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/caffs")
 public class CaffController {
 
     @Autowired
     private CaffRepo caffRepo;
 
-    @PreAuthorize("hasRole(ADMIN) or hasRole(USER)")
-    @RequestMapping(value = "/caffs", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<CaffDTO>> getAllCaffFiles() {
         return new ResponseEntity<>(CaffDTO.createCaffDTOs(caffRepo.findAll()), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole(ADMIN) or hasRole(USER)")
-    @RequestMapping(value = "/caffs/{id}", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<CaffDetailsDTO> getCaffDetailsById(@PathParam("id") String id) {
         Optional<Caff> caff = caffRepo.findById(id);
         if (caff.isPresent()) {
@@ -38,8 +39,8 @@ public class CaffController {
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
-    @PreAuthorize("hasRole(ADMIN)")
-    @RequestMapping(value = "/caffs/{id}", method = RequestMethod.DELETE)
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Object> deleteCaff(@PathParam("id") String id) {
         if (caffRepo.findById(id).isPresent()) {
             caffRepo.deleteById(id);

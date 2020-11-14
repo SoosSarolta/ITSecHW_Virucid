@@ -15,6 +15,7 @@ import java.util.Optional;
 
 @RestController
 public class UserController {
+
     @Autowired
     UserRepo userRepo;
 
@@ -23,7 +24,6 @@ public class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<String> register(@RequestBody Map<String, Object> body) {
-
         if (body.get("id") != null) {
             String userId = body.get("id").toString();
             Optional<User> userOptional = userRepo.findById(userId);
