@@ -99,6 +99,13 @@ public class UserController {
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        logger.info("Getting all users");
+        return new ResponseEntity<>(UserDTO.createUserDTOs(userRepo.findAll()), HttpStatus.OK);
+    }
+
     private String getJWTToken(String username, String role) {
         String secretKey = "mySecretKey";
         logger.info("getJWTToken: " + role);
