@@ -1,5 +1,6 @@
 package aut.bme.CAFFStore.web.util;
 
+import aut.bme.CAFFStore.data.Role;
 import aut.bme.CAFFStore.data.entity.User;
 import aut.bme.CAFFStore.data.repository.UserRepo;
 import aut.bme.CAFFStore.data.util.password.PasswordManager;
@@ -46,7 +47,7 @@ public class EntityBuilder {
                 user.setPassword(PasswordManager.hashAndSalt(payload.get("password").toString(), user.getSalt()));
             } else throw new Exception("password null!");
         }
-
+        user.setRole(Role.USER);
         return user;
     }
 }

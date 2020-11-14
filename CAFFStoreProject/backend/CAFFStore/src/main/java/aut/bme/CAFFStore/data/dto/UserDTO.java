@@ -23,18 +23,25 @@ public class UserDTO {
     @Setter
     private String username;
 
+    @Getter
+    @Setter
+    private String token;
+
     @JsonCreator
     public UserDTO(@JsonProperty("id") String id,
-                   @JsonProperty("username") String username) {
+                   @JsonProperty("username") String username,
+                   @JsonProperty("token") String token) {
 
         this.id = id;
         this.username = username;
+        this.token = token;
     }
 
     public static UserDTO createUserDTO(User user) {
         return new UserDTO(
                 user.getId(),
-                user.getPersonName());
+                user.getPersonName(),
+                null);
     }
 
     public static List<UserDTO> createUserDTOs(List<User> users) {

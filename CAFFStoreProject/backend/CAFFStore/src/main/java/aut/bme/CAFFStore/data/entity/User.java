@@ -1,10 +1,13 @@
 package aut.bme.CAFFStore.data.entity;
 
+import aut.bme.CAFFStore.data.Role;
 import aut.bme.CAFFStore.data.util.password.PasswordSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,6 +16,10 @@ import java.util.List;
 @Entity
 @Table(name = "user")
 public class User {
+
+    @Transient
+    Logger logger = LoggerFactory.getLogger(User.class);
+
     @Id
     @GenericGenerator(name = "sequence_uuid", strategy = "aut.bme.CAFFStore.data.util.UUIDGenerator")
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "sequence_uuid")
@@ -60,4 +67,11 @@ public class User {
     @Getter
     @Setter
     private List<Comment> comments;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    @Getter
+    @Setter
+    private Role role;
+
 }
