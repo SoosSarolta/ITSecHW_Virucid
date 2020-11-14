@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.websocket.server.PathParam;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -21,15 +22,24 @@ public class CaffController {
     private CaffRepo caffRepo;
 
     @RequestMapping(value = "/caffs", method = RequestMethod.GET)
-    public ResponseEntity<Object> getAllCaffFiles() {
+    public ResponseEntity<List<CaffDTO>> getAllCaffFiles() {
         return new ResponseEntity<>(CaffDTO.createCaffDTOs(caffRepo.findAll()), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/caffs/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Object> getCaffDetailsById(@PathParam("id") String id) {
+    public ResponseEntity<CaffDetailsDTO> getCaffDetailsById(@PathParam("id") String id) {
         Optional<Caff> caff = caffRepo.findById(id);
         if (caff.isPresent()) {
             return new ResponseEntity<>(CaffDetailsDTO.createCaffDetailsDTO(caff.get()), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    }
+
+    @RequestMapping(value = "/caffs/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<Object> deleteCaff(@PathParam("id") String id) {
+        if (caffRepo.findById(id) != null) {
+            caffRepo.deleteById(id);
+            return new ResponseEntity<>(null, HttpStatus.OK);
         }
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
