@@ -41,7 +41,7 @@ public class CaffController {
     @PreAuthorize("hasRole(ADMIN)")
     @RequestMapping(value = "/caffs/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Object> deleteCaff(@PathParam("id") String id) {
-        if (caffRepo.findById(id) != null) {
+        if (caffRepo.findById(id).isPresent()) {
             caffRepo.deleteById(id);
             return new ResponseEntity<>(null, HttpStatus.OK);
         }
