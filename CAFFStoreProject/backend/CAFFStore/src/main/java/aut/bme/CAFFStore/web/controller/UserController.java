@@ -78,7 +78,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @RequestMapping(value = "users/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
     public ResponseEntity<UserDetailsDTO> getUserDetailsById(@PathVariable String id) {
         logger.info("Getting user with id: " + id);
         Optional<User> user = userRepo.findById(id);
@@ -87,7 +87,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    @RequestMapping(value = "users/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/users/{id}", method = RequestMethod.PUT)
     public ResponseEntity<String> updateUserName(@PathVariable String id, @RequestParam String username) {
         logger.info("Updating username to " + username + "for user with id: " + id);
         Optional<User> user = userRepo.findById(id);
@@ -104,6 +104,17 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         logger.info("Getting all users");
         return new ResponseEntity<>(UserDTO.createUserDTOs(userRepo.findAll()), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/users/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteUser(@PathVariable String id) {
+        logger.info("Deleting user with id: " + id);
+        if (userRepo.findById(id).isPresent()) {
+            userRepo.deleteById(id);
+            return new ResponseEntity<>("Successful deletion.", HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
     private String getJWTToken(String username, String role) {
