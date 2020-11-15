@@ -27,21 +27,28 @@ public class UserDTO {
     @Setter
     private String token;
 
+    @Getter
+    @Setter
+    private String role;
+
     @JsonCreator
     public UserDTO(@JsonProperty("id") String id,
                    @JsonProperty("username") String username,
-                   @JsonProperty("token") String token) {
+                   @JsonProperty("token") String token,
+                   @JsonProperty("role") String role) {
 
         this.id = id;
         this.username = username;
         this.token = token;
+        this.role = role;
     }
 
     public static UserDTO createUserDTO(User user) {
         return new UserDTO(
                 user.getId(),
                 user.getPersonName(),
-                null);
+                null,
+                user.getRole().toString());
     }
 
     public static List<UserDTO> createUserDTOs(List<User> users) {

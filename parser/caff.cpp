@@ -36,7 +36,6 @@ uint64_t CaffHeader::getNumAnim() {
 	return num_anim;
 }
 
-
 CaffCredits::CaffCredits() : creator(string("")) {
 	creation_year = 0;
 	creation_month = 0;
@@ -103,7 +102,6 @@ void CaffCredits::setCreator(const string& c) {
 string CaffCredits::getCreator() {
 	return creator;
 }
-
 
 CaffAnimation::CaffAnimation() {
 	ciff = nullptr;

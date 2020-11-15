@@ -19,25 +19,25 @@ public class Caff {
     @Setter
     private String id;
 
-    @Column(name = "gif_file_name", nullable = false)
+    @Column(name = "gif_file_name")
     @Getter
     @Setter
     private String gifFileName;
 
-    @Column(name = "caff_file_name", nullable = false)
+    @Column(name = "caff_file_name")
     @Getter
     @Setter
     private String caffFileName;
 
     @ElementCollection
-    @Column(name = "bitmap_file_names", nullable = false)
+    @Column(name = "bitmap_file_names")
     @Getter
     @Setter
     private List<String> bitmapFileNames;
 
     @ElementCollection
     @OneToMany
-    @Column(name = "comments", nullable = false)
+    @Column(name = "comments")
     @Getter
     @Setter
     private List<Comment> comments;

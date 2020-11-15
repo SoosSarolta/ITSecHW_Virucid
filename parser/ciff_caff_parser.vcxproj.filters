@@ -32,16 +32,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ciff.h">
+    <ClInclude Include="bitmap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="caff.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gif.h">
+    <ClInclude Include="ciff.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bitmap.h">
+    <ClInclude Include="gif.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

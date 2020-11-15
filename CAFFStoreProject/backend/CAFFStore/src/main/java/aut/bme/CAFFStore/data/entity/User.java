@@ -56,14 +56,14 @@ public class User {
     private byte[] salt;
 
     @ElementCollection
-    @Column(name = "caff_file_names", nullable = false)
+    @Column(name = "caff_file_names")
     @Getter
     @Setter
     private List<String> caffFileNames;
 
     @ElementCollection
     @OneToMany
-    @Column(name = "comment_ids", nullable = false)
+    @Column(name = "comment_ids")
     @Getter
     @Setter
     private List<Comment> comments;
@@ -73,5 +73,9 @@ public class User {
     @Getter
     @Setter
     private Role role;
+
+    public void addCaffFile(String caffFileName) {
+        caffFileNames.add(caffFileName);
+    }
 
 }
