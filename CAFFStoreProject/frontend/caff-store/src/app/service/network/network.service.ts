@@ -23,7 +23,7 @@ export class NetworkService {
   }
 
   login(email: string, password: string): Promise<any> {
-    return this.getJSON(this.serverAddress, this.registerURL + '?email=' + email + '&password=' + password);
+    return this.getJSON(this.serverAddress, this.loginURL + '?email=' + email + '&password=' + password);
   }
 
   home(): Promise<any> {
