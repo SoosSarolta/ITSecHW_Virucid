@@ -1,6 +1,12 @@
+<header>
+    <div class="brand">
+        <h5>CAFF Store - Virucid</h5>
+    </div>
+</header>
+
 <div class="container">
     <div>
-        <mat-form-field style="width:20vw" appearance="outline" [hideRequiredMarker]="true">
+        <mat-form-field style="width:30vw" appearance="outline" [hideRequiredMarker]="true">
             <mat-label>Name</mat-label>
             <input type="text" matInput placeholder="Enter your name" [(ngModel)]="user.personName"
                 [formControl]="nameFormControl">
@@ -10,7 +16,7 @@
         </mat-form-field>
     </div>
     <form class="example-form">
-        <mat-form-field style="width:20vw" appearance="outline" class="example-full-width">
+        <mat-form-field style="width:30vw" appearance="outline" class="example-full-width">
             <mat-label>Email</mat-label>
             <input matInput type="text" maxlength="100" [(ngModel)]="user.email" [formControl]="emailFormControl"
                 placeholder="exapmle@exapmle.com">
@@ -24,7 +30,7 @@
     </form>
     <div>
         <!--password input filed-->
-        <mat-form-field appearance="outline" style="width:20vw" [color]="passwordComponent.color">
+        <mat-form-field appearance="outline" style="width:30vw" [color]="passwordComponent.color">
             <mat-label>Password</mat-label>
             <mat-pass-toggle-visibility #toggle matSuffix></mat-pass-toggle-visibility>
             <input matInput #password [type]="toggle.type" required placeholder="Password" [(ngModel)]="user.password"
@@ -45,7 +51,7 @@
     </div>
     <br>
     <div>
-        <button mat-raised-button style="width:5vw"
+        <button mat-raised-button style="width:8vw"
             [disabled]="passwordFormControl.invalid || emailFormControl.invalid || nameFormControl.invalid"
             color="primary" (click)=register()>Sign up</button>
     </div>
