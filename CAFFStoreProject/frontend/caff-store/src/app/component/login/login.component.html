@@ -30,9 +30,9 @@
             </mat-error>
         </mat-form-field>
     </div>
-    <br>
     <div>
-        <button mat-raised-button style="width:8vw" [disabled]="passwordFormControl.invalid || emailFormControl.invalid"
+        <button mat-raised-button style="width:8vw" 
+            [disabled]="passwordFormControl.invalid || emailFormControl.invalid"
             color="primary" (click)=login()>Login</button>
     </div>
 </div>

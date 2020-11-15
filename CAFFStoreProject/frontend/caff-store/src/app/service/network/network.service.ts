@@ -9,6 +9,7 @@ export class NetworkService {
   serverAddress: string = "http://localhost:8080/";
   loginURL: string = "login";
   registerURL: string = "register";
+  homeURL: string = "main";
 
   headers = new HttpHeaders({
     'Content-Type': 'application/json'
@@ -23,6 +24,10 @@ export class NetworkService {
 
   login(email: string, password: string): Promise<any> {
     return this.getJSON(this.serverAddress, this.registerURL + '?email=' + email + '&password=' + password);
+  }
+
+  home(): Promise<any> {
+    return this.getJSON(this.serverAddress, this.homeURL);
   }
 
   private async postJSON(address: string, url: string, json: string): Promise<any> {
