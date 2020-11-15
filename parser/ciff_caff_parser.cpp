@@ -12,6 +12,8 @@
 
 using namespace std;
 
+string getFileName(const string& s);
+
 int main(int argc, char* argv[]) {
     if (argc < 2) {
         printf("No filename specified, exiting...\n");
@@ -20,9 +22,13 @@ int main(int argc, char* argv[]) {
 
     vector<char> content;
     Caff *caff = new Caff();
+    string fileName = "";
 
     try {
         content = caff->readFile(argv[1]);
+        fileName = argv[1];
+        fileName = getFileName(fileName);
+        fileName = fileName.substr(0, fileName.find("."));
     }
     catch (string& e) {
         cout << e << "\n";
@@ -46,20 +52,23 @@ int main(int argc, char* argv[]) {
     uint64_t height = animations[0].getCiff()->getCiffHeader().getHeight();
     uint64_t delay = animations[0].getDuration();
 
-    auto fileName = "caff.gif";
     vector<uint8_t> gifImage;
 
     GIF* g = new GIF(width, height);
 
-    g->GifBegin(fileName, delay);
+    string gifFileName = fileName + ".gif";
+
+    g->GifBegin(gifFileName.c_str(), delay);
 
     for (int j = 0; j < numOfCiffs; j++) {
         printf("\nGenerating the %d. bitmap image...\n", j + 1);
         vector <vector<RGB>> rows = animations[j].getCiff()->getCiffContent().getPixels();
         uint64_t x, y;
 
-        Bitmap* bitmap = new Bitmap(new unsigned char[height * width * 3], "ciffBitmapImage", "0", ".bmp");
-        bitmap->setFileNameIndex(j);
+        Bitmap* bitmap = new Bitmap(new unsigned char[height * width * 3], fileName, "", ".bmp");
+
+        if (j != 0)
+            bitmap->setFileNameIndex(j);
 
         for (x = 0; x < height; x++) {
             for (y = 0; y < width; y++) {
@@ -79,6 +88,10 @@ int main(int argc, char* argv[]) {
         delay = animations[j].getDuration();
 
         g->GifWriteFrame(gifImage.data(), delay / 10);
+
+        if (j != 0)
+            remove(bitmap->getFileName().c_str());
+        
         delete bitmap;
     }
 
@@ -89,4 +102,19 @@ int main(int argc, char* argv[]) {
     delete g;
 
     return 0;
+}
+
+string getFileName(const string& s) {
+    char sep = '/';
+
+#ifdef _WIN32
+    sep = '\\';
+#endif
+
+    size_t i = s.rfind(sep, s.length());
+    if (i != string::npos) {
+        return(s.substr(i + 1, s.length() - i));
+    }
+
+    return("");
 }
