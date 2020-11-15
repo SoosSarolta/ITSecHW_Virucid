@@ -1,9 +1,16 @@
+<header>
+    <div class="brand">
+        <h5>CAFF Store - Virucid</h5>
+    </div>
+</header>
+
 <div class="container">
+    <p>Don't have an account? <a routerLink="/registration">Register</a></p>
     <form class="example-form">
         <mat-form-field style="width:20vw" appearance="outline" class="example-full-width">
             <mat-label>Email</mat-label>
             <input matInput type="text" maxlength="100" [(ngModel)]="email" [formControl]="emailFormControl"
-                placeholder="exapmle@exapmle.com">
+                placeholder="example@example.com">
             <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
                 Please enter a valid email address
             </mat-error>
@@ -24,9 +31,9 @@
             </mat-error>
         </mat-form-field>
     </div>
-    <br>
     <div>
-        <button mat-raised-button style="width:5vw" [disabled]="passwordFormControl.invalid || emailFormControl.invalid"
+        <button mat-raised-button style="width:8vw" 
+            [disabled]="passwordFormControl.invalid || emailFormControl.invalid"
             color="primary" (click)=login()>Login</button>
     </div>
 </div>
