@@ -10,6 +10,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from "@angular/material/icon";
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import { NgxFileDropModule } from 'ngx-file-drop';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegistrationComponent } from './component/registration/registration.component';
@@ -18,6 +20,7 @@ import { MatPasswordStrengthModule } from '@angular-material-extensions/password
 import { MainComponent } from './component/main/main.component';
 import { AdminComponent } from './component/admin/admin.component';
 import { DetailComponent } from './component/detail/detail.component';
+import { ProfileComponent } from './component/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +29,8 @@ import { DetailComponent } from './component/detail/detail.component';
     LoginComponent,
     MainComponent,
     AdminComponent,
-    DetailComponent
+    DetailComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -37,10 +41,12 @@ import { DetailComponent } from './component/detail/detail.component';
     MatInputModule,
     MatButtonModule,
     MatSelectModule,
+    MatCardModule,
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    MatPasswordStrengthModule
+    MatPasswordStrengthModule,
+    NgxFileDropModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ValidationErrors, FormControl } from '@angular/forms';
+import { NetworkService } from 'src/app/service/network/network.service';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +25,8 @@ export class LoginComponent implements OnInit {
   emailRegex = '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,20}$';
 
   constructor(
-    private _formBuilder: FormBuilder
+    private _formBuilder: FormBuilder,
+    private _network: NetworkService
   ) { }
 
   ngOnInit(): void {
@@ -39,6 +41,11 @@ export class LoginComponent implements OnInit {
 
   login() {
     console.log(this.email, this.password);
+    this._network.login(this.email, this.password).then(data => {
+      console.log("this._network.login: ", data);
+    }).catch(err => {
+      console.log(err);
+    });
   }
 
 }

@@ -1,11 +1,13 @@
 export class User {
   
     id: string;
-    createDate: string;
     personName: string;
     email: string;
     password: string;
   
-    constructor() {
+    constructor(/* id: string, personName: string, email: string */) {
+        /* this.id = id;
+        this.personName = personName;
+        this.email = email; */
     }
 }

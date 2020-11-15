@@ -9,10 +9,10 @@ import { NetworkService } from 'src/app/service/network/network.service';
   styleUrls: ['./registration.component.scss']
 })
 export class RegistrationComponent implements OnInit {
+  newUser: User;
   hidePassword = true;
   hideRepeatPassword = true;
   showDetails: boolean = true;
-  user: User;
   nameFormControl = new FormControl('', [
     Validators.required,
     Validators.minLength(2)
@@ -33,7 +33,6 @@ export class RegistrationComponent implements OnInit {
     private _formBuilder: FormBuilder,
     private _network: NetworkService
   ) {
-    this.user = new User();
   }
 
   ngOnInit(): void {
@@ -49,11 +48,11 @@ export class RegistrationComponent implements OnInit {
       ]],
       password: ['', Validators.required]
     });
+    this.newUser = new User();
   }
 
   register() {
-    console.log(this.user);
-    this._network.register(this.user).then(data => {
+    this._network.register(this.newUser).then(data => {
       console.log("response: ", data);
     });
   }

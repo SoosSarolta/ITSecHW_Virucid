@@ -9,7 +9,7 @@
         <p class="login-center">Already have an account? <a routerLink="/login">Login</a></p>
         <mat-form-field style="width:30vw" appearance="outline" [hideRequiredMarker]="true">
             <mat-label>Name</mat-label>
-            <input type="text" matInput placeholder="Enter your name" [(ngModel)]="user.personName"
+            <input type="text" matInput placeholder="Enter your name" [(ngModel)]="newUser.personName"
                 [formControl]="nameFormControl">
             <mat-error *ngIf="nameFormControl.hasError('required')">
                 Name is <strong>required</strong>
@@ -19,7 +19,7 @@
     <form class="example-form">
         <mat-form-field style="width:30vw" appearance="outline" class="example-full-width">
             <mat-label>Email</mat-label>
-            <input matInput type="text" maxlength="100" [(ngModel)]="user.email" [formControl]="emailFormControl"
+            <input matInput type="text" maxlength="100" [(ngModel)]="newUser.email" [formControl]="emailFormControl"
                 placeholder="exapmle@exapmle.com">
             <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
                 Please enter a valid email address
@@ -34,7 +34,7 @@
         <mat-form-field appearance="outline" style="width:30vw" [color]="passwordComponent.color">
             <mat-label>Password</mat-label>
             <mat-pass-toggle-visibility #toggle matSuffix></mat-pass-toggle-visibility>
-            <input matInput #password [type]="toggle.type" required placeholder="Password" [(ngModel)]="user.password"
+            <input matInput #password [type]="toggle.type" required placeholder="Password" [(ngModel)]="newUser.password"
                 [formControl]="passwordFormControl">
             <mat-error *ngIf="passwordFormControl.hasError('required')">
                 Password is <strong>required</strong>

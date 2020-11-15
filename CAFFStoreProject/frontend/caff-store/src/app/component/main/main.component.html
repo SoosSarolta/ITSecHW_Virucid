@@ -2,11 +2,27 @@
     <div class="brand">
         <h5>CAFF Store - Virucid</h5>
     </div>
-    <div>
-        <button mat-raised-button style="width:8vw" color="primary">Upload</button>
-    </div>
+    <button mat-raised-button style="width:8vw" color="primary" (click)="navigateToProfile()">Profile</button>
 </header>
 
 <div class="container">
-    <p>main works!</p>
+    <ngx-file-drop dropZoneLabel="Drop files here" id="image-drop-box" (onFileDrop)="dropped($event)" accept=".caff"
+        multiple="false">
+        <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+            <span>
+                Húzza ide a képet a feltöltéshez
+            </span>
+        </ng-template>
+    </ngx-file-drop>
+    <div>
+        <button mat-raised-button style="width:8vw" color="primary" (click)="uploadCaff()">Upload</button>
+    </div>
+</div>
+<div *ngFor="let caff of caffs" style="display: inline-block; width: 28em; margin-left: 8em; margin-right: 1em;">
+    <mat-card class="example-card">
+        <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+        <mat-card-actions>
+            <button mat-raised-button style="width:8vw" color="primary" (click)="navigateToDetails(caff.id)">Details</button>
+        </mat-card-actions>
+    </mat-card>
 </div>
