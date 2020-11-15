@@ -5,6 +5,7 @@ import { FileSystemDirectoryEntry, FileSystemFileEntry, NgxFileDropEntry } from 
 import { Caff } from 'src/app/model/caff';
 import { NetworkService } from 'src/app/service/network/network.service';
 import { RouterPath } from 'src/app/util/router-path';
+import { AuthService} from 'src/app/service/auth/auth.service';
 
 @Component({
   selector: 'app-main',
@@ -20,7 +21,8 @@ export class MainComponent implements OnInit {
 
   constructor(
     private _network: NetworkService,
-    private _router: Router
+    private _router: Router,
+    private _auth: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -86,6 +88,11 @@ export class MainComponent implements OnInit {
 
   public fileLeave(event) {
     console.log(event);
+  }
+
+  logout() {
+    this._auth.logout();
+    this._router.navigate(['login']);
   }
 
 }

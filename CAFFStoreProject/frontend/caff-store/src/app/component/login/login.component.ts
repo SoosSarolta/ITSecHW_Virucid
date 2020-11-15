@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ValidationErrors, FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 import { User } from 'src/app/model/user';
 import { NetworkService } from 'src/app/service/network/network.service';
 
@@ -27,6 +28,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private _formBuilder: FormBuilder,
     private _network: NetworkService,
+    private _router: Router
   ) {
     this.user = new User();
   }
@@ -47,6 +49,7 @@ export class LoginComponent implements OnInit {
       this.user.personName = data["username"];
       localStorage.setItem('token', data['token'].split(' ')[1]);
       console.log(this.user);
+      this._router.navigate(['main']);
     });
   }
 
