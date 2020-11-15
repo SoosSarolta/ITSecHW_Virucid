@@ -27,7 +27,7 @@ public class CaffStoreApplication implements CommandLineRunner {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("*");
+                registry.addMapping("/**").allowedOrigins("*").allowedMethods("*");
             }
         };
     }
@@ -51,6 +51,7 @@ public class CaffStoreApplication implements CommandLineRunner {
                     .authorizeRequests()
                     .antMatchers(HttpMethod.POST, "/register").permitAll()
                     .antMatchers(HttpMethod.GET, "/login").permitAll()
+                    .antMatchers(HttpMethod.OPTIONS).permitAll()
                     .anyRequest().authenticated();
         }
     }
