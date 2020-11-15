@@ -12,28 +12,29 @@
 
 using namespace std;
 
-string getFileName(const string& s);
-
 int main(int argc, char* argv[]) {
     if (argc < 2) {
         printf("No filename specified, exiting...\n");
         return -1;
     }
 
+    if (argc < 3) {
+        printf("No output filename specified, exiting...\n");
+        return -1;
+    }
+
     vector<char> content;
     Caff *caff = new Caff();
-    string fileName = "";
 
     try {
         content = caff->readFile(argv[1]);
-        fileName = argv[1];
-        fileName = getFileName(fileName);
-        fileName = fileName.substr(0, fileName.find("."));
     }
     catch (string& e) {
         cout << e << "\n";
         return -1;
     }
+
+    string fileName = argv[2];
 
     uint64_t index = 0;
     int i = 0;
@@ -102,19 +103,4 @@ int main(int argc, char* argv[]) {
     delete g;
 
     return 0;
-}
-
-string getFileName(const string& s) {
-    char sep = '/';
-
-#ifdef _WIN32
-    sep = '\\';
-#endif
-
-    size_t i = s.rfind(sep, s.length());
-    if (i != string::npos) {
-        return(s.substr(i + 1, s.length() - i));
-    }
-
-    return("");
 }
