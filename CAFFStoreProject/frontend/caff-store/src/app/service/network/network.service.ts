@@ -30,7 +30,7 @@ export class NetworkService {
     return this.postJSON(this.serverAddress, this.registerURL, json);
   }
 
-  login(email: string, password: string): Promise<any> {
+  async login(email: string, password: string): Promise<any> {
     return this.getJSON(this.serverAddress, this.loginURL + '?email=' + email + '&password=' + password);
   }
 

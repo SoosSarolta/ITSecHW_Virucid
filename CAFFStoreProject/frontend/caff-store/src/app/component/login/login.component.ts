@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ValidationErrors, FormControl } from '@angular/forms';
+import { User } from 'src/app/model/user';
 import { NetworkService } from 'src/app/service/network/network.service';
 
 @Component({
@@ -10,8 +11,7 @@ import { NetworkService } from 'src/app/service/network/network.service';
 export class LoginComponent implements OnInit {
   hidePassword = true;
   showDetails: boolean = true;
-  email: string;
-  password: string;
+  user: User;
   emailFormControl = new FormControl('', [
     Validators.required,
     Validators.email,
@@ -26,8 +26,10 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private _formBuilder: FormBuilder,
-    private _network: NetworkService
-  ) { }
+    private _network: NetworkService,
+  ) {
+    this.user = new User();
+  }
 
   ngOnInit(): void {
     this.loginForm = this._formBuilder.group({
@@ -39,13 +41,13 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  login() {
-    console.log(this.email, this.password);
-    this._network.login(this.email, this.password).then(data => {
-      console.log("this._network.login: ", data);
-    }).catch(err => {
-      console.log(err);
-    });
+  async login() {
+    const response = await this._network.login(this.user.email, this.user.password);
+    console.log(this.user.email, this.user.password);
+    this.user.id = response["id"];
+    this.user.personName = response["username"];
+    localStorage.setItem('token', response['token'].split(' ')[1]);
+    console.log(this.user);
   }
 
 }
