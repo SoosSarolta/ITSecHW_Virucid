@@ -19,22 +19,6 @@ public class Caff {
     @Setter
     private String id;
 
-    @Column(name = "gif_file_name")
-    @Getter
-    @Setter
-    private String gifFileName;
-
-    @Column(name = "caff_file_name")
-    @Getter
-    @Setter
-    private String caffFileName;
-
-    @ElementCollection
-    @Column(name = "bitmap_file_names")
-    @Getter
-    @Setter
-    private List<String> bitmapFileNames;
-
     @ElementCollection
     @OneToMany
     @Column(name = "comments")

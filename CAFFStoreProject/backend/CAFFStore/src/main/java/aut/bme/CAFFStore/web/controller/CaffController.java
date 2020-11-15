@@ -3,9 +3,8 @@ package aut.bme.CAFFStore.web.controller;
 import aut.bme.CAFFStore.data.dto.CaffDTO;
 import aut.bme.CAFFStore.data.dto.CaffDetailsDTO;
 import aut.bme.CAFFStore.data.entity.Caff;
-import aut.bme.CAFFStore.data.entity.User;
 import aut.bme.CAFFStore.data.repository.CaffRepo;
-import aut.bme.CAFFStore.data.repository.UserRepo;
+import aut.bme.CAFFStore.service.CaffService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +29,7 @@ public class CaffController {
     private CaffRepo caffRepo;
 
     @Autowired
-    private UserRepo userRepo;
+    private CaffService caffService;
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @RequestMapping(method = RequestMethod.GET)
@@ -58,19 +60,24 @@ public class CaffController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/parse/{id}", method = RequestMethod.POST)
-    public ResponseEntity<String> parseCaff(@PathVariable String id, @RequestParam String filename, @RequestParam String userId) {
-        logger.info("Parsing caff file with id: " + id + "and with filename: " + filename);
-        Optional<Caff> caff = caffRepo.findById(id);
-        //call dll
-        //fill missing fields of the caff entity
-        Optional<User> user = userRepo.findById(userId);
-        if (user.isPresent()) {
-            user.get().addCaffFile(filename);
-        } else {
-            return new ResponseEntity<>("User does not exist.", HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>("Successful parse.", HttpStatus.OK);
+    public ResponseEntity<String> uploadCaff(@RequestPart(name = "file", required = false) MultipartFile file,
+                                             @RequestParam String userId,
+                                             HttpServletRequest request) throws IOException, InterruptedException {
+        logger.info("Parsing caff file with filename: " + file.getOriginalFilename());
+        logger.info("File size: " + file.getSize());
+        String caffId = caffService.uploadCaff(file, userId);
+        return new ResponseEntity<>(caffId, HttpStatus.OK);
     }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping(value = "/download/{id}", method = RequestMethod.GET)
+    public ResponseEntity<byte[]> downloadCaff(@PathVariable String id) throws IOException {
+        logger.info("Downloading caff file with id: " + id);
+        byte[] caffFile = caffService.downloadCaff(id);
+        logger.info(String.valueOf(caffFile.length));
+        return new ResponseEntity<>(caffFile, HttpStatus.OK);
+    }
+
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/caffid", method = RequestMethod.GET)

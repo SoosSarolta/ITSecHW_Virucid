@@ -11,6 +11,8 @@ import lombok.ToString;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static aut.bme.CAFFStore.service.CaffService.getFileBytes;
+
 @EqualsAndHashCode
 @ToString
 public class CaffDTO {
@@ -21,19 +23,19 @@ public class CaffDTO {
 
     @Getter
     @Setter
-    private String bitmapFileName;
+    private byte[] bitmapFile;
 
     @JsonCreator
     public CaffDTO(@JsonProperty("id") String id,
-                   @JsonProperty("bitmapFileName") String bitmapFileName) {
+                   @JsonProperty("bitmapFile") byte[] bitmapFile) {
         this.id = id;
-        this.bitmapFileName = bitmapFileName;
+        this.bitmapFile = bitmapFile;
     }
 
     public static CaffDTO createCaffDTO(Caff caff) {
         return new CaffDTO(
                 caff.getId(),
-                caff.getBitmapFileNames().get(0));
+                getFileBytes(caff.getId(), ".bmp"));
     }
 
     public static List<CaffDTO> createCaffDTOs(List<Caff> caffs) {

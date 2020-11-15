@@ -11,6 +11,8 @@ import lombok.ToString;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static aut.bme.CAFFStore.service.CaffService.getFileBytes;
+
 @EqualsAndHashCode
 @ToString
 public class CaffDetailsDTO {
@@ -21,11 +23,11 @@ public class CaffDetailsDTO {
 
     @Getter
     @Setter
-    private String gifFileName;
+    private byte[] gifFile;
 
     @Getter
     @Setter
-    private String caffFileName;
+    private byte[] caffFile;
 
     @Getter
     @Setter
@@ -33,20 +35,20 @@ public class CaffDetailsDTO {
 
     @JsonCreator
     public CaffDetailsDTO(@JsonProperty("id") String id,
-                          @JsonProperty("gifFileName") String gifFileName,
-                          @JsonProperty("caffFileName") String caffFileName,
+                          @JsonProperty("gifFile") byte[] gifFile,
+                          @JsonProperty("caffFile") byte[] caffFile,
                           @JsonProperty("comments") List<CommentDTO> comments) {
         this.id = id;
-        this.gifFileName = gifFileName;
-        this.caffFileName = caffFileName;
+        this.gifFile = gifFile;
+        this.caffFile = caffFile;
         this.comments = comments;
     }
 
     public static CaffDetailsDTO createCaffDetailsDTO(Caff caff) {
         return new CaffDetailsDTO(
                 caff.getId(),
-                caff.getGifFileName(),
-                caff.getCaffFileName(),
+                getFileBytes(caff.getId(), ".gif"),
+                getFileBytes(caff.getId(), ".caff"),
                 caff.getComments().stream().map(CommentDTO::createCommentDTO).collect(Collectors.toList()));
     }
 
