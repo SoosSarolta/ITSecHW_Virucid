@@ -42,12 +42,12 @@ export class LoginComponent implements OnInit {
   }
 
   async login() {
-    const response = await this._network.login(this.user.email, this.user.password);
-    console.log(this.user.email, this.user.password);
-    this.user.id = response["id"];
-    this.user.personName = response["username"];
-    localStorage.setItem('token', response['token'].split(' ')[1]);
-    console.log(this.user);
+      this._network.login(this.user.email, this.user.password).then(data => {
+      this.user.id = data["id"];
+      this.user.personName = data["username"];
+      localStorage.setItem('token', data['token'].split(' ')[1]);
+      console.log(this.user);
+    });
   }
 
 }
