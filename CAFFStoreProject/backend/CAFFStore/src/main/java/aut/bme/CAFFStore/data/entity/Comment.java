@@ -1,5 +1,6 @@
 package aut.bme.CAFFStore.data.entity;
 
+import aut.bme.CAFFStore.data.dto.CommentRequestDTO;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -22,4 +23,11 @@ public class Comment {
     @Getter
     @Setter
     private String comment;
+
+    public Comment() {
+    }
+
+    public Comment(CommentRequestDTO CommentRequestDTO) {
+        this.comment = CommentRequestDTO.getComment();
+    }
 }

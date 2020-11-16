@@ -1,4 +1,4 @@
-package aut.bme.CAFFStore.web.util;
+package aut.bme.CAFFStore.service;
 
 import aut.bme.CAFFStore.data.Role;
 import aut.bme.CAFFStore.data.entity.User;

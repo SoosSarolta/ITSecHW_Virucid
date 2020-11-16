@@ -1,11 +1,12 @@
-package aut.bme.CAFFStore.web.controller;
+package aut.bme.CAFFStore.controller;
 
 import aut.bme.CAFFStore.data.dto.UserDTO;
 import aut.bme.CAFFStore.data.dto.UserDetailsDTO;
 import aut.bme.CAFFStore.data.entity.User;
 import aut.bme.CAFFStore.data.repository.UserRepo;
 import aut.bme.CAFFStore.data.util.password.PasswordManager;
-import aut.bme.CAFFStore.web.util.EntityBuilder;
+import aut.bme.CAFFStore.service.EntityBuilder;
+import aut.bme.CAFFStore.service.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -32,6 +33,9 @@ public class UserController {
 
     @Autowired
     UserRepo userRepo;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     private EntityBuilder entityBuilder = new EntityBuilder();
@@ -82,7 +86,7 @@ public class UserController {
     public ResponseEntity<UserDetailsDTO> getUserDetailsById(@PathVariable String id) {
         logger.info("Getting user with id: " + id);
         Optional<User> user = userRepo.findById(id);
-        return user.map(value -> new ResponseEntity<>(UserDetailsDTO.createUserDetailsDTO(value), HttpStatus.OK))
+        return user.map(value -> new ResponseEntity<>(userService.createUserDetailsDTO(value), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
     }
 

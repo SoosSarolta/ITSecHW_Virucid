@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @EqualsAndHashCode
 @ToString
-public class CommentDTO {
+public class CommentResponseDTO {
 
     @Getter
     @Setter
@@ -24,19 +24,19 @@ public class CommentDTO {
     private String comment;
 
     @JsonCreator
-    public CommentDTO(@JsonProperty("id") String id,
-                      @JsonProperty("comment") String comment) {
+    public CommentResponseDTO(@JsonProperty("id") String id,
+                              @JsonProperty("comment") String comment) {
         this.id = id;
         this.comment = comment;
     }
 
-    public static CommentDTO createCommentDTO(Comment comment) {
-        return new CommentDTO(
+    public static CommentResponseDTO createCommentDTO(Comment comment) {
+        return new CommentResponseDTO(
                 comment.getId(),
                 comment.getComment());
     }
 
-    public static List<CommentDTO> createCommentDTOs(List<Comment> comments) {
-        return comments.stream().map(CommentDTO::createCommentDTO).collect(Collectors.toList());
+    public static List<CommentResponseDTO> createCommentDTOs(List<Comment> comments) {
+        return comments.stream().map(CommentResponseDTO::createCommentDTO).collect(Collectors.toList());
     }
 }

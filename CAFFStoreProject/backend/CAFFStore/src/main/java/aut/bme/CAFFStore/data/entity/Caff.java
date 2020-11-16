@@ -19,10 +19,24 @@ public class Caff {
     @Setter
     private String id;
 
+    @Column(name = "original_file_name", nullable = false)
+    @Getter
+    @Setter
+    private String originalFileName;
+
+    @Column(name = "creator_id", nullable = false)
+    @Getter
+    @Setter
+    private String creatorId;
+
     @ElementCollection
-    @OneToMany
+    @OneToMany(orphanRemoval = true)
     @Column(name = "comments")
     @Getter
     @Setter
     private List<Comment> comments;
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+    }
 }

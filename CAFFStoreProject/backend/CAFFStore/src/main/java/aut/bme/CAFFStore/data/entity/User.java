@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -56,14 +57,13 @@ public class User {
     private byte[] salt;
 
     @ElementCollection
-    @Column(name = "caff_file_names")
+    @Column(name = "caffs")
     @Getter
     @Setter
-    private List<String> caffFileNames;
+    private List<Caff> caffs;
 
     @ElementCollection
-    @OneToMany
-    @Column(name = "comment_ids")
+    @Column(name = "comments")
     @Getter
     @Setter
     private List<Comment> comments;
@@ -74,8 +74,22 @@ public class User {
     @Setter
     private Role role;
 
-    public void addCaffFile(String caffFileName) {
-        caffFileNames.add(caffFileName);
+    public void addCaffFile(Caff caff) {
+        if (caffs == null) {
+            caffs = new ArrayList<>();
+        }
+        caffs.add(caff);
+    }
+
+    public void addComment(Comment comment) {
+        if (comments == null) {
+            comments = new ArrayList<>();
+        }
+        comments.add(comment);
+    }
+
+    public void removeCaffFileName(Caff caff) {
+        caffs.remove(caff);
     }
 
 }
