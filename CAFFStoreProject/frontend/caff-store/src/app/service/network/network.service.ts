@@ -12,8 +12,7 @@ export class NetworkService {
   registerURL: string = "register";
   caffURL: string = "caffs"
   profilURL: string = "users"
-  // localhost:8080/caffs/parse?filename=1.caff
-  uploadCaffURL: string = "caffs/parse";
+  uploadCaffURL: string = "caffs/upload";
 
   headers = new HttpHeaders({
     'Content-Type': 'application/json'
@@ -46,8 +45,8 @@ export class NetworkService {
     return this.getJSON(this.serverAddress, this.profilURL + '/' + id);
   }
 
-  uploadCaff(fileName: string, formData: FormData): Promise<any> {
-    return this.postFile(this.serverAddress, this.uploadCaffURL + '?filename=' + fileName, formData);
+  uploadCaff(userId: string, formData: FormData): Promise<any> {
+    return this.postFile(this.serverAddress, this.uploadCaffURL + '?userId=' + userId, formData);
   }
 
   private async postJSON(address: string, url: string, json: string): Promise<any> {

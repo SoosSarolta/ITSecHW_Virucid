@@ -18,6 +18,7 @@ export class MainComponent implements OnInit {
   caffData: FormData;
   allowedFileType: string;
   caffs: Array<Caff>;
+  userId: string;
 
   constructor(
     private _network: NetworkService,
@@ -32,6 +33,7 @@ export class MainComponent implements OnInit {
     for (let i = 0; i < 20; i++) {
       this.caffs.push(new Caff("jlknsdlfnfds", "kjdfnsdfskdjmnfs.caff"));
     }
+    this.userId = "ghjklsadf"; // TODO query current user's id
   }
 
   public dropped(files: NgxFileDropEntry[]) {
@@ -44,7 +46,6 @@ export class MainComponent implements OnInit {
         fileEntry.file((file: File) => {
           if (droppedFile.fileEntry.name.includes(this.allowedFileType)) {
             // Here you can access the real file
-            // You could upload it like this:
             const formData = new FormData()
             formData.append('file', file, droppedFile.relativePath)
 
@@ -53,9 +54,7 @@ export class MainComponent implements OnInit {
               'security-token': 'mytoken'
             });
 
-            this._network.uploadCaff(file.name, formData).then(data => {
-              // , formData, { headers: headers, responseType: 'blob' }
-              // Sanitized logo returned from backend
+            this._network.uploadCaff(this.userId, formData).then(data => {
             }).catch(err => {
               console.log(err);
             });
@@ -75,7 +74,7 @@ export class MainComponent implements OnInit {
 
   // TODO : add id argument after valid login
   navigateToProfile(){
-    //this._router.navigate(['/' + RouterPath.profil], { queryParams: { id: id } });
+    //this._router.navigate(['/' + RouterPath.profil], { queryParams: { id: userId } });
   }
 
   public uploadCaff() {

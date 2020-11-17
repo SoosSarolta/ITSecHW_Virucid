@@ -32,10 +32,33 @@ button {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 15px;
     margin: 6px;
+    width: 12%;
     text-align: center;
+    flex-wrap: wrap;
     letter-spacing: 0.5px;
+}
+
+button.cardBtn {
+    width: 20%;
+    margin-left: 5px;
+    margin-bottom: 5px;
+}
+
+.uploadBtn {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
 }
 
 .example-card {
     max-width: 400px;
-  }
+}
+
+.container {
+    margin: 10px;
+}
+
+.cards {
+    display: inline-block;
+    margin: 45px;
+}
