@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from "@angular/material/icon";
+import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
@@ -21,6 +21,9 @@ import { MainComponent } from './component/main/main.component';
 import { AdminComponent } from './component/admin/admin.component';
 import { DetailComponent } from './component/detail/detail.component';
 import { ProfileComponent } from './component/profile/profile.component';
+import {MatTableModule} from '@angular/material/table';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatSortModule} from '@angular/material/sort';
 
 @NgModule({
   declarations: [
@@ -46,7 +49,10 @@ import { ProfileComponent } from './component/profile/profile.component';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MatPasswordStrengthModule,
-    NgxFileDropModule
+    NgxFileDropModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule
   ],
   providers: [],
   bootstrap: [AppComponent]

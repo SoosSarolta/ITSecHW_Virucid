@@ -48,7 +48,7 @@ export class RegistrationComponent implements OnInit {
       ]],
       password: ['', Validators.required]
     });
-    this.newUser = new User();
+    this.newUser = new User('abcdefghijkl', 'xy', 'xy@caffstore.hu');
   }
 
   register() {
