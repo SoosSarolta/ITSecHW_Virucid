@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ValidationErrors, FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 import { User } from 'src/app/model/user';
 import { NetworkService } from 'src/app/service/network/network.service';
 
@@ -31,7 +32,8 @@ export class RegistrationComponent implements OnInit {
 
   constructor(
     private _formBuilder: FormBuilder,
-    private _network: NetworkService
+    private _network: NetworkService,
+    private _router: Router
   ) {
   }
 
@@ -54,6 +56,7 @@ export class RegistrationComponent implements OnInit {
   register() {
     this._network.register(this.newUser).then(data => {
       console.log("response: ", data);
+      this._router.navigate(['login']);
     });
   }
 
