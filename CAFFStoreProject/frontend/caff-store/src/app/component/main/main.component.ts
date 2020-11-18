@@ -33,7 +33,7 @@ export class MainComponent implements OnInit {
     for (let i = 0; i < 20; i++) {
       this.caffs.push(new Caff("jlknsdlfnfds", "kjdfnsdfskdjmnfs.caff"));
     }
-    this.userId = "ghjklsadf"; // TODO query current user's id
+    this.userId = localStorage.getItem("user_id");
   }
 
   public dropped(files: NgxFileDropEntry[]) {
@@ -74,7 +74,7 @@ export class MainComponent implements OnInit {
 
   // TODO : add id argument after valid login
   navigateToProfile(){
-    //this._router.navigate(['/' + RouterPath.profil], { queryParams: { id: userId } });
+    this._router.navigate(['/' + RouterPath.profil]);
   }
 
   public uploadCaff() {
@@ -91,7 +91,7 @@ export class MainComponent implements OnInit {
 
   logout() {
     this._auth.logout();
-    this._router.navigate(['login']);
+    this._router.navigate(['/' + RouterPath.login]);
   }
 
 }

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ValidationErrors, FormControl } fro
 import { Router } from '@angular/router';
 import { User } from 'src/app/model/user';
 import { NetworkService } from 'src/app/service/network/network.service';
+import { RouterPath } from 'src/app/util/router-path';
 
 @Component({
   selector: 'app-registration',
@@ -56,7 +57,7 @@ export class RegistrationComponent implements OnInit {
   register() {
     this._network.register(this.newUser).then(data => {
       console.log("response: ", data);
-      this._router.navigate(['login']);
+      this._router.navigate(['/' + RouterPath.login]);
     });
   }
 

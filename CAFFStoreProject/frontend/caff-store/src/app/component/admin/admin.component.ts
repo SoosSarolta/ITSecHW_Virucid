@@ -6,6 +6,7 @@ import {User} from '../../model/user';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
+import { RouterPath } from 'src/app/util/router-path';
 
 @Component({
   selector: 'app-admin',
@@ -62,7 +63,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   logout(): void {
     this._auth.logout();
-    this._router.navigate(['login']);
+    this._router.navigate(['/' + RouterPath.login]);
   }
 
 }
