@@ -19,6 +19,7 @@ export class NetworkService {
   constructor(private _http: HttpClient) { }
 
   register(user: User): Promise<any> {
+    this.resetHeader();
     this.setContentTypeHeader('application/json');
     this.setResponseTypeHeader('json');
     var json = JSON.stringify({
@@ -30,35 +31,41 @@ export class NetworkService {
   }
 
   async login(email: string, password: string): Promise<any> {
+    this.resetHeader();
     this.setResponseTypeHeader('json');
     return this.getJSON(this.serverAddress, this.loginURL + '?email=' + email + '&password=' + password);
   }
 
   home(): Promise<any> {
+    this.resetHeader();
     this.addAuthHeader();
     this.setResponseTypeHeader('json');
     return this.getJSON(this.serverAddress, this.caffURL);
   }
 
   details(id: string): Promise<any> {
+    this.resetHeader();
     this.addAuthHeader();
     this.setResponseTypeHeader('json');
     return this.getJSON(this.serverAddress, this.caffURL + '/' + id);
   }
 
   async profile(id: string): Promise<any> {
+    this.resetHeader();
     this.addAuthHeader();
     this.setResponseTypeHeader('json');
     return this.getJSON(this.serverAddress, this.profilURL + '/' + id);
   }
 
   async updateUsername(id: string, username: string): Promise<any> {
+    this.resetHeader();
     this.addAuthHeader();
     this.setResponseTypeHeader('json');
     return this.put(this.serverAddress, `${this.profilURL}/${id}?username=${username}`);
   }
 
   uploadCaff(userId: string, formData: FormData): Promise<any> {
+    this.resetHeader();
     this.addAuthHeader();
     this.setContentTypeHeader('application/json');
     return this.postFile(this.serverAddress, this.uploadCaffURL + '?userId=' + userId, formData);
@@ -94,5 +101,8 @@ export class NetworkService {
 
   private setContentTypeHeader(contentType: string) {
     this.header = this.header.append('Content-Type', contentType);
+  }
+  private resetHeader() {
+    this.header = new HttpHeaders();
   }
 }
