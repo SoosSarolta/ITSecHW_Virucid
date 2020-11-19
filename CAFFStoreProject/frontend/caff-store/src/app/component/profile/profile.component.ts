@@ -11,6 +11,10 @@ import { RouterPath } from 'src/app/util/router-path';
 })
 export class ProfileComponent implements OnInit {
   userId: string;
+  username: string;
+  email: string;
+  comments: Array<string>;
+  caffFiles: Array<string>;
 
   constructor(
     private _router: Router,
@@ -28,8 +32,25 @@ export class ProfileComponent implements OnInit {
     //   });
     // });
     this.userId = localStorage.getItem("user_id");
+    this.loadUserInfo();
   }
 
+  private async loadUserInfo() {
+    this._network.profile(this.userId).then(data => {
+      this.username = data["username"];
+      this.email = data["email"];
+      this.comments = data["comments"];
+      this.caffFiles = data["caffFilesWithoutBitmap"];
+    });
+  }
+
+  async updateUsername() {
+    this._network.updateUsername(this.userId, this.username).then(data => {
+      console.log(data);
+    }).catch(err => {
+      console.log(err);
+    });
+  }
 
   logout() {
     this._auth.logout();

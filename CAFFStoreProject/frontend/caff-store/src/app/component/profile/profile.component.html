@@ -5,3 +5,23 @@
     <button mat-raised-button color="primary">Profile</button>
     <button mat-raised-button color="secondary" (click)="logout()">Logout</button>
 </header>
+
+<div class="container">
+    <form class="example-form" class="align-center">
+        <div>
+            <mat-form-field style="width:20vw" appearance="outline" class="example-full-width">
+                <mat-label>Username</mat-label>
+                <input matInput type="text" maxlength="100" [(ngModel)]="username" [ngModelOptions]="{standalone: true}">
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field style="width:20vw" appearance="outline" class="example-full-width">
+                <mat-label>Email</mat-label>
+                <input matInput type="text" maxlength="100" value="{{ email }}" readonly>
+            </mat-form-field>
+            <div class="align-center">
+                <button mat-raised-button style="width:8vw" (click)="updateUsername()" color="primary">Update</button>
+            </div>
+        </div>
+    </form>
+</div>
