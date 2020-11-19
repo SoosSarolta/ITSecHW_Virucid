@@ -5,7 +5,7 @@ import { FileSystemDirectoryEntry, FileSystemFileEntry, NgxFileDropEntry } from 
 import { Caff } from 'src/app/model/caff';
 import { NetworkService } from 'src/app/service/network/network.service';
 import { RouterPath } from 'src/app/util/router-path';
-import { AuthService} from 'src/app/service/auth/auth.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 
 @Component({
   selector: 'app-main',
@@ -14,11 +14,13 @@ import { AuthService} from 'src/app/service/auth/auth.service';
 })
 export class MainComponent implements OnInit {
 
-  public files: NgxFileDropEntry[] = [];
+  public caffFiles: NgxFileDropEntry[] = [];
   caffData: FormData;
   allowedFileType: string;
   caffs: Array<Caff>;
   userId: string;
+  token: string;
+  isValidFile: boolean;
 
   constructor(
     private _network: NetworkService,
@@ -34,30 +36,25 @@ export class MainComponent implements OnInit {
       this.caffs.push(new Caff("jlknsdlfnfds", "kjdfnsdfskdjmnfs.caff"));
     }
     this.userId = localStorage.getItem("user_id");
+    this.token = localStorage.getItem("token");
+    this.isValidFile = false;
   }
 
   public dropped(files: NgxFileDropEntry[]) {
-    this.files = files;
+    this.caffFiles = files;
     for (const droppedFile of files) {
 
       // Is it a file?
       if (droppedFile.fileEntry.isFile) {
         const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
         fileEntry.file((file: File) => {
-          if (droppedFile.fileEntry.name.includes(this.allowedFileType)) {
+          if (droppedFile.fileEntry.name.includes(this.allowedFileType) && files.length == 1) {
             // Here you can access the real file
-            const formData = new FormData()
-            formData.append('file', file, droppedFile.relativePath)
-
-            // Headers TODO: AUTHORIZATION
-            const headers = new HttpHeaders({
-              'security-token': 'mytoken'
-            });
-
-            this._network.uploadCaff(this.userId, formData).then(data => {
-            }).catch(err => {
-              console.log(err);
-            });
+            this.caffData = new FormData()
+            this.caffData.append('file', file, droppedFile.relativePath);
+            this.isValidFile = true;
+          } else {
+            this.isValidFile = false;
           }
         });
       } else {
@@ -72,13 +69,18 @@ export class MainComponent implements OnInit {
     this._router.navigate(['/' + RouterPath.detail], { queryParams: { id: id } });
   }
 
-  // TODO : add id argument after valid login
-  navigateToProfile(){
+  navigateToProfile() {
     this._router.navigate(['/' + RouterPath.profil]);
   }
 
   public uploadCaff() {
-    console.log("uploadCaff");
+    if (this.isValidFile) {
+      console.log("this.caffData: ", this.caffData);
+      this._network.uploadCaff(this.userId, this.caffData).then(data => {
+      }).catch(err => {
+        console.log(err);
+      });
+    }
   }
 
   public fileOver(event) {

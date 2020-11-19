@@ -7,9 +7,13 @@
 </header>
 
 <div class="container">
-    <ngx-file-drop dropZoneLabel="Drop files here" id="image-drop-box" (onFileDrop)="dropped($event)" accept=".caff" multiple="false">
+    <ngx-file-drop dropZoneLabel="Drop files here" id="image-drop-box" (onFileDrop)="dropped($event)" accept=".caff"
+        multiple="false">
         <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-            <span>Drop a file here to upload</span>
+            <span *ngIf="caffFiles.length == 0">Drop a file here to upload</span>
+            <span *ngIf="caffFiles.length > 0">
+                {{isValidFile?caffFiles.length:''}}{{isValidFile?' darab caff feltöltve!':'Hiba! Max 1db caff fájl'}}
+            </span>
         </ng-template>
     </ngx-file-drop>
     <div class="uploadBtn">
@@ -23,7 +27,8 @@
     <mat-card class="example-card">
         <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
         <mat-card-actions>
-            <button mat-raised-button class="cardBtn" color="primary" (click)="navigateToDetails(caff.id)">Details</button>
+            <button mat-raised-button class="cardBtn" color="primary"
+                (click)="navigateToDetails(caff.id)">Details</button>
         </mat-card-actions>
     </mat-card>
 </div>

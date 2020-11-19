@@ -15,7 +15,12 @@ export class NetworkService {
   uploadCaffURL: string = "caffs/upload";
 
   headers = new HttpHeaders({
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    responseType: 'json',
+    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    'Access-Control-Allow-Origin': "*",
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token'
   });
 
   constructor(private _http: HttpClient) { }
@@ -60,7 +65,7 @@ export class NetworkService {
   }
 
   private async postFile(address: string, url: string, formData: FormData): Promise<any> {
-    const respone = await this._http.post(address + url, formData, { responseType: 'json' }).toPromise();
+    const respone = await this._http.post(address + url, formData, { headers: this.headers }).toPromise();
     return respone;
   }
 }
