@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
     private _network: NetworkService,
     private _router: Router
   ) {
-    this.user = new User('abcdefghijkl', 'xy', 'xy@caffstore.hu');
+    this.user = new User();
   }
 
   ngOnInit(): void {

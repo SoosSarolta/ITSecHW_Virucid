@@ -30,10 +30,14 @@ export class AdminComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     // TODO: load from backend
     this.users = new Array();
-    this.users.push(new User('000001', 'Nagy Lajos', 'lajos@caffstore.hu'));
-    this.users.push(new User('000002', 'Nagyne Iren', 'iren@caffstore.hu'));
+    let NagyLajosUser = new User();
+    NagyLajosUser.id = '000001';
+    NagyLajosUser.personName = 'Nagy Lajos';
+    NagyLajosUser.email = 'lajos@caffstore.hu';
+    this.users.push(NagyLajosUser);
+    /* this.users.push(new User('000002', 'Nagyne Iren', 'iren@caffstore.hu'));
     this.users.push(new User('000003', 'Hurutos Sandor', 'sandor@caffstore.hu'));
-    this.users.push(new User('000004', 'Vegh Bela', 'bela@caffstore.hu'));
+    this.users.push(new User('000004', 'Vegh Bela', 'bela@caffstore.hu')); */
 
     this.dataSource = new MatTableDataSource(this.users);
   }

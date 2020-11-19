@@ -37,6 +37,7 @@ export class MainComponent implements OnInit {
     }
     this.userId = localStorage.getItem("user_id");
     this.token = localStorage.getItem("token");
+    console.log(this.token);
     this.isValidFile = false;
   }
 

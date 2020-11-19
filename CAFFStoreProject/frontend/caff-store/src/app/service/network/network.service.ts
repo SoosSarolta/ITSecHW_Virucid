@@ -23,6 +23,14 @@ export class NetworkService {
     'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token'
   });
 
+  noAuthHeader = new HttpHeaders({
+    'Content-Type': 'application/json',
+    responseType: 'json',
+    'Access-Control-Allow-Origin': "*",
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token'
+  });
+
   constructor(private _http: HttpClient) { }
 
   register(user: User): Promise<any> {
@@ -31,7 +39,7 @@ export class NetworkService {
       "email": user.email,
       "password": user.password
     });
-    return this.postJSON(this.serverAddress, this.registerURL, json);
+    return this.postWithoutAuthJSON(this.serverAddress, this.registerURL, json);
   }
 
   async login(email: string, password: string): Promise<any> {
@@ -56,6 +64,11 @@ export class NetworkService {
 
   private async postJSON(address: string, url: string, json: string): Promise<any> {
     const response = await this._http.post(address + url, json, { headers: this.headers }).toPromise();
+    return response;
+  }
+
+  private async postWithoutAuthJSON(address: string, url: string, json: string): Promise<any> {
+    const response = await this._http.post(address + url, json, { headers: this.noAuthHeader }).toPromise();
     return response;
   }
 

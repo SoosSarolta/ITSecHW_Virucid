@@ -51,10 +51,11 @@ export class RegistrationComponent implements OnInit {
       ]],
       password: ['', Validators.required]
     });
-    this.newUser = new User('abcdefghijkl', 'xy', 'xy@caffstore.hu');
+    this.newUser = new User();
   }
 
   register() {
+    console.log(this.newUser);
     this._network.register(this.newUser).then(data => {
       console.log("response: ", data);
       this._router.navigate(['/' + RouterPath.login]);
