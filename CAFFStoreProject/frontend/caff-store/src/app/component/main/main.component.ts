@@ -51,8 +51,10 @@ export class MainComponent implements OnInit {
         fileEntry.file((file: File) => {
           if (droppedFile.fileEntry.name.includes(this.allowedFileType) && files.length == 1) {
             // Here you can access the real file
-            this.caffData = new FormData()
-            this.caffData.append('file', file, droppedFile.relativePath);
+            this.caffData = new FormData();
+            console.log("file: ", file);
+            console.log("droppedFile.relativePath: ", droppedFile.relativePath);
+            this.caffData.append('file', file);
             this.isValidFile = true;
           } else {
             this.isValidFile = false;
