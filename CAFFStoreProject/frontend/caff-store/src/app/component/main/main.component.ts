@@ -1,11 +1,17 @@
 import { HttpHeaders } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FileSystemDirectoryEntry, FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
 import { Caff } from 'src/app/model/caff';
 import { NetworkService } from 'src/app/service/network/network.service';
 import { RouterPath } from 'src/app/util/router-path';
 import { AuthService } from 'src/app/service/auth/auth.service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+export interface DialogData {
+  message: string;
+}
 
 @Component({
   selector: 'app-main',
@@ -23,22 +29,34 @@ export class MainComponent implements OnInit {
   isValidFile: boolean;
 
   constructor(
+    private _sanitization: DomSanitizer,
     private _network: NetworkService,
     private _router: Router,
-    private _auth: AuthService
+    private _auth: AuthService,
+    private _dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
     this.caffData = new FormData();
     this.allowedFileType = ".caff";
     this.caffs = new Array();
-    for (let i = 0; i < 20; i++) {
+    /* for (let i = 0; i < 20; i++) {
       this.caffs.push(new Caff("jlknsdlfnfds", "kjdfnsdfskdjmnfs.caff"));
-    }
+    } */
     this.userId = localStorage.getItem("user_id");
     this.token = localStorage.getItem("token");
     console.log(this.token);
     this.isValidFile = false;
+    this._network.home().then(data => {
+      console.log(data);
+      data.forEach(element => {
+        var url = 'data:image/JPEG;base64,' + encodeURIComponent(element.bitmapFile);
+        var image = this._sanitization.bypassSecurityTrustResourceUrl(url);
+        this.caffs.push(new Caff(element.id, element.originalFileName, image));
+      });
+    }).catch(err => {
+      console.log(err);
+    })
   }
 
   public dropped(files: NgxFileDropEntry[]) {
@@ -80,6 +98,8 @@ export class MainComponent implements OnInit {
     if (this.isValidFile) {
       console.log("this.caffData: ", this.caffData);
       this._network.uploadCaff(this.userId, this.caffData).then(data => {
+        alert("Uploaded!");
+        this.caffFiles = [];
       }).catch(err => {
         console.log(err);
       });

@@ -14,13 +14,9 @@ export class NetworkService {
   profilURL: string = "users"
   uploadCaffURL: string = "caffs/upload";
 
-  headers = new HttpHeaders({
+  authHeader = new HttpHeaders({
     'Content-Type': 'application/json',
     responseType: 'json',
-    'Authorization': `Bearer ${localStorage.getItem('token')}`
-  });
-
-  multipartHeader = new HttpHeaders({
     'Authorization': `Bearer ${localStorage.getItem('token')}`,
     'Access-Control-Allow-Origin': "*",
     'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
@@ -30,6 +26,13 @@ export class NetworkService {
   noAuthHeader = new HttpHeaders({
     'Content-Type': 'application/json',
     responseType: 'json',
+    'Access-Control-Allow-Origin': "*",
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token'
+  });
+
+  multipartHeader = new HttpHeaders({
+    'Authorization': `Bearer ${localStorage.getItem('token')}`,
     'Access-Control-Allow-Origin': "*",
     'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token'
@@ -47,7 +50,7 @@ export class NetworkService {
   }
 
   async login(email: string, password: string): Promise<any> {
-    return this.getJSON(this.serverAddress, this.loginURL + '?email=' + email + '&password=' + password);
+    return this.getWithoutAuthJSON(this.serverAddress, this.loginURL + '?email=' + email + '&password=' + password);
   }
 
   home(): Promise<any> {
@@ -67,7 +70,7 @@ export class NetworkService {
   }
 
   private async postJSON(address: string, url: string, json: string): Promise<any> {
-    const response = await this._http.post(address + url, json, { headers: this.headers }).toPromise();
+    const response = await this._http.post(address + url, json, { headers: this.authHeader }).toPromise();
     return response;
   }
 
@@ -77,7 +80,12 @@ export class NetworkService {
   }
 
   private async getJSON(address: string, url: string) {
-    const response = await this._http.get(address + url).toPromise();
+    const response = await this._http.get(address + url, { headers: this.authHeader }).toPromise();
+    return response;
+  }
+
+  private async getWithoutAuthJSON(address: string, url: string) {
+    const response = await this._http.get(address + url, { headers: this.noAuthHeader }).toPromise();
     return response;
   }
 
