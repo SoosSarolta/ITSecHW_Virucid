@@ -14,83 +14,85 @@ export class NetworkService {
   profilURL: string = "users"
   uploadCaffURL: string = "caffs/upload";
 
-  authHeader = new HttpHeaders({
-    'Content-Type': 'application/json',
-    responseType: 'json',
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Access-Control-Allow-Origin': "*",
-    'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token'
-  });
-
-  noAuthHeader = new HttpHeaders({
-    'Content-Type': 'application/json',
-    responseType: 'json',
-    'Access-Control-Allow-Origin': "*",
-    'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token'
-  });
-
-  multipartHeader = new HttpHeaders({
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    'Access-Control-Allow-Origin': "*",
-    'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token'
-  });
+  header = new HttpHeaders();
 
   constructor(private _http: HttpClient) { }
 
   register(user: User): Promise<any> {
+    this.setContentTypeHeader('application/json');
+    this.setResponseTypeHeader('json');
     var json = JSON.stringify({
       "personName": user.personName,
       "email": user.email,
       "password": user.password
     });
-    return this.postWithoutAuthJSON(this.serverAddress, this.registerURL, json);
+    return this.postJSON(this.serverAddress, this.registerURL, json);
   }
 
   async login(email: string, password: string): Promise<any> {
-    return this.getWithoutAuthJSON(this.serverAddress, this.loginURL + '?email=' + email + '&password=' + password);
+    this.setResponseTypeHeader('json');
+    return this.getJSON(this.serverAddress, this.loginURL + '?email=' + email + '&password=' + password);
   }
 
   home(): Promise<any> {
+    this.addAuthHeader();
+    this.setResponseTypeHeader('json');
     return this.getJSON(this.serverAddress, this.caffURL);
   }
 
   details(id: string): Promise<any> {
+    this.addAuthHeader();
+    this.setResponseTypeHeader('json');
     return this.getJSON(this.serverAddress, this.caffURL + '/' + id);
   }
 
-  profile(id: string): Promise<any> {
+  async profile(id: string): Promise<any> {
+    this.addAuthHeader();
+    this.setResponseTypeHeader('json');
     return this.getJSON(this.serverAddress, this.profilURL + '/' + id);
   }
 
+  async updateUsername(id: string, username: string): Promise<any> {
+    this.addAuthHeader();
+    this.setResponseTypeHeader('json');
+    return this.put(this.serverAddress, `${this.profilURL}/${id}?username=${username}`);
+  }
+
   uploadCaff(userId: string, formData: FormData): Promise<any> {
+    this.addAuthHeader();
+    this.setContentTypeHeader('application/json');
     return this.postFile(this.serverAddress, this.uploadCaffURL + '?userId=' + userId, formData);
   }
 
   private async postJSON(address: string, url: string, json: string): Promise<any> {
-    const response = await this._http.post(address + url, json, { headers: this.authHeader }).toPromise();
-    return response;
-  }
-
-  private async postWithoutAuthJSON(address: string, url: string, json: string): Promise<any> {
-    const response = await this._http.post(address + url, json, { headers: this.noAuthHeader }).toPromise();
+    const response = await this._http.post(address + url, json, { headers: this.header }).toPromise();
     return response;
   }
 
   private async getJSON(address: string, url: string) {
-    const response = await this._http.get(address + url, { headers: this.authHeader }).toPromise();
+    const response = await this._http.get(address + url, { headers: this.header }).toPromise();
     return response;
   }
 
-  private async getWithoutAuthJSON(address: string, url: string) {
-    const response = await this._http.get(address + url, { headers: this.noAuthHeader }).toPromise();
+  private async put(address: string, url: string) {
+    const response = await this._http.put(`${address}${url}`, "", { headers: this.header }).toPromise();
     return response;
   }
 
   private async postFile(address: string, url: string, formData: FormData): Promise<any> {
-    const respone = await this._http.post(address + url, formData, { headers: this.multipartHeader }).toPromise();
+    const respone = await this._http.post(address + url, formData, { headers: this.header }).toPromise();
     return respone;
+  }
+
+  private addAuthHeader() {
+    this.header = this.header.append('Authorization', `Bearer ${localStorage.getItem('token')}`);
+  }
+
+  private setResponseTypeHeader(responseType: string) {
+    this.header = this.header.append('responseType', responseType);
+  }
+
+  private setContentTypeHeader(contentType: string) {
+    this.header = this.header.append('Content-Type', contentType);
   }
 }
