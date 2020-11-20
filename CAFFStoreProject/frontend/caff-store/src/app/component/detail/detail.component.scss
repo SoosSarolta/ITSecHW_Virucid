@@ -1,0 +1,41 @@
+.container{
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width:100%;
+ }
+
+ header {
+     display: flex;
+     background-color: black;
+     margin-bottom: 30px;
+     padding: 5px 5%;
+     color: whitesmoke;
+     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1)
+ }
+
+ .brand {
+     flex: 1;
+     display: flex;
+     align-items: flex-start;
+ }
+
+ h5 {
+     font-family: Arial, Helvetica, sans-serif;
+     font-size: 25px;
+     margin: 10px;
+     text-align: center;
+     letter-spacing: 1px;
+     color: whitesmoke;
+     background: linear-gradient(
+         90deg,
+         rgba(52, 186, 219, 0.9878326330532) 44%,
+         rgba(0, 255, 190, 1) 100%
+     );
+     -webkit-background-clip: text;
+ }
+
+ .align-center {
+     text-align: center;
+ }
