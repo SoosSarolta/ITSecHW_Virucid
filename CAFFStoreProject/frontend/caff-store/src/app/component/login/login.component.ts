@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ValidationErrors, FormControl } fro
 import { Router } from '@angular/router';
 import { User } from 'src/app/model/user';
 import { NetworkService } from 'src/app/service/network/network.service';
+import { RouterPath } from 'src/app/util/router-path';
 
 @Component({
   selector: 'app-login',
@@ -49,7 +50,8 @@ export class LoginComponent implements OnInit {
       this.user.personName = data["username"];
       localStorage.setItem('token', data['token'].split(' ')[1]);
       console.log(this.user);
-      this._router.navigate(['main']);
+      localStorage.setItem('user_id', data['id']);
+      this._router.navigate(['/' + RouterPath.main]);
     });
   }
 

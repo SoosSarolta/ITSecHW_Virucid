@@ -18,22 +18,22 @@
                 Email is <strong>required</strong>
             </mat-error>
         </mat-form-field>
+        <div>
+            <!--password input filed-->
+            <mat-form-field appearance="outline" style="width:20vw">
+                <mat-label>Password</mat-label>
+                <mat-pass-toggle-visibility #toggle matSuffix></mat-pass-toggle-visibility>
+                <input matInput #password [type]="toggle.type" required placeholder="Password"
+                    [(ngModel)]="user.password" [formControl]="passwordFormControl">
+                <mat-error *ngIf="passwordFormControl.hasError('required')">
+                    Password is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <div class="align-center">
+            <button mat-raised-button style="width:8vw" 
+                [disabled]="passwordFormControl.invalid || emailFormControl.invalid"
+                color="primary" (click)=login()>Login</button>
+        </div>
     </form>
-    <div>
-        <!--password input filed-->
-        <mat-form-field appearance="outline" style="width:20vw">
-            <mat-label>Password</mat-label>
-            <mat-pass-toggle-visibility #toggle matSuffix></mat-pass-toggle-visibility>
-            <input matInput #password [type]="toggle.type" required placeholder="Password"
-                [(ngModel)]="user.password" [formControl]="passwordFormControl">
-            <mat-error *ngIf="passwordFormControl.hasError('required')">
-                Password is <strong>required</strong>
-            </mat-error>
-        </mat-form-field>
-    </div>
-    <div>
-        <button mat-raised-button style="width:8vw" 
-            [disabled]="passwordFormControl.invalid || emailFormControl.invalid"
-            color="primary" (click)=login()>Login</button>
-    </div>
 </div>
