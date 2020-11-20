@@ -13,6 +13,8 @@ export class NetworkService {
   caffURL: string = "caffs"
   profilURL: string = "users"
   uploadCaffURL: string = "caffs/upload";
+  downloadCaffURL: string = "caffs/download";
+  commentURL: string = "comments";
 
   header = new HttpHeaders();
 
@@ -69,6 +71,23 @@ export class NetworkService {
     this.addAuthHeader();
     this.setContentTypeHeader('application/json');
     return this.postFile(this.serverAddress, this.uploadCaffURL + '?userId=' + userId, formData);
+  }
+
+  downloadCaff(caffId: string): Promise<any> {
+    this.resetHeader();
+    this.addAuthHeader();
+    this.setResponseTypeHeader('json');
+    return this.getJSON(this.serverAddress, this.downloadCaffURL + '/' + caffId);
+  }
+  
+  addComment(userId: string, caffId: string, commentMessage: string): Promise<any> {
+    this.resetHeader();
+    this.addAuthHeader();
+    this.setResponseTypeHeader('json');
+    var json = JSON.stringify({
+      "comment": commentMessage
+    });
+    return this.postJSON(this.serverAddress, this.commentURL + "?userId=" + userId + "&caffId=" + caffId, json);
   }
 
   private async postJSON(address: string, url: string, json: string): Promise<any> {

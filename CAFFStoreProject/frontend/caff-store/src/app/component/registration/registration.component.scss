@@ -38,4 +38,17 @@ h5 {
 
 .align-center {
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button {
+    display: flex;
+    justify-content: center;
+    margin: 6px;
+    width: 12%;
+    text-align: center;
+    flex-wrap: wrap;
+    letter-spacing: 0.5px;
 }
