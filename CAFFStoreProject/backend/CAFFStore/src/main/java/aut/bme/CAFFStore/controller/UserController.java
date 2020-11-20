@@ -42,8 +42,15 @@ public class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<String> register(@RequestBody Map<String, Object> body) {
+        String email = body.get("email").toString();
+        if (userRepo.existsByEmail(email)) {
+            return new ResponseEntity<>("There's already a user registered with this email.",
+                    HttpStatus.BAD_REQUEST);
+        }
+        
         if (body.get("id") != null) {
             String userId = body.get("id").toString();
+
             Optional<User> userOptional = userRepo.findById(userId);
             if (userOptional.isPresent()) {
                 body.put("password", Base64.encodeBase64String(userOptional.get().getPassword()));
