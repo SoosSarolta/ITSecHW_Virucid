@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -37,6 +38,9 @@ public class Caff {
     private List<Comment> comments;
 
     public void addComment(Comment comment) {
+        if (comments == null) {
+            comments = new ArrayList();
+        }
         comments.add(comment);
     }
 }

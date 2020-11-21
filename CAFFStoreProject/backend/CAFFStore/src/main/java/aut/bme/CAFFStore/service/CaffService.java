@@ -66,9 +66,6 @@ public class CaffService {
         caff.setCreatorId(userId);
         caffRepo.save(caff);
 
-        String caffFileName = caff.getId() + ".caff";
-        String caffFullPath = CAFF_FILES_PATH + caffFileName;
-
         Optional<User> user = userRepo.findById(userId);
         if (user.isPresent()) {
             user.get().addCaffFile(caff);
@@ -77,21 +74,28 @@ public class CaffService {
             return new ResponseEntity<>(new CaffIdResponseEntity("User does not exist!"), HttpStatus.BAD_REQUEST);
         }
 
-        File caffFileDir = new File(CAFF_FILES_DIR_PATH);
-        if (!caffFileDir.exists()) {
-            caffFileDir.mkdir();
-            logger.info("Directory created: " + BASE_PATH);
-        }
+        String caffFileName = caff.getId() + ".caff";
+        String caffFullPath = CAFF_FILES_PATH + caffFileName;
 
+        checkCaffDirectory();
+
+        saveCaffFile(file, caffFullPath);
+        parseCaffFile(caff, caffFullPath);
+
+        return new ResponseEntity<>(new CaffIdResponseEntity(caff.getId()), HttpStatus.OK);
+    }
+
+    public void saveCaffFile(MultipartFile file, String caffFullPath) throws IOException {
         File caffFile = new File(caffFullPath);
         if (caffFile.createNewFile()) {
             try (OutputStream os = new FileOutputStream(caffFile)) {
                 os.write(file.getBytes());
             }
             logger.info("File created: " + caffFullPath);
-            logger.info("File size: " + caffFile.length());
         }
+    }
 
+    private void parseCaffFile(Caff caff, String caffFullPath) throws IOException, InterruptedException {
         if (caff.getId() != null) {
             Process process = Runtime.getRuntime().exec("cmd /c start /wait "
                     + BASE_PATH
@@ -102,8 +106,14 @@ public class CaffService {
             process.waitFor();
             logger.info("Parser finished successfully.");
         }
+    }
 
-        return new ResponseEntity<>(new CaffIdResponseEntity(caff.getId()), HttpStatus.OK);
+    private void checkCaffDirectory() {
+        File caffFileDir = new File(CAFF_FILES_DIR_PATH);
+        if (!caffFileDir.exists()) {
+            caffFileDir.mkdir();
+            logger.info("Directory created: " + BASE_PATH);
+        }
     }
 
     public ResponseEntity<CaffDTO> downloadCaff(String id) {
@@ -123,7 +133,7 @@ public class CaffService {
         }
 
         Optional<User> user = userRepo.findById(caff.get().getCreatorId());
-        if (user.isEmpty()) {
+        if (!user.isEmpty()) {
             user.get().removeCaffFileName(caff.get());
             logger.info("Caff file name removed from user.");
             userRepo.save(user.get());
