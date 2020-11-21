@@ -25,6 +25,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatSortModule} from '@angular/material/sort';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatListModule} from '@angular/material/list';
 
 
 @NgModule({
@@ -48,6 +49,7 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatSelectModule,
     MatCardModule,
     FormsModule,
+    MatListModule,
     MatDialogModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,

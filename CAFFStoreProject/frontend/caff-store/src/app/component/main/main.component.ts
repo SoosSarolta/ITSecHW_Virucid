@@ -1,4 +1,3 @@
-import { HttpHeaders } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FileSystemDirectoryEntry, FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
@@ -7,7 +6,6 @@ import { NetworkService } from 'src/app/service/network/network.service';
 import { RouterPath } from 'src/app/util/router-path';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { DomSanitizer } from '@angular/platform-browser';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface DialogData {
   message: string;
@@ -32,17 +30,13 @@ export class MainComponent implements OnInit {
     private _sanitization: DomSanitizer,
     private _network: NetworkService,
     private _router: Router,
-    private _auth: AuthService,
-    private _dialog: MatDialog
+    private _auth: AuthService
   ) { }
 
   ngOnInit(): void {
     this.caffData = new FormData();
     this.allowedFileType = ".caff";
     this.caffs = new Array();
-    /* for (let i = 0; i < 20; i++) {
-      this.caffs.push(new Caff("jlknsdlfnfds", "kjdfnsdfskdjmnfs.caff"));
-    } */
     this.userId = localStorage.getItem("user_id");
     this.token = localStorage.getItem("token");
     console.log(this.token);
@@ -63,12 +57,10 @@ export class MainComponent implements OnInit {
     this.caffFiles = files;
     for (const droppedFile of files) {
 
-      // Is it a file?
       if (droppedFile.fileEntry.isFile) {
         const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
         fileEntry.file((file: File) => {
           if (droppedFile.fileEntry.name.includes(this.allowedFileType) && files.length == 1) {
-            // Here you can access the real file
             this.caffData = new FormData();
             console.log("file: ", file);
             console.log("droppedFile.relativePath: ", droppedFile.relativePath);
@@ -79,7 +71,6 @@ export class MainComponent implements OnInit {
           }
         });
       } else {
-        // It was a directory (empty directories are added, otherwise only files)
         const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
         console.log(droppedFile.relativePath, fileEntry);
       }
@@ -98,7 +89,7 @@ export class MainComponent implements OnInit {
     if (this.isValidFile) {
       console.log("this.caffData: ", this.caffData);
       this._network.uploadCaff(this.userId, this.caffData).then(data => {
-        alert("Uploaded!");
+        alert("File uploaded!");
         this.caffFiles = [];
       }).catch(err => {
         console.log(err);

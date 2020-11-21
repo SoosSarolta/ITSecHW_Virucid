@@ -14,7 +14,7 @@ export class DetailComponent implements OnInit {
   constructor(
     private _router: ActivatedRoute,
     private _network: NetworkService
-    ) {
+  ) {
   }
 
   ngOnInit(): void {
@@ -28,4 +28,7 @@ export class DetailComponent implements OnInit {
     });
   }
 
+  downloadCaff() {
+    console.log("downloading caff...");
+  }
 }
