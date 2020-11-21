@@ -20,7 +20,7 @@ public class CommentController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<String> uploadCaff(@RequestBody CommentRequestDTO commentRequestDTO,
+    public ResponseEntity<String> addComment(@RequestBody CommentRequestDTO commentRequestDTO,
                                              @RequestParam String userId,
                                              @RequestParam String caffId) {
         logger.info("Saving comment.");

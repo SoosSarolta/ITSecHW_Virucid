@@ -13,10 +13,8 @@ import java.util.Map;
 
 @Component
 public class EntityBuilder {
-    @Autowired
-    private UserRepo userRepo;
 
-    public void EntityBuilder() {
+    public EntityBuilder() {
     }
 
     public User buildUser(Map<String, Object> payload) throws Exception {

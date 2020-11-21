@@ -5,11 +5,9 @@ import aut.bme.CAFFStore.data.dto.UserDetailsDTO;
 import aut.bme.CAFFStore.data.entity.User;
 import aut.bme.CAFFStore.data.repository.UserRepo;
 import aut.bme.CAFFStore.data.util.password.PasswordManager;
-import aut.bme.CAFFStore.service.EntityBuilder;
 import aut.bme.CAFFStore.service.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,48 +27,17 @@ import java.util.stream.Collectors;
 @RestController
 public class UserController {
 
-    Logger logger = LoggerFactory.getLogger(UserController.class);
+    private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    UserRepo userRepo;
+    private UserRepo userRepo;
 
     @Autowired
-    UserService userService;
-
-    @Autowired
-    private EntityBuilder entityBuilder = new EntityBuilder();
+    private UserService userService;
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<String> register(@RequestBody Map<String, Object> body) {
-        String email = body.get("email").toString();
-        if (userRepo.existsByEmail(email)) {
-            return new ResponseEntity<>("There's already a user registered with this email.",
-                    HttpStatus.BAD_REQUEST);
-        }
-        
-        if (body.get("id") != null) {
-            String userId = body.get("id").toString();
-
-            Optional<User> userOptional = userRepo.findById(userId);
-            if (userOptional.isPresent()) {
-                body.put("password", Base64.encodeBase64String(userOptional.get().getPassword()));
-                body.put("salt", Base64.encodeBase64String(userOptional.get().getSalt()));
-            } else
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-
-        User newUser;
-        try {
-            newUser = entityBuilder.buildUser(body);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-        if (newUser != null) {
-            userRepo.save(newUser);
-            return new ResponseEntity<>(null, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        return userService.register(body);
     }
 
     @RequestMapping("/login")

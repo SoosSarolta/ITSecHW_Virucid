@@ -1,18 +1,20 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {User} from 'src/app/model/user';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { User } from 'src/app/model/user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NetworkService {
-  serverAddress = 'http://localhost:8080/';
+  serverAddress: string = "http://localhost:8080/";
   // localhost:8080/login?email=kurdi.boti@gmail.com&password=mypassword
-  loginURL = 'login';
-  registerURL = 'register';
-  caffURL = 'caffs';
-  profilURL = 'users';
-  uploadCaffURL = 'caffs/upload';
+  loginURL: string = "login";
+  registerURL: string = "register";
+  caffURL: string = "caffs"
+  profilURL: string = "users"
+  uploadCaffURL: string = "caffs/upload";
+  downloadCaffURL: string = "caffs/download";
+  commentURL: string = "comments";
 
   header = new HttpHeaders();
 
@@ -72,6 +74,23 @@ export class NetworkService {
     this.addAuthHeader();
     this.setContentTypeHeader('application/json');
     return this.postFile(this.serverAddress, this.uploadCaffURL + '?userId=' + userId, formData);
+  }
+
+  downloadCaff(caffId: string): Promise<any> {
+    this.resetHeader();
+    this.addAuthHeader();
+    this.setResponseTypeHeader('json');
+    return this.getJSON(this.serverAddress, this.downloadCaffURL + '/' + caffId);
+  }
+
+  addComment(userId: string, caffId: string, commentMessage: string): Promise<any> {
+    this.resetHeader();
+    this.addAuthHeader();
+    this.setResponseTypeHeader('json');
+    var json = JSON.stringify({
+      "comment": commentMessage
+    });
+    return this.postJSON(this.serverAddress, this.commentURL + "?userId=" + userId + "&caffId=" + caffId, json);
   }
 
   admin(): Promise<any> {

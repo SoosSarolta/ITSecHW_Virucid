@@ -28,7 +28,6 @@ export class DetailComponent implements OnInit {
     });
   }
 
-
   downloadCaff() {
     console.log("downloading caff...");
   }
