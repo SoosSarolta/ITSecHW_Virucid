@@ -1,71 +1,83 @@
 <header>
   <div class="brand">
-    <h5><a href="/main">CAFF Store - Virucid</a> </h5>
+    <h5><a routerLink="/main">CAFF Store - Virucid</a> </h5>
   </div>
   <button mat-raised-button style="width:6vw" color="primary" (click)="navigateToProfile()">Profile</button>
   <button mat-raised-button style="width:6vW" color="secondary" (click)="logout()">Logout</button>
 </header>
+<div style="max-width: 1200px; margin: auto">
+  <mat-tab-group dynamicHeight>
+    <mat-tab label="Users">
+      <ng-template matTabContent>
+        <div class="mat-elevation-z8" style="display: block; max-width: 1200px"> <!--style="margin: 1px; border: 1px solid #ddd"-->
+          <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+            <!-- User name Definition -->
+            <ng-container matColumnDef="personName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> User name </mat-header-cell>
+              <mat-cell *matCellDef="let user"> {{user.personName}} </mat-cell>
+            </ng-container>
 
-<!--<div *ngFor="let user of users" style="display: block; max-width: 1000px; margin: auto">
-  <mat-card class="example-card" style="height: 100%; width: 100%; box-sizing: border-box">
-      <div style="display: inline">
-        <mat-card-content style="margin-bottom: 0; min-height: 50px; display: flex; align-items: center">
-          <span style="font-family: Arial; font-size: 18px"><strong>{{user.personName}}</strong></span>
-          <span style="margin-left: auto; order: 2">
-          <button mat-button>
-            <mat-icon>settings</mat-icon>
-          </button>
-          <button mat-button>
-            <mat-icon>delete</mat-icon>
-          </button>
-          </span>
-        </mat-card-content>
+            <!-- E-mail Definition -->
+            <ng-container matColumnDef="email">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> E-mail </mat-header-cell>
+              <mat-cell *matCellDef="let user"> {{user.email}} </mat-cell>
+            </ng-container>
+
+            <!-- ID Definition -->
+            <ng-container matColumnDef="id">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
+              <mat-cell *matCellDef="let user"> {{user.id}} </mat-cell>
+            </ng-container>
+
+            <!-- Modify Definition -->
+            <ng-container matColumnDef="modify">
+              <mat-header-cell *matHeaderCellDef> Modify </mat-header-cell>
+              <mat-cell *matCellDef="let user">
+                <button mat-button (click)="modifyUser(user.id)">
+                  <mat-icon>settings</mat-icon>
+                </button> </mat-cell>
+            </ng-container>
+
+            <!-- Delete Definition -->
+            <ng-container matColumnDef="delete">
+              <mat-header-cell *matHeaderCellDef> Delete </mat-header-cell>
+              <mat-cell *matCellDef="let user">
+                <button mat-button (click)="deleteUser(user.id)">
+                  <mat-icon>delete</mat-icon>
+                </button> </mat-cell>
+            </ng-container>
+
+            <!-- Header and Row Declarations -->
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let user; columns: displayedColumns;"></mat-row>
+          </mat-table>
+
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Files">
+      <div class="cards" *ngFor="let caff of caffs">
+        <mat-card class="example-card">
+          <mat-card-header>
+            <div mat-card-avatar class="example-header-image"></div>
+            <mat-card-title>Shiba Inu</mat-card-title>
+            <mat-card-subtitle>Dog Breed</mat-card-subtitle>
+          </mat-card-header>
+          <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+          <mat-card-content>
+            <p>
+              The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
+              A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
+              bred for hunting.
+            </p>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-raised-button class="cardBtn" color="primary">Details</button>
+            <button mat-raised-button class="cardBtn" color="primary">Delete</button>
+          </mat-card-actions>
+        </mat-card>
       </div>
-  </mat-card>
-</div>-->
-
-<div class="mat-elevation-z8" style="display: block; max-width: 1200px; margin: auto">
-  <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
-    <!-- User name Definition -->
-    <ng-container matColumnDef="personName">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> User name </mat-header-cell>
-      <mat-cell *matCellDef="let user"> {{user.personName}} </mat-cell>
-    </ng-container>
-
-    <!-- E-mail Definition -->
-    <ng-container matColumnDef="email">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> E-mail </mat-header-cell>
-      <mat-cell *matCellDef="let user"> {{user.email}} </mat-cell>
-    </ng-container>
-
-    <!-- ID Definition -->
-    <ng-container matColumnDef="id">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
-      <mat-cell *matCellDef="let user"> {{user.id}} </mat-cell>
-    </ng-container>
-
-    <!-- Modify Definition -->
-    <ng-container matColumnDef="modify">
-      <mat-header-cell *matHeaderCellDef> Modify </mat-header-cell>
-      <mat-cell *matCellDef="let user">
-        <button mat-button (click)="modifyUser(user.id)">
-          <mat-icon>settings</mat-icon>
-        </button> </mat-cell>
-    </ng-container>
-
-    <!-- Delete Definition -->
-    <ng-container matColumnDef="delete">
-      <mat-header-cell *matHeaderCellDef> Delete </mat-header-cell>
-      <mat-cell *matCellDef="let user">
-        <button mat-button (click)="deleteUser(user.id)">
-          <mat-icon>delete</mat-icon>
-        </button> </mat-cell>
-    </ng-container>
-
-    <!-- Header and Row Declarations -->
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let user; columns: displayedColumns;"></mat-row>
-  </mat-table>
-
-  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </mat-tab>
+  </mat-tab-group>
 </div>

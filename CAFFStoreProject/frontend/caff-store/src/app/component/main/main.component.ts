@@ -91,7 +91,7 @@ export class MainComponent implements OnInit {
   }
 
   navigateToProfile() {
-    this._router.navigate(['/' + RouterPath.profil]);
+    this._router.navigate(['/' + RouterPath.profil], { queryParams: { id: localStorage.getItem('user_id') } });
   }
 
   public uploadCaff() {

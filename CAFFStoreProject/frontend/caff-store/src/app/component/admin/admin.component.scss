@@ -166,3 +166,23 @@ mat-header-cell {
 mat-cell {
   font-size: 16px;
 }
+
+button.cardBtn {
+  width: 45%;
+  margin-left: 5px;
+  margin-bottom: 5px;
+}
+
+.example-card {
+  max-width: 200px;
+}
+
+.cards {
+  display: inline-block;
+  margin: 15px;
+}
+
+.example-header-image {
+  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+  background-size: cover;
+}

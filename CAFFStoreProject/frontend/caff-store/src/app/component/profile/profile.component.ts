@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { NetworkService } from 'src/app/service/network/network.service';
 import { RouterPath } from 'src/app/util/router-path';
@@ -19,7 +19,8 @@ export class ProfileComponent implements OnInit {
   constructor(
     private _router: Router,
     private _network: NetworkService,
-    private _auth: AuthService
+    private _auth: AuthService,
+    private _route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -31,7 +32,10 @@ export class ProfileComponent implements OnInit {
     //     console.log(err);
     //   });
     // });
-    this.userId = localStorage.getItem("user_id");
+    this._route.queryParams.subscribe(params => {
+      this.userId = params.id;
+    });
+    // this.userId = localStorage.getItem("user_id");
     this.loadUserInfo();
   }
 

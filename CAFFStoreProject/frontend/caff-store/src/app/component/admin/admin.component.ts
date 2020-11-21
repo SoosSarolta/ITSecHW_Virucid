@@ -7,6 +7,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
 import { RouterPath } from 'src/app/util/router-path';
+import {Caff} from '../../model/caff';
 
 @Component({
   selector: 'app-admin',
@@ -19,7 +20,9 @@ export class AdminComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['personName', 'email', 'id', 'modify', 'delete'];
   dataSource: MatTableDataSource<User>;
   @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+
+  caffs: Array<Caff>;
 
   constructor(
     private _network: NetworkService,
@@ -30,39 +33,63 @@ export class AdminComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     // TODO: load from backend
     this.users = new Array();
-    let NagyLajosUser = new User();
-    NagyLajosUser.id = '000001';
-    NagyLajosUser.personName = 'Nagy Lajos';
-    NagyLajosUser.email = 'lajos@caffstore.hu';
-    this.users.push(NagyLajosUser);
+    // let NagyLajosUser = new User();
+    // NagyLajosUser.id = '000001';
+    // NagyLajosUser.personName = 'Nagy Lajos';
+    // NagyLajosUser.email = 'lajos@caffstore.hu';
+    // this.users.push(NagyLajosUser);
     /* this.users.push(new User('000002', 'Nagyne Iren', 'iren@caffstore.hu'));
     this.users.push(new User('000003', 'Hurutos Sandor', 'sandor@caffstore.hu'));
     this.users.push(new User('000004', 'Vegh Bela', 'bela@caffstore.hu')); */
+    this.loadUsers();
+  }
 
-    this.dataSource = new MatTableDataSource(this.users);
+  private async loadUsers() {
+    await this._network.admin().then(data => {
+      console.log(data);
+      data.forEach(element => {
+        const user = new User();
+        user.id = element.id;
+        user.personName = element.username;
+        user.email = 'Test email';
+        this.users.push(user);
+        console.log(this.users);
+      });
+      this.dataSource = new MatTableDataSource(this.users);
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
+    }).catch(err => {
+      console.log(err);
+    });
+    console.log(this.users);
+    this.caffs = new Array();
+    for (let i = 0; i < 10; i++) {
+      this.caffs.push(new Caff('1', 'abc', ''));
+    }
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
   }
 
   deleteUser(id: string): void {
-    // TODO: call deleteUser() in backend
+    // TODO: call deleteUser(id) in backend
     if (confirm('Are you sure to delete this profile with id "' + id + '"?')) {
       console.log('Implement delete functionality here');
+      this._network.deleteUser(id).then(data => {
+        console.log(data);
+      }).catch(err => {
+        console.log(err);
+      });
+      this._router.navigate(['/' + RouterPath.admin]);
     }
   }
 
   modifyUser(id: string): void {
-    // TODO: navigate to user profile
-    // this._router.navigate(['/' + RouterPath.profil], { queryParams: { id: id } });
-
+    this._router.navigate(['/' + RouterPath.profil], { queryParams: { id } });
   }
 
-  // TODO : add id argument after valid login
-  navigateToProfile(): void{
-    // this._router.navigate(['/' + RouterPath.profil], { queryParams: { id: id } });
+  navigateToProfile(): void {
+    this._router.navigate(['/' + RouterPath.profil], { queryParams: { id: localStorage.getItem('user_id') } });
   }
 
   logout(): void {
