@@ -1,5 +1,6 @@
 package aut.bme.CAFFStore.controller;
 
+import aut.bme.CAFFStore.data.dto.BasicStringResponseDTO;
 import aut.bme.CAFFStore.data.dto.UserDTO;
 import aut.bme.CAFFStore.data.dto.UserDetailsDTO;
 import aut.bme.CAFFStore.data.entity.User;
@@ -36,7 +37,7 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ResponseEntity<String> register(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<BasicStringResponseDTO> register(@RequestBody Map<String, Object> body) {
         return userService.register(body);
     }
 
@@ -66,13 +67,13 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @RequestMapping(value = "/users/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<String> updateUserName(@PathVariable String id, @RequestParam String username) {
+    public ResponseEntity<BasicStringResponseDTO> updateUserName(@PathVariable String id, @RequestParam String username) {
         logger.info("Updating username to " + username + "for user with id: " + id);
         Optional<User> user = userRepo.findById(id);
         if (user.isPresent()) {
             user.get().setPersonName(username);
             userRepo.save(user.get());
-            return new ResponseEntity<>("Successful update.", HttpStatus.OK);
+            return new ResponseEntity<>(new BasicStringResponseDTO("Successful update."), HttpStatus.OK);
         }
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }

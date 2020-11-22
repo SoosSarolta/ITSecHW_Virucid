@@ -1,5 +1,6 @@
 package aut.bme.CAFFStore.unittests;
 
+import aut.bme.CAFFStore.data.dto.BasicStringResponseDTO;
 import aut.bme.CAFFStore.data.dto.CommentRequestDTO;
 import aut.bme.CAFFStore.data.entity.Caff;
 import aut.bme.CAFFStore.data.entity.User;
@@ -16,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -48,10 +50,10 @@ public class CommentServiceTest {
 
         when(userRepo.findById(userId)).thenReturn(Optional.empty());
 
-        ResponseEntity<String> responseEntity = commentService.saveComment(commentRequestDTO, userId, caffId);
+        ResponseEntity<BasicStringResponseDTO> responseEntity = commentService.saveComment(commentRequestDTO, userId, caffId);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        assertEquals("User does not exist.", responseEntity.getBody());
+        assertEquals("User does not exist.", Objects.requireNonNull(responseEntity.getBody()).getResponse());
     }
 
     @Test
@@ -63,10 +65,10 @@ public class CommentServiceTest {
         when(userRepo.findById(userId)).thenReturn(Optional.of(new User()));
         when(caffRepo.findById(caffId)).thenReturn(Optional.empty());
 
-        ResponseEntity<String> responseEntity = commentService.saveComment(commentRequestDTO, userId, caffId);
+        ResponseEntity<BasicStringResponseDTO> responseEntity = commentService.saveComment(commentRequestDTO, userId, caffId);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        assertEquals("Caff does not exist.", responseEntity.getBody());
+        assertEquals("Caff does not exist.", Objects.requireNonNull(responseEntity.getBody()).getResponse());
     }
 
     @Test
@@ -78,9 +80,9 @@ public class CommentServiceTest {
         when(userRepo.findById(userId)).thenReturn(Optional.of(new User()));
         when(caffRepo.findById(caffId)).thenReturn(Optional.of(new Caff()));
 
-        ResponseEntity<String> responseEntity = commentService.saveComment(commentRequestDTO, userId, caffId);
+        ResponseEntity<BasicStringResponseDTO> responseEntity = commentService.saveComment(commentRequestDTO, userId, caffId);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("Successful save.", responseEntity.getBody());
+        assertEquals("Successful save.", Objects.requireNonNull(responseEntity.getBody()).getResponse());
     }
 }

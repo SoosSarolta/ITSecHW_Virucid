@@ -40,7 +40,7 @@ public class EntityBuilderTest {
         assertEquals("MyName", user.getPersonName());
         assertEquals("myname.myname@myname.com", user.getEmail());
         assertNotEquals("mypass", user.getPassword());
-        assertTrue(user.getSalt() != null);
+        assertNotNull(user.getSalt());
 
     }
 }

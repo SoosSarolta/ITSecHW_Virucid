@@ -1,5 +1,6 @@
 package aut.bme.CAFFStore.service;
 
+import aut.bme.CAFFStore.data.dto.BasicStringResponseDTO;
 import aut.bme.CAFFStore.data.dto.CommentResponseDTO;
 import aut.bme.CAFFStore.data.dto.UserDetailsDTO;
 import aut.bme.CAFFStore.data.entity.Caff;
@@ -28,10 +29,10 @@ public class UserService {
     @Autowired
     private EntityBuilder entityBuilder = new EntityBuilder();
 
-    public ResponseEntity<String> register(Map<String, Object> body){
+    public ResponseEntity<BasicStringResponseDTO> register(Map<String, Object> body){
         String email = body.get("email").toString();
         if (userRepo.existsByEmail(email)) {
-            return new ResponseEntity<>("There's already a user registered with this email.",
+            return new ResponseEntity<>(new BasicStringResponseDTO("There's already a user registered with this email."),
                     HttpStatus.BAD_REQUEST);
         }
 

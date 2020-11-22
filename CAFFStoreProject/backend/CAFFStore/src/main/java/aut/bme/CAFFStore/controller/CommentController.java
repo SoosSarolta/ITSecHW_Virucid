@@ -1,5 +1,6 @@
 package aut.bme.CAFFStore.controller;
 
+import aut.bme.CAFFStore.data.dto.BasicStringResponseDTO;
 import aut.bme.CAFFStore.data.dto.CommentRequestDTO;
 import aut.bme.CAFFStore.service.CommentService;
 import org.slf4j.Logger;
@@ -20,9 +21,9 @@ public class CommentController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<String> addComment(@RequestBody CommentRequestDTO commentRequestDTO,
-                                             @RequestParam String userId,
-                                             @RequestParam String caffId) {
+    public ResponseEntity<BasicStringResponseDTO> addComment(@RequestBody CommentRequestDTO commentRequestDTO,
+                                                             @RequestParam String userId,
+                                                             @RequestParam String caffId) {
         logger.info("Saving comment.");
         return commentService.saveComment(commentRequestDTO, userId, caffId);
     }

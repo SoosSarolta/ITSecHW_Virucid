@@ -5,13 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-public class CaffIdResponseEntity {
+public class BasicStringResponseDTO {
+
     @Getter
     @Setter
     private String response;
 
     @JsonCreator
-    public CaffIdResponseEntity(@JsonProperty("response") String response) {
+    public BasicStringResponseDTO(@JsonProperty("response") String response) {
         this.response = response;
     }
 }

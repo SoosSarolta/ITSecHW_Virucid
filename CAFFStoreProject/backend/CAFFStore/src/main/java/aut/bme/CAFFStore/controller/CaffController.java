@@ -1,8 +1,8 @@
 package aut.bme.CAFFStore.controller;
 
+import aut.bme.CAFFStore.data.dto.BasicStringResponseDTO;
 import aut.bme.CAFFStore.data.dto.CaffDTO;
 import aut.bme.CAFFStore.data.dto.CaffDetailsDTO;
-import aut.bme.CAFFStore.data.dto.CaffIdResponseEntity;
 import aut.bme.CAFFStore.data.entity.Caff;
 import aut.bme.CAFFStore.data.repository.CaffRepo;
 import aut.bme.CAFFStore.service.CaffService;
@@ -50,16 +50,16 @@ public class CaffController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteCaff(@PathVariable String id) {
+    public ResponseEntity<BasicStringResponseDTO> deleteCaff(@PathVariable String id) {
         logger.info("Deleting caff file with id: " + id);
         return caffService.deleteCaffAndConnectedFiles(id);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public ResponseEntity<CaffIdResponseEntity> uploadCaff(@RequestPart(name = "file", required = false) MultipartFile file,
-                                                           @RequestParam String userId,
-                                                           HttpServletRequest request) throws IOException, InterruptedException {
+    public ResponseEntity<BasicStringResponseDTO> uploadCaff(@RequestPart(name = "file", required = false) MultipartFile file,
+                                                             @RequestParam String userId,
+                                                             HttpServletRequest request) throws IOException, InterruptedException {
         logger.info("Parsing caff file with filename: " + file.getOriginalFilename());
         return caffService.uploadCaff(file, userId);
     }

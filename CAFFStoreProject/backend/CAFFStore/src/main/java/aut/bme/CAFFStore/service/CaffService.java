@@ -1,7 +1,7 @@
 package aut.bme.CAFFStore.service;
 
+import aut.bme.CAFFStore.data.dto.BasicStringResponseDTO;
 import aut.bme.CAFFStore.data.dto.CaffDTO;
-import aut.bme.CAFFStore.data.dto.CaffIdResponseEntity;
 import aut.bme.CAFFStore.data.entity.Caff;
 import aut.bme.CAFFStore.data.entity.User;
 import aut.bme.CAFFStore.data.repository.CaffRepo;
@@ -60,7 +60,7 @@ public class CaffService {
         return caffDTOS.stream().map(CaffDTO::createCaffDTOWithoutBitmap).collect(Collectors.toList());
     }
 
-    public ResponseEntity<CaffIdResponseEntity> uploadCaff(MultipartFile file, String userId) throws IOException, InterruptedException {
+    public ResponseEntity<BasicStringResponseDTO> uploadCaff(MultipartFile file, String userId) throws IOException, InterruptedException {
         Caff caff = new Caff();
         caff.setOriginalFileName(file.getOriginalFilename());
         caff.setCreatorId(userId);
@@ -71,7 +71,7 @@ public class CaffService {
             user.get().addCaffFile(caff);
             userRepo.save(user.get());
         } else {
-            return new ResponseEntity<>(new CaffIdResponseEntity("User does not exist!"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new BasicStringResponseDTO("User does not exist!"), HttpStatus.BAD_REQUEST);
         }
 
         String caffFileName = caff.getId() + ".caff";
@@ -82,7 +82,7 @@ public class CaffService {
         saveCaffFile(file, caffFullPath);
         parseCaffFile(caff, caffFullPath);
 
-        return new ResponseEntity<>(new CaffIdResponseEntity(caff.getId()), HttpStatus.OK);
+        return new ResponseEntity<>(new BasicStringResponseDTO(caff.getId()), HttpStatus.OK);
     }
 
     public void saveCaffFile(MultipartFile file, String caffFullPath) throws IOException {
@@ -122,14 +122,14 @@ public class CaffService {
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
     }
 
-    public ResponseEntity<String> deleteCaffAndConnectedFiles(String caffId) {
+    public ResponseEntity<BasicStringResponseDTO> deleteCaffAndConnectedFiles(String caffId) {
         String caffFileName = caffId + ".caff";
         String bitmapFileName = caffId + ".bmp";
         String gifFileName = caffId + ".gif";
 
         Optional<Caff> caff = caffRepo.findById(caffId);
         if (caff.isEmpty()) {
-            return new ResponseEntity<>("Caff does not exist.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new BasicStringResponseDTO("Caff does not exist."), HttpStatus.BAD_REQUEST);
         }
 
         Optional<User> user = userRepo.findById(caff.get().getCreatorId());
@@ -160,6 +160,6 @@ public class CaffService {
             gifFile.delete();
         }
 
-        return new ResponseEntity<>("Successful deletion.", HttpStatus.OK);
+        return new ResponseEntity<>(new BasicStringResponseDTO("Successful deletion."), HttpStatus.OK);
     }
 }

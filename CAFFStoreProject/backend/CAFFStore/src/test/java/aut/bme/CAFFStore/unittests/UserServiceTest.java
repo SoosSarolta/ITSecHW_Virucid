@@ -1,5 +1,6 @@
 package aut.bme.CAFFStore.unittests;
 
+import aut.bme.CAFFStore.data.dto.BasicStringResponseDTO;
 import aut.bme.CAFFStore.data.entity.User;
 import aut.bme.CAFFStore.data.repository.UserRepo;
 import aut.bme.CAFFStore.service.CaffService;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -46,10 +48,11 @@ public class UserServiceTest {
 
         when(userRepo.existsByEmail("example.example@example.com")).thenReturn(true);
 
-        ResponseEntity<String> responseEntity = userService.register(body);
+        ResponseEntity<BasicStringResponseDTO> responseEntity = userService.register(body);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        assertEquals("There's already a user registered with this email.", responseEntity.getBody());
+        assertEquals("There's already a user registered with this email.",
+                Objects.requireNonNull(responseEntity.getBody()).getResponse());
     }
 
     @Test
@@ -60,7 +63,7 @@ public class UserServiceTest {
         when(userRepo.existsByEmail("example.example@example.com")).thenReturn(false);
         when(entityBuilder.buildUser(body)).thenReturn(new User());
 
-        ResponseEntity<String> responseEntity = userService.register(body);
+        ResponseEntity<BasicStringResponseDTO> responseEntity = userService.register(body);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNull(responseEntity.getBody());

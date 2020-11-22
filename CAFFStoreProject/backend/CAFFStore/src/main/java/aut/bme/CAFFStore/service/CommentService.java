@@ -1,6 +1,7 @@
 package aut.bme.CAFFStore.service;
 
 import aut.bme.CAFFStore.controller.CommentController;
+import aut.bme.CAFFStore.data.dto.BasicStringResponseDTO;
 import aut.bme.CAFFStore.data.dto.CommentRequestDTO;
 import aut.bme.CAFFStore.data.entity.Caff;
 import aut.bme.CAFFStore.data.entity.Comment;
@@ -31,7 +32,7 @@ public class CommentService {
     @Autowired
     private CaffRepo caffRepo;
 
-    public ResponseEntity<String> saveComment(CommentRequestDTO commentRequestDTO, String userId, String caffId) {
+    public ResponseEntity<BasicStringResponseDTO> saveComment(CommentRequestDTO commentRequestDTO, String userId, String caffId) {
         Comment comment = new Comment(commentRequestDTO);
         commentRepo.save(comment);
 
@@ -39,10 +40,10 @@ public class CommentService {
         Optional<Caff> caff = caffRepo.findById(caffId);
 
         if (user.isEmpty()) {
-            return new ResponseEntity<>("User does not exist.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new BasicStringResponseDTO("User does not exist."), HttpStatus.BAD_REQUEST);
         }
         if (caff.isEmpty()) {
-            return new ResponseEntity<>("Caff does not exist.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new BasicStringResponseDTO("Caff does not exist."), HttpStatus.BAD_REQUEST);
         }
 
         user.get().addComment(comment);
@@ -51,6 +52,6 @@ public class CommentService {
         caff.get().addComment(comment);
         caffRepo.save(caff.get());
 
-        return new ResponseEntity<>("Successful save.", HttpStatus.OK);
+        return new ResponseEntity<>(new BasicStringResponseDTO("Comment added successfully."), HttpStatus.OK);
     }
 }

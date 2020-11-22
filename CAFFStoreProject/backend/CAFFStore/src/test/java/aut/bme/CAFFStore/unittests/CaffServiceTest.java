@@ -1,6 +1,6 @@
 package aut.bme.CAFFStore.unittests;
 
-import aut.bme.CAFFStore.data.dto.CaffIdResponseEntity;
+import aut.bme.CAFFStore.data.dto.BasicStringResponseDTO;
 import aut.bme.CAFFStore.data.entity.Caff;
 import aut.bme.CAFFStore.data.entity.User;
 import aut.bme.CAFFStore.data.repository.CaffRepo;
@@ -57,7 +57,7 @@ public class CaffServiceTest {
 
         when(userRepo.findById(userId)).thenReturn(Optional.empty());
 
-        ResponseEntity<CaffIdResponseEntity> responseEntity = caffService.uploadCaff(file, userId);
+        ResponseEntity<BasicStringResponseDTO> responseEntity = caffService.uploadCaff(file, userId);
 
         assertEquals("User does not exist!", Objects.requireNonNull(responseEntity.getBody()).getResponse());
     }
@@ -80,7 +80,7 @@ public class CaffServiceTest {
 
         when(userRepo.findById(userId)).thenReturn(Optional.of(user));
 
-        ResponseEntity<CaffIdResponseEntity> responseEntity = caffService.uploadCaff(file, userId);
+        ResponseEntity<BasicStringResponseDTO> responseEntity = caffService.uploadCaff(file, userId);
 
         assertTrue(caffFile.exists());
         assertEquals("CAFF CONTENT", FileUtils.readFileToString(caffFile, StandardCharsets.UTF_8));
@@ -131,14 +131,14 @@ public class CaffServiceTest {
 
         when(caffRepo.findById(caffId)).thenReturn(Optional.of(new Caff()));
 
-        ResponseEntity<String> responseEntity = caffService.deleteCaffAndConnectedFiles(caffId);
+        ResponseEntity<BasicStringResponseDTO> responseEntity = caffService.deleteCaffAndConnectedFiles(caffId);
 
         assertFalse(caff.exists());
         assertFalse(bitmap.exists());
         assertFalse(gif.exists());
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("Successful deletion.", responseEntity.getBody());
+        assertEquals("Successful deletion.", Objects.requireNonNull(responseEntity.getBody()).getResponse());
     }
 
     @Test
@@ -147,11 +147,11 @@ public class CaffServiceTest {
 
         when(caffRepo.findById(caffId)).thenReturn(Optional.empty());
 
-        ResponseEntity<String> responseEntity = caffService.deleteCaffAndConnectedFiles(caffId);
+        ResponseEntity<BasicStringResponseDTO> responseEntity = caffService.deleteCaffAndConnectedFiles(caffId);
 
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        assertEquals("Caff does not exist.", responseEntity.getBody());
+        assertEquals("Caff does not exist.", Objects.requireNonNull(responseEntity.getBody()).getResponse());
     }
 
     @Test
@@ -165,13 +165,13 @@ public class CaffServiceTest {
         when(caffRepo.findById(caffId)).thenReturn(Optional.of(caff));
         when(userRepo.findById(caff.getCreatorId())).thenReturn(Optional.empty());
 
-        ResponseEntity<String> responseEntity = caffService.deleteCaffAndConnectedFiles(caffId);
+        ResponseEntity<BasicStringResponseDTO> responseEntity = caffService.deleteCaffAndConnectedFiles(caffId);
 
         File caffFile = new File(caffFullPath);
         assertFalse(caffFile.exists());
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("Successful deletion.", responseEntity.getBody());
+        assertEquals("Successful deletion.", Objects.requireNonNull(responseEntity.getBody()).getResponse());
 
     }
 }
