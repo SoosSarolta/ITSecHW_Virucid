@@ -1,26 +1,29 @@
-<div class="container">
-    <ngx-file-drop dropZoneLabel="Drop files here" id="image-drop-box" (onFileDrop)="dropped($event)" accept=".caff"
-        multiple="false">
-        <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-            <span *ngIf="caffFiles.length == 0">Drop a file here to upload</span>
-            <span *ngIf="caffFiles.length > 0">
-                {{isValidFile?caffFiles.length:''}}{{isValidFile?' caff file dropped!':'Error! Drop maximum one file!'}}
-            </span>
-        </ng-template>
-    </ngx-file-drop>
-    <div class="uploadBtn">
-        <button mat-raised-button color="primary" (click)="uploadCaff()">Upload</button>
+<div style="max-width: 1200px; margin: auto">
+    <div class="container">
+        <ngx-file-drop dropZoneLabel="Drop files here" id="image-drop-box" (onFileDrop)="dropped($event)" accept=".caff"
+            multiple="false">
+            <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+                <span *ngIf="caffFiles.length == 0">Drop a file here to upload</span>
+                <span *ngIf="caffFiles.length > 0">
+                    {{isValidFile?caffFiles.length:''}}{{isValidFile?' caff file dropped!':'Error! Drop maximum one file!'}}
+                </span>
+            </ng-template>
+        </ngx-file-drop>
+        <div class="uploadBtn">
+            <button mat-raised-button color="primary" (click)="uploadCaff()">Upload</button>
+        </div>
+        <br>
+        <br>
     </div>
-    <br>
-    <br>
+    
+    <div class="cards" *ngFor="let caff of caffs">
+        <mat-card class="example-card">
+            <img mat-card-image [src]="caff.bitmapFile" alt="Caff preview">
+            <mat-card-actions>
+                <button mat-raised-button class="cardBtn" color="primary"
+                    (click)="navigateToDetails(caff.id)">Details</button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
 </div>
 
-<div class="cards" *ngFor="let caff of caffs">
-    <mat-card class="example-card">
-        <img mat-card-image [src]="caff.bitmapFile" alt="Caff preview">
-        <mat-card-actions>
-            <button mat-raised-button class="cardBtn" color="primary"
-                (click)="navigateToDetails(caff.id)">Details</button>
-        </mat-card-actions>
-    </mat-card>
-</div>
