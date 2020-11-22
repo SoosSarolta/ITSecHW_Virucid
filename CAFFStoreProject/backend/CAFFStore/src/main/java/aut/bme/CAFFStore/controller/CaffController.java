@@ -60,8 +60,11 @@ public class CaffController {
     public ResponseEntity<BasicStringResponseDTO> uploadCaff(@RequestPart(name = "file", required = false) MultipartFile file,
                                                              @RequestParam String userId,
                                                              HttpServletRequest request) throws IOException, InterruptedException {
-        logger.info("Parsing caff file with filename: " + file.getOriginalFilename());
-        return caffService.uploadCaff(file, userId);
+        if(file != null){
+            logger.info("Parsing caff file with filename: " + file.getOriginalFilename());
+            return caffService.uploadCaff(file, userId);
+        }
+        return new ResponseEntity<>(new BasicStringResponseDTO("File is missing."), HttpStatus.BAD_REQUEST);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
