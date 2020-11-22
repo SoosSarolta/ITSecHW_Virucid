@@ -1,9 +1,3 @@
-<header>
-    <div class="brand">
-        <h5>CAFF Store - Virucid</h5>
-    </div>
-</header>
-
 <div class="container">
     <p>Don't have an account? <a routerLink="/registration">Register</a></p>
     <form class="example-form">
@@ -31,7 +25,7 @@
             </mat-form-field>
         </div>
         <div class="align-center">
-            <button mat-raised-button style="width:8vw" 
+            <button mat-raised-button style="width:8vw"
                 [disabled]="passwordFormControl.invalid || emailFormControl.invalid"
                 color="primary" (click)=login()>Login</button>
         </div>

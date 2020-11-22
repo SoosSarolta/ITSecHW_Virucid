@@ -1,1 +1,34 @@
+
+<header class="navbar navbar-expand navbar-dark bg-dark">
+  <a class="navbar-brand" [routerLink]="['main']">CAFF Store - Virucid</a>
+  <!--<div class="brand">
+    <h5><a [routerLink]="['main']">CAFF Store - Virucid</a></h5>
+  </div>-->
+  <ul class="navbar-nav ml-auto justify-content-between">
+
+    <li class="nav-item">
+      <button mat-raised-button class="nav-link bg-dark text-white" style="width:6vw" [routerLink]="['main']">Home</button>
+    </li>
+
+    <!-- Authorized only -->
+    <li class="nav-item" *ngIf="isAuthenticated && !isAdmin">
+      <button mat-raised-button class="nav-link bg-primary text-white" style="width:6vw" (click)="navigateToProfile()">Profile</button>
+    </li>
+
+    <!-- Admin only -->
+    <li class="nav-item" *ngIf="isAdmin">
+      <button mat-raised-button class="nav-link bg-primary text-white" style="width:6vw" [routerLink]="['admin']">Dashboard</button>
+    </li>
+
+    <!-- Authorized only -->
+    <li class="nav-item" *ngIf="isAuthenticated">
+      <button mat-raised-button class="nav-link bg-light text-dark" style="width:6vw" (click)="logout()">Logout</button>
+    </li>
+  </ul>
+
+  <span class="navbar-text">
+      <span class="badge badge-warning" *ngIf="isAuthenticated">Authenticated</span>
+      <span class="badge badge-danger" *ngIf="isAdmin">Admin</span>
+    </span>
+</header>
 <router-outlet></router-outlet>

@@ -52,6 +52,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
         user.id = element.id;
         user.personName = element.username;
         user.email = 'Test email';
+        user.role = element.role;
         this.users.push(user);
         console.log(this.users);
       });

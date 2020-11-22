@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { User } from 'src/app/model/user';
 import { NetworkService } from 'src/app/service/network/network.service';
 import { RouterPath } from 'src/app/util/router-path';
+import {AuthService} from '../../service/auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +13,7 @@ import { RouterPath } from 'src/app/util/router-path';
 })
 export class LoginComponent implements OnInit {
   hidePassword = true;
-  showDetails: boolean = true;
+  showDetails = true;
   user: User;
   emailFormControl = new FormControl('', [
     Validators.required,
@@ -29,7 +30,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private _formBuilder: FormBuilder,
     private _network: NetworkService,
-    private _router: Router
+    private _router: Router,
+    private _auth: AuthService
   ) {
     this.user = new User();
   }
@@ -45,12 +47,15 @@ export class LoginComponent implements OnInit {
   }
 
   async login() {
-      this._network.login(this.user.email, this.user.password).then(data => {
-      this.user.id = data["id"];
-      this.user.personName = data["username"];
-      localStorage.setItem('token', data['token'].split(' ')[1]);
-      console.log(this.user);
-      localStorage.setItem('user_id', data['id']);
+    // console.log('login called');
+    this._network.login(this.user.email, this.user.password).then(data => {
+      // console.log('data: ' + data.toString());
+      this.user.id = data.id;
+      this.user.personName = data.username;
+      this.user.role = data.role;
+      // console.log('user: ' + this.user);
+
+      this._auth.login(data.id, data.token, data.role);
       this._router.navigate(['/' + RouterPath.main]);
     });
   }
