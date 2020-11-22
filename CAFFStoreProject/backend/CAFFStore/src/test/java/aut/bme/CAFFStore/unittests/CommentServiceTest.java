@@ -83,6 +83,6 @@ public class CommentServiceTest {
         ResponseEntity<BasicStringResponseDTO> responseEntity = commentService.saveComment(commentRequestDTO, userId, caffId);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("Successful save.", Objects.requireNonNull(responseEntity.getBody()).getResponse());
+        assertEquals("Comment added successfully.", Objects.requireNonNull(responseEntity.getBody()).getResponse());
     }
 }

@@ -2,6 +2,7 @@ package aut.bme.CAFFStore.service;
 
 import aut.bme.CAFFStore.data.dto.BasicStringResponseDTO;
 import aut.bme.CAFFStore.data.dto.CaffDTO;
+import aut.bme.CAFFStore.data.dto.CaffDownloadDTO;
 import aut.bme.CAFFStore.data.entity.Caff;
 import aut.bme.CAFFStore.data.entity.User;
 import aut.bme.CAFFStore.data.repository.CaffRepo;
@@ -116,9 +117,9 @@ public class CaffService {
         }
     }
 
-    public ResponseEntity<CaffDTO> downloadCaff(String id) {
+    public ResponseEntity<CaffDownloadDTO> downloadCaff(String id) {
         Optional<Caff> caff = caffRepo.findById(id);
-        return caff.map(value -> new ResponseEntity<>(CaffDTO.createCaffDTO(value), HttpStatus.OK))
+        return caff.map(value -> new ResponseEntity<>(CaffDownloadDTO.createCaffDownloadDTO(value), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
     }
 

@@ -3,6 +3,7 @@ package aut.bme.CAFFStore.controller;
 import aut.bme.CAFFStore.data.dto.BasicStringResponseDTO;
 import aut.bme.CAFFStore.data.dto.CaffDTO;
 import aut.bme.CAFFStore.data.dto.CaffDetailsDTO;
+import aut.bme.CAFFStore.data.dto.CaffDownloadDTO;
 import aut.bme.CAFFStore.data.entity.Caff;
 import aut.bme.CAFFStore.data.repository.CaffRepo;
 import aut.bme.CAFFStore.service.CaffService;
@@ -69,7 +70,7 @@ public class CaffController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/download/{id}", method = RequestMethod.GET)
-    public ResponseEntity<CaffDTO> downloadCaff(@PathVariable String id) throws IOException {
+    public ResponseEntity<CaffDownloadDTO> downloadCaff(@PathVariable String id) throws IOException {
         logger.info("Downloading caff file with id: " + id);
         return caffService.downloadCaff(id);
     }
