@@ -42,11 +42,12 @@ export class MainComponent implements OnInit {
     console.log(this.token);
     this.isValidFile = false;
     this._network.home().then(data => {
-      console.log(data);
+      console.log("home: ", data);
       data.forEach(element => {
         var url = 'data:image/JPEG;base64,' + encodeURIComponent(element.bitmapFile);
         var image = this._sanitization.bypassSecurityTrustResourceUrl(url);
         this.caffs.push(new Caff(element.id, element.originalFileName, image));
+        console.log("this.caffs: ", this.caffs);
       });
     }).catch(err => {
       console.log(err);
@@ -91,6 +92,7 @@ export class MainComponent implements OnInit {
       this._network.uploadCaff(this.userId, this.caffData).then(data => {
         alert("File uploaded!");
         this.caffFiles = [];
+        window.location.reload();
       }).catch(err => {
         console.log(err);
       });

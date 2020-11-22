@@ -38,13 +38,21 @@ export class NetworkService {
   async login(email: string, password: string): Promise<any> {
     this.resetHeader();
     this.setResponseTypeHeader('json');
+    this.setContentTypeHeader('application/json');
+    this.setAccessControlAllowHeaders();
+    this.setAccessControlAllowMethods();
+    this.setAccessControllAllowOrigin();
     return this.getJSON(this.serverAddress, this.loginURL + '?email=' + email + '&password=' + password);
   }
 
   home(): Promise<any> {
     this.resetHeader();
     this.addAuthHeader();
+    this.setContentTypeHeader('application/json');
     this.setResponseTypeHeader('json');
+    this.setAccessControlAllowHeaders();
+    this.setAccessControlAllowMethods();
+    this.setAccessControllAllowOrigin();
     return this.getJSON(this.serverAddress, this.caffURL);
   }
 
@@ -72,7 +80,6 @@ export class NetworkService {
   uploadCaff(userId: string, formData: FormData): Promise<any> {
     this.resetHeader();
     this.addAuthHeader();
-    this.setContentTypeHeader('application/json');
     return this.postFile(this.serverAddress, this.uploadCaffURL + '?userId=' + userId, formData);
   }
 
@@ -150,5 +157,17 @@ export class NetworkService {
   }
   private resetHeader(): void {
     this.header = new HttpHeaders();
+  }
+
+  private setAccessControllAllowOrigin(){
+    this.header = this.header.append( 'Access-Control-Allow-Origin', "*");
+  }
+
+  private setAccessControlAllowMethods(){
+    this.header = this.header.append( 'Access-Control-Allow-Methods', "GET, POST, PATCH, PUT, DELETE, OPTIONS");
+  }
+
+  private setAccessControlAllowHeaders(){
+    this.header = this.header.append( 'Access-Control-Allow-Headers', "Origin, Content-Type, X-Auth-Token");
   }
 }

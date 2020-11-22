@@ -17,7 +17,7 @@
 
 <div class="cards" *ngFor="let caff of caffs">
     <mat-card class="example-card">
-        <img mat-card-image [src]="caff.bitmapFileName" alt="Caff preview">
+        <img mat-card-image [src]="caff.bitmapFile" alt="Caff preview">
         <mat-card-actions>
             <button mat-raised-button class="cardBtn" color="primary"
                 (click)="navigateToDetails(caff.id)">Details</button>
