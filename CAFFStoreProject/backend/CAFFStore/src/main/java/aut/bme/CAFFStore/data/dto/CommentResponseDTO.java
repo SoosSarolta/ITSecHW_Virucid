@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,17 +24,24 @@ public class CommentResponseDTO {
     @Setter
     private String comment;
 
+    @Getter
+    @Setter
+    private String timeStamp;
+
     @JsonCreator
     public CommentResponseDTO(@JsonProperty("id") String id,
-                              @JsonProperty("comment") String comment) {
+                              @JsonProperty("comment") String comment,
+                              @JsonProperty("timeStamp") String timeStamp) {
         this.id = id;
         this.comment = comment;
+        this.timeStamp = timeStamp;
     }
 
     public static CommentResponseDTO createCommentDTO(Comment comment) {
         return new CommentResponseDTO(
                 comment.getId(),
-                comment.getComment());
+                comment.getComment(),
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(comment.getTimeStamp()));
     }
 
     public static List<CommentResponseDTO> createCommentDTOs(List<Comment> comments) {

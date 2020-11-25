@@ -1,6 +1,7 @@
 package aut.bme.CAFFStore.data.dto;
 
 import aut.bme.CAFFStore.data.entity.Caff;
+import aut.bme.CAFFStore.data.entity.Comment;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,7 +67,11 @@ public class CaffDetailsDTO {
                 caff.getCreatorId(),
                 getFileBytes(caff.getId(), ".gif", ROOT_PATH),
                 getFileBytes(caff.getId(), ".caff", CAFF_FILES_PATH),
-                caff.getComments().stream().map(CommentResponseDTO::createCommentDTO).collect(Collectors.toList()));
+                caff.getComments()
+                        .stream()
+                        .sorted(Comparator.comparing(Comment::getTimeStamp))
+                        .map(CommentResponseDTO::createCommentDTO)
+                        .collect(Collectors.toList()));
     }
 
     public static List<CaffDetailsDTO> createCaffDetailsDTOs(List<Caff> caffs) {

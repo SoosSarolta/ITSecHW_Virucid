@@ -4,6 +4,7 @@ import aut.bme.CAFFStore.data.dto.BasicStringResponseDTO;
 import aut.bme.CAFFStore.data.dto.CommentResponseDTO;
 import aut.bme.CAFFStore.data.dto.UserDetailsDTO;
 import aut.bme.CAFFStore.data.entity.Caff;
+import aut.bme.CAFFStore.data.entity.Comment;
 import aut.bme.CAFFStore.data.entity.User;
 import aut.bme.CAFFStore.data.repository.UserRepo;
 import com.google.common.collect.Lists;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,15 +23,15 @@ import java.util.stream.Collectors;
 public class UserService {
 
     @Autowired
+    private final EntityBuilder entityBuilder = new EntityBuilder();
+
+    @Autowired
     private CaffService caffService;
 
     @Autowired
     private UserRepo userRepo;
 
-    @Autowired
-    private EntityBuilder entityBuilder = new EntityBuilder();
-
-    public ResponseEntity<BasicStringResponseDTO> register(Map<String, Object> body){
+    public ResponseEntity<BasicStringResponseDTO> register(Map<String, Object> body) {
         String email = body.get("email").toString();
         if (userRepo.existsByEmail(email)) {
             return new ResponseEntity<>(new BasicStringResponseDTO("There's already a user registered with this email."),
@@ -66,7 +68,12 @@ public class UserService {
                 user.getId(),
                 user.getPersonName(),
                 user.getEmail(),
-                user.getComments().stream().map(CommentResponseDTO::createCommentDTO).collect(Collectors.toList()),
-                caffService.getMultipleCaffDTOsById(Lists.newArrayList(user.getCaffs().stream().map(Caff::getId).collect(Collectors.toList()))));
+                user.getComments()
+                        .stream()
+                        .sorted(Comparator.comparing(Comment::getTimeStamp))
+                        .map(CommentResponseDTO::createCommentDTO)
+                        .collect(Collectors.toList()),
+                caffService.getMultipleCaffDTOsById(
+                        Lists.newArrayList(user.getCaffs().stream().map(Caff::getId).collect(Collectors.toList()))));
     }
 }
