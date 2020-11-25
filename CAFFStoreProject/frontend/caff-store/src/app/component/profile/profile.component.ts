@@ -41,7 +41,7 @@ export class ProfileComponent implements OnInit {
       });
       this.caffFiles = new Array();
       data.caffFilesWithoutBitmap.forEach(element => {
-        this.caffFiles.push(element.originalFileName)
+        this.caffFiles.push(element)
       })
     });
   }
@@ -59,4 +59,7 @@ export class ProfileComponent implements OnInit {
     this._router.navigate(['/' + RouterPath.login]);
   }
 
+  navigateToDetails(id: string) {
+    this._router.navigate(['/' + RouterPath.detail], { queryParams: { id: id } });
+  }
 }
