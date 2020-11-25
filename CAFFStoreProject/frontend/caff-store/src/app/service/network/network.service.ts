@@ -97,6 +97,10 @@ export class NetworkService {
     var json = JSON.stringify({
       "comment": commentMessage
     });
+    this.setContentTypeHeader('application/json');
+    this.setAccessControlAllowHeaders();
+    this.setAccessControlAllowMethods();
+    this.setAccessControllAllowOrigin();
     return this.postJSON(this.serverAddress, this.commentURL + "?userId=" + userId + "&caffId=" + caffId, json);
   }
 

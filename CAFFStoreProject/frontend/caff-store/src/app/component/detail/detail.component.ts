@@ -42,12 +42,17 @@ export class DetailComponent implements OnInit {
   }
 
   downloadCaff() {
-    console.log("downloading caff..");
+    console.log("downloading caff...");
   }
 
-  comment(){
-    console.log("comment");
+  comment() {
+    console.log("comment: ", this.commentText);
+    this._network.addComment(localStorage.getItem("user_id"), this.currentCaff.id, this.commentText).then(data => {
+      console.log("network.addComment response: ", data);
+      this.commentText = "";
+      window.location.reload();
+    }).catch(err => {
+      console.log(err);
+    });
   }
-  
-  change(event) {console.log(event.target.value);}
 }

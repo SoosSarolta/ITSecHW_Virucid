@@ -14,7 +14,7 @@
     <div class="example-full-width" style="margin-top: 2em;">
         <mat-form-field class="example-full-width">
             <mat-label>Leave a comment</mat-label>
-            <input matInput #message maxlength="1024" (change)="change($event)" [(ngModel)]="commentText">
+            <input matInput #message maxlength="1024" [(ngModel)]="commentText">
             <button mat-button *ngIf="commentText" matSuffix mat-icon-button aria-label="Clear"
                 (click)="commentText=''">
                 <mat-icon>close</mat-icon>
