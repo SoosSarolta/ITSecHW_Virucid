@@ -3,6 +3,7 @@
 !*/
 !MakeFile
 !Dockerfile
+!ciff_caff_parser
 
 .vs
 Debug

@@ -1,0 +1,47 @@
+version: '3'
+services:
+  frontend:
+    image: frontend
+    build: CAFFStoreProject/frontend/caff-store
+    volumes:
+      - ./CAFFStoreProject/frontend/caff-store:/usr/src/app
+      - /usr/src/app/node_modules/
+    ports:
+      - 4200:4200
+      - 49153:49153
+    working_dir: /usr/src/app/
+    command: ng serve --host 0.0.0.0 --poll
+    depends_on:
+      - backend 
+      - mysql
+    networks:
+      - backend
+
+  backend:
+    image: backend
+    build: CAFFStoreProject/backend/CAFFStore
+    volumes:
+      - ./CAFFStoreProject/backend/CAFFStore:/usr/src/app
+    ports:
+      - 8080:8080
+    working_dir: /usr/src/app/
+    command: >
+        sh -c "dos2unix mvnw &&
+        ./mvnw spring-boot:run"
+    depends_on: 
+      - mysql
+    networks:
+      - backend
+      - db
+  
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: Test1234
+      MYSQL_DATABASE: caffstore
+    networks:
+      - db
+  
+networks:
+  backend:
+  db:

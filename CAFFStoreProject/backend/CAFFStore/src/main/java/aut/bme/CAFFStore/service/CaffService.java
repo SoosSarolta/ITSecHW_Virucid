@@ -98,9 +98,9 @@ public class CaffService {
 
     private void parseCaffFile(Caff caff, String caffFullPath) throws IOException, InterruptedException {
         if (caff.getId() != null) {
-            Process process = Runtime.getRuntime().exec("cmd /c start /wait "
-                    + BASE_PATH
-                    + "/ciff_caff_parser.exe "
+            Process process = Runtime.getRuntime().exec(
+                    BASE_PATH
+                    + "/ciff_caff_parser "
                     + caffFullPath + " "
                     + caff.getId());
             logger.info("Waiting for parser to finish...");
