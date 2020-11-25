@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Caff } from 'src/app/model/caff';
@@ -12,6 +13,7 @@ import { NetworkService } from 'src/app/service/network/network.service';
 export class DetailComponent implements OnInit {
   currentCaff: Caff;
   comments: Array<string>;
+  commentText: string = '';
 
   constructor(
     private _router: ActivatedRoute,
@@ -40,6 +42,12 @@ export class DetailComponent implements OnInit {
   }
 
   downloadCaff() {
-    console.log("downloading caff...");
+    console.log("downloading caff..");
   }
+
+  comment(){
+    console.log("comment");
+  }
+  
+  change(event) {console.log(event.target.value);}
 }
