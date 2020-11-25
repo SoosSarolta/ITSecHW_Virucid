@@ -1,4 +1,5 @@
 <div class="container">
+    <h2 class="align-center">Profile</h2>
     <form class="example-form" class="align-center">
         <div>
             <mat-form-field style="width:20vw" appearance="outline" class="example-full-width">
@@ -16,4 +17,18 @@
             </div>
         </div>
     </form>
+    <h2 class="align-center pt-3">Comments</h2>
+    <div class="example-full-width">
+        <mat-list role="list" *ngFor="let comment of comments">
+            <mat-list-item role="listitem" appearance="outline">{{ comment }}</mat-list-item>
+            <mat-divider></mat-divider>
+        </mat-list>
+    </div>
+    <h2 class="align-center pt-3">Uploaded files</h2>
+    <div class="example-full-width">
+        <mat-list role="list" *ngFor="let caff of caffFiles">
+            <mat-list-item role="listitem" appearance="outline">{{ caff }}</mat-list-item>
+            <mat-divider></mat-divider>
+        </mat-list>
+    </div>
 </div>

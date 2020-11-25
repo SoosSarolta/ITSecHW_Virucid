@@ -24,18 +24,10 @@ export class ProfileComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // this._router.queryParams.subscribe(params => {
-    //   console.log(params['id']);
-    //   this._network.profile(params['id']).then(data => {
-    //     console.log(data);
-    //   }).catch(err => {
-    //     console.log(err);
-    //   });
-    // });
     this._route.queryParams.subscribe(params => {
       this.userId = params.id;
     });
-    // this.userId = localStorage.getItem("user_id");
+
     this.loadUserInfo();
   }
 
@@ -43,8 +35,14 @@ export class ProfileComponent implements OnInit {
     this._network.profile(this.userId).then(data => {
       this.username = data["username"];
       this.email = data["email"];
-      this.comments = data["comments"];
-      this.caffFiles = data["caffFilesWithoutBitmap"];
+      this.comments = new Array();
+      data.comments.forEach(element => {
+        this.comments.push(element.comment);
+      });
+      this.caffFiles = new Array();
+      data.caffFilesWithoutBitmap.forEach(element => {
+        this.caffFiles.push(element.originalFileName)
+      })
     });
   }
 
