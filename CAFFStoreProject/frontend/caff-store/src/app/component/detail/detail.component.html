@@ -1,22 +1,20 @@
 <div class="container">
     <div>
-        <img mat-card-image src="https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg" alt="Photo of a Caff preview">
+        <img mat-card-image *ngIf="currentCaff.id" [src]="currentCaff.bitmapFile" alt="Photo of a Caff preview">
         <mat-card-actions>
-            <button mat-raised-button class="cardBtn" color="primary"
-                (click)="downloadCaff()">Download</button>
+            <button mat-raised-button class="cardBtn" color="primary" (click)="downloadCaff()">Download</button>
         </mat-card-actions>
     </div>
-    <div>
-        <mat-list role="list">
-            <mat-list-item role="listitem">Item 1</mat-list-item>
-            <mat-list-item role="listitem">Item 2</mat-list-item>
-            <mat-list-item role="listitem">Item 3</mat-list-item>
+    <div class="example-full-width">
+        <mat-list role="list" *ngFor="let comment of comments">
+            <mat-list-item role="listitem" appearance="outline">{{comment}}</mat-list-item>
+            <mat-divider></mat-divider>
         </mat-list>
     </div>
-    <div>
+    <div class="example-full-width" style="margin-top: 2em;">
         <mat-form-field class="example-full-width">
             <mat-label>Leave a comment</mat-label>
-            <textarea matInput placeholder="This makes me feel..."></textarea>
+            <textarea matInput placeholder=""></textarea>
         </mat-form-field>
     </div>
 </div>
