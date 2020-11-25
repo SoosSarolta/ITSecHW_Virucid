@@ -26,7 +26,9 @@ services:
       - 8080:8080
     working_dir: /usr/src/app/
     command: >
-        sh -c "dos2unix mvnw &&
+        sh -c "make -C parser compile &&
+        mv parser/ciff_caff_parser src/main/resources &&
+        dos2unix mvnw &&
         ./mvnw spring-boot:run"
     depends_on: 
       - mysql
