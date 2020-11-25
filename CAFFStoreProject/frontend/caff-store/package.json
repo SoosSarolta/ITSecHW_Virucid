@@ -25,7 +25,10 @@
     "@angular/router": "~10.2.0",
     "@auth0/angular-jwt": "^5.0.1",
     "@schematics/angular": "^9.1.0",
+    "@types/file-saver": "^2.0.1",
+    "file-saver": "^2.0.5",
     "ngx-file-drop": "^10.1.1",
+    "ngx-filesaver": "^11.0.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"

@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import { NgxFileDropModule } from 'ngx-file-drop';
+import { FileSaverModule } from 'ngx-filesaver';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegistrationComponent } from './component/registration/registration.component';
@@ -56,6 +57,7 @@ import {MatTabsModule} from '@angular/material/tabs';
     BrowserAnimationsModule,
     MatPasswordStrengthModule,
     NgxFileDropModule,
+    FileSaverModule,
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,

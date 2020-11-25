@@ -1,9 +1,11 @@
+import { SecurityContext } from '@angular/compiler/src/core';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
+import { FileSaverService } from 'ngx-filesaver';
 import { Caff } from 'src/app/model/caff';
 import { NetworkService } from 'src/app/service/network/network.service';
+import * as FileSaver from "file-saver";
 
 @Component({
   selector: 'app-detail',
@@ -18,7 +20,8 @@ export class DetailComponent implements OnInit {
   constructor(
     private _router: ActivatedRoute,
     private _network: NetworkService,
-    private _sanitization: DomSanitizer
+    private _sanitization: DomSanitizer,
+    private _fileSaverService: FileSaverService
   ) {
   }
 
@@ -43,6 +46,16 @@ export class DetailComponent implements OnInit {
 
   downloadCaff() {
     console.log("downloading caff...");
+    this._network.downloadCaff(this.currentCaff.id).then(data => {
+      console.log(data);
+      console.log("caff is downloaded!");
+      // TODO : fix this conversation between bytearray and caff file
+      var byteArray = new Uint8Array(data.caffFile);
+      var blob = new Blob([byteArray], { type: "application/octet-stream" });
+      FileSaver.saveAs(blob, data.originalFileName);
+    }).catch(err => {
+      console.log(err);
+    });
   }
 
   comment() {
