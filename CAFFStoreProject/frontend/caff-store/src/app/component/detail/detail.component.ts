@@ -14,14 +14,13 @@ import * as FileSaver from "file-saver";
 })
 export class DetailComponent implements OnInit {
   currentCaff: Caff;
-  comments: Array<string>;
+  comments: Map<string, string>;
   commentText: string = '';
 
   constructor(
     private _router: ActivatedRoute,
     private _network: NetworkService,
-    private _sanitization: DomSanitizer,
-    private _fileSaverService: FileSaverService
+    private _sanitization: DomSanitizer
   ) {
   }
 
@@ -33,10 +32,10 @@ export class DetailComponent implements OnInit {
         var url = 'data:image/GIF;base64,' + encodeURIComponent(data.gifFile);
         var image = this._sanitization.bypassSecurityTrustResourceUrl(url);
         this.currentCaff = new Caff(data.id, data.originalFileName, image);
-        this.comments = new Array();
+        this.comments = new Map();
         data.comments.forEach(element => {
-          console.log("comment: ", element.comment);
-          this.comments.push(element.comment);
+          console.log("comment: ", element.comment + " - " + element.timeStamp);
+          this.comments.set(element.timeStamp, element.comment);
         });
       }).catch(err => {
         console.log(err);
