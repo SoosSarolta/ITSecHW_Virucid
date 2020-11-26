@@ -6,8 +6,8 @@
         </mat-card-actions>
     </div>
     <div class="example-full-width">
-        <mat-list role="list" *ngFor="let comment of comments">
-            <mat-list-item role="listitem" appearance="outline">{{comment}}</mat-list-item>
+        <mat-list role="list" *ngFor="let comment of comments | keyvalue">
+            <mat-list-item role="listitem" appearance="outline">{{comment.value}} -- Posted at: {{comment.key}}</mat-list-item>
             <mat-divider></mat-divider>
         </mat-list>
     </div>
