@@ -6,15 +6,15 @@ import { User } from 'src/app/model/user';
   providedIn: 'root'
 })
 export class NetworkService {
-  serverAddress: string = "http://localhost:8080/";
+  serverAddress = 'http://localhost:8080/';
   // localhost:8080/login?email=kurdi.boti@gmail.com&password=mypassword
-  loginURL: string = "login";
-  registerURL: string = "register";
-  caffURL: string = "caffs"
-  profilURL: string = "users"
-  uploadCaffURL: string = "caffs/upload";
-  downloadCaffURL: string = "caffs/download";
-  commentURL: string = "comments";
+  loginURL = 'login';
+  registerURL = 'register';
+  caffURL = 'caffs';
+  profilURL = 'users';
+  uploadCaffURL = 'caffs/upload';
+  downloadCaffURL = 'caffs/download';
+  commentURL = 'comments';
 
   header = new HttpHeaders();
 
@@ -94,21 +94,28 @@ export class NetworkService {
     this.resetHeader();
     this.addAuthHeader();
     this.setResponseTypeHeader('json');
-    var json = JSON.stringify({
-      "comment": commentMessage
+    const json = JSON.stringify({
+      comment: commentMessage
     });
     this.setContentTypeHeader('application/json');
     this.setAccessControlAllowHeaders();
     this.setAccessControlAllowMethods();
     this.setAccessControllAllowOrigin();
-    return this.postJSON(this.serverAddress, this.commentURL + "?userId=" + userId + "&caffId=" + caffId, json);
+    return this.postJSON(this.serverAddress, this.commentURL + '?userId=' + userId + '&caffId=' + caffId, json);
   }
 
-  admin(): Promise<any> {
+  getUsers(): Promise<any> {
     this.resetHeader();
     this.addAuthHeader();
     this.setResponseTypeHeader('json');
     return this.getJSON(this.serverAddress, this.profilURL);
+  }
+
+  getCaffs(): Promise<any> {
+    this.resetHeader();
+    this.addAuthHeader();
+    this.setResponseTypeHeader('json');
+    return this.getJSON(this.serverAddress, this.caffURL);
   }
 
   deleteUser(id: string): Promise<any> {
@@ -116,6 +123,13 @@ export class NetworkService {
     this.addAuthHeader();
     this.setResponseTypeHeader('json');
     return this.delete(this.serverAddress, `${this.profilURL}/${id}`);
+  }
+
+  deleteCaff(id: string): Promise<any> {
+    this.resetHeader();
+    this.addAuthHeader();
+    this.setResponseTypeHeader('json');
+    return this.delete(this.serverAddress, `${this.caffURL}/${id}`);
   }
 
 
@@ -163,15 +177,15 @@ export class NetworkService {
     this.header = new HttpHeaders();
   }
 
-  private setAccessControllAllowOrigin(){
-    this.header = this.header.append( 'Access-Control-Allow-Origin', "*");
+  private setAccessControllAllowOrigin(): void {
+    this.header = this.header.append( 'Access-Control-Allow-Origin', '*');
   }
 
-  private setAccessControlAllowMethods(){
-    this.header = this.header.append( 'Access-Control-Allow-Methods', "GET, POST, PATCH, PUT, DELETE, OPTIONS");
+  private setAccessControlAllowMethods(): void {
+    this.header = this.header.append( 'Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
   }
 
-  private setAccessControlAllowHeaders(){
-    this.header = this.header.append( 'Access-Control-Allow-Headers', "Origin, Content-Type, X-Auth-Token");
+  private setAccessControlAllowHeaders(): void {
+    this.header = this.header.append( 'Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
   }
 }

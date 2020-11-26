@@ -26,18 +26,20 @@
             <ng-container matColumnDef="modify">
               <mat-header-cell *matHeaderCellDef> Modify </mat-header-cell>
               <mat-cell *matCellDef="let user">
-                <button mat-button (click)="modifyUser(user.id)">
+                <button mat-button (click)="modifyUser(user.id)" *ngIf="user.role != 'ADMIN'">
                   <mat-icon>settings</mat-icon>
-                </button> </mat-cell>
+                </button>
+              </mat-cell>
             </ng-container>
 
             <!-- Delete Definition -->
             <ng-container matColumnDef="delete">
               <mat-header-cell *matHeaderCellDef> Delete </mat-header-cell>
               <mat-cell *matCellDef="let user">
-                <button mat-button (click)="deleteUser(user.id)">
+                <button mat-button (click)="deleteUser(user.id)" *ngIf="user.role != 'ADMIN'">
                   <mat-icon>delete</mat-icon>
-                </button> </mat-cell>
+                </button>
+              </mat-cell>
             </ng-container>
 
             <!-- Header and Row Declarations -->
@@ -66,8 +68,8 @@
             </p>
           </mat-card-content>
           <mat-card-actions>
-            <button mat-raised-button class="cardBtn" color="primary">Details</button>
-            <button mat-raised-button class="cardBtn" color="primary">Delete</button>
+            <button mat-raised-button class="cardBtn" color="primary" (click)="navigateToDetails(caff.id)">Details</button>
+            <button mat-raised-button class="cardBtn" color="primary" (click)="deleteCaff(caff.id)">Delete</button>
           </mat-card-actions>
         </mat-card>
       </div>
