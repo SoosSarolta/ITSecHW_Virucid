@@ -49,8 +49,8 @@ export class DetailComponent implements OnInit {
       console.log(data);
       console.log("caff is downloaded!");
       // TODO : fix this conversation between bytearray and caff file
-      var byteArray = new Uint8Array(data.caffFile);
-      var blob = new Blob([byteArray], { type: "application/octet-stream" });
+      //var byteArray = new Uint8Array(data.caffFile);
+      var blob = new Blob([data.caffFile], { type: "application/x-dbt" });
       FileSaver.saveAs(blob, data.originalFileName);
     }).catch(err => {
       console.log(err);
