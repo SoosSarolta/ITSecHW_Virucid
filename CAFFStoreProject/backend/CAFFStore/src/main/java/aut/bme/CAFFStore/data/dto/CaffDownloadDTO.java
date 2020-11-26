@@ -1,10 +1,8 @@
 package aut.bme.CAFFStore.data.dto;
 
 import aut.bme.CAFFStore.data.entity.Caff;
-import aut.bme.CAFFStore.service.ByteArraySerializer;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +26,8 @@ public class CaffDownloadDTO {
     @Setter
     private String originalFileName;
 
+    @Getter
+    @Setter
     private byte[] caffFile;
 
     @JsonCreator
@@ -48,14 +48,5 @@ public class CaffDownloadDTO {
 
     public static List<CaffDownloadDTO> createCaffDTOs(List<Caff> caffs) {
         return caffs.stream().map(CaffDownloadDTO::createCaffDownloadDTO).collect(Collectors.toList());
-    }
-
-    @JsonSerialize(using = ByteArraySerializer.class)
-    public byte[] getCaffFile() {
-        return caffFile;
-    }
-
-    public void setCaffFile(byte[] caffFile) {
-        this.caffFile = caffFile;
     }
 }

@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -82,17 +81,7 @@ public class CaffService {
         checkCaffDirectory();
 
         saveCaffFile(file, caffFullPath);
-
-        byte[] fromFile = getFileBytes(caff.getId(), ".caff", CAFF_FILES_PATH);
-        byte[] bytes = file.getBytes();
-
-
-        if (Arrays.equals(bytes, fromFile)) {
-            logger.info("We are there, boyz!");
-        }
-
-        logger.info("We are not there yet, boyz!");
-        //parseCaffFile(caff, caffFullPath);
+        parseCaffFile(caff, caffFullPath);
 
         return new ResponseEntity<>(new BasicStringResponseDTO(caff.getId()), HttpStatus.OK);
     }
