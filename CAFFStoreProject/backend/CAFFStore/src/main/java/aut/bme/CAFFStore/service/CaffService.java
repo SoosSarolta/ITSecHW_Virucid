@@ -1,8 +1,8 @@
 package aut.bme.CAFFStore.service;
 
-import aut.bme.CAFFStore.data.dto.response.StringResponseDTO;
 import aut.bme.CAFFStore.data.dto.response.BitmapResponseDTO;
 import aut.bme.CAFFStore.data.dto.response.CaffDownloadResponseDTO;
+import aut.bme.CAFFStore.data.dto.response.StringResponseDTO;
 import aut.bme.CAFFStore.data.entity.Caff;
 import aut.bme.CAFFStore.data.entity.User;
 import aut.bme.CAFFStore.data.repository.CaffRepo;
@@ -115,8 +115,6 @@ public class CaffService {
             }
             logger.info("File created: " + caffFullPath);
         }
-
-
     }
 
     private void parseCaffFile(Caff caff, String caffFullPath) throws IOException, InterruptedException {

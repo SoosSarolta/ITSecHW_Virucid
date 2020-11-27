@@ -1,12 +1,12 @@
 package aut.bme.CAFFStore.controller;
 
-import aut.bme.CAFFStore.data.dto.response.StringResponseDTO;
 import aut.bme.CAFFStore.data.dto.response.BitmapResponseDTO;
 import aut.bme.CAFFStore.data.dto.response.CaffDetailsResponseDTO;
-import aut.bme.CAFFStore.data.dto.response.CaffDownloadResponseDTO;
+import aut.bme.CAFFStore.data.dto.response.StringResponseDTO;
 import aut.bme.CAFFStore.data.entity.Caff;
 import aut.bme.CAFFStore.data.repository.CaffRepo;
 import aut.bme.CAFFStore.service.CaffService;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +17,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import static aut.bme.CAFFStore.Constants.getCaffFilePath;
 
 @RestController
 @RequestMapping("/caffs")
@@ -61,7 +66,7 @@ public class CaffController {
     public ResponseEntity<StringResponseDTO> uploadCaff(@RequestPart(name = "file", required = false) MultipartFile file,
                                                         @RequestParam String userId,
                                                         HttpServletRequest request) throws IOException, InterruptedException {
-        if(file != null){
+        if (file != null) {
             logger.info("Parsing caff file with filename: " + file.getOriginalFilename());
             return caffService.uploadCaff(file, userId);
         }
@@ -69,9 +74,34 @@ public class CaffController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @RequestMapping(value = "/download/{id}", method = RequestMethod.GET)
-    public ResponseEntity<CaffDownloadResponseDTO> downloadCaff(@PathVariable String id) throws IOException {
+    @RequestMapping(value = "/download/{id}", method = RequestMethod.GET, produces = "application/zip")
+    public byte[] downloadCaff(HttpServletResponse response, @PathVariable String id) throws IOException {
+        response.setContentType("application/zip");
         logger.info("Downloading caff file with id: " + id);
-        return caffService.downloadCaff(id);
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream);
+        ZipOutputStream zipOutputStream = new ZipOutputStream(bufferedOutputStream);
+
+        File file = new File(getCaffFilePath(id));
+        if (file.exists()) {
+            zipOutputStream.putNextEntry(new ZipEntry(file.getName()));
+            FileInputStream fileInputStream = new FileInputStream(file);
+
+            IOUtils.copy(fileInputStream, zipOutputStream);
+
+            fileInputStream.close();
+            zipOutputStream.closeEntry();
+        }
+
+        if (zipOutputStream != null) {
+            zipOutputStream.finish();
+            zipOutputStream.flush();
+            IOUtils.closeQuietly(zipOutputStream);
+        }
+        IOUtils.closeQuietly(bufferedOutputStream);
+        IOUtils.closeQuietly(byteArrayOutputStream);
+
+        return byteArrayOutputStream.toByteArray();
     }
 }

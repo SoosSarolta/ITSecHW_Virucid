@@ -13,7 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static aut.bme.CAFFStore.Constants.*;
+import static aut.bme.CAFFStore.Constants.getGifFilePath;
 import static aut.bme.CAFFStore.service.CaffService.getFileBytes;
 
 @EqualsAndHashCode
@@ -38,10 +38,6 @@ public class CaffDetailsResponseDTO {
 
     @Getter
     @Setter
-    private byte[] caffFile;
-
-    @Getter
-    @Setter
     private List<CommentResponseDTO> comments;
 
     @JsonCreator
@@ -49,13 +45,11 @@ public class CaffDetailsResponseDTO {
                                   @JsonProperty("originalFileName") String originalFileName,
                                   @JsonProperty("creatorId") String creatorId,
                                   @JsonProperty("gifFile") byte[] gifFile,
-                                  @JsonProperty("caffFile") byte[] caffFile,
                                   @JsonProperty("comments") List<CommentResponseDTO> comments) {
         this.id = id;
         this.originalFileName = originalFileName;
         this.creatorId = creatorId;
         this.gifFile = gifFile;
-        this.caffFile = caffFile;
         this.comments = comments;
     }
 
@@ -65,7 +59,6 @@ public class CaffDetailsResponseDTO {
                 caff.getOriginalFileName(),
                 caff.getCreatorId(),
                 getFileBytes(getGifFilePath(caff.getId())),
-                getFileBytes(getCaffFilePath(caff.getId())),
                 caff.getComments()
                         .stream()
                         .sorted(Comparator.comparing(Comment::getTimeStamp))
