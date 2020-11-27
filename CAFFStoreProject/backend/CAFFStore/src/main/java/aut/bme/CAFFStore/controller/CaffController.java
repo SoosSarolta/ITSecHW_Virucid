@@ -1,9 +1,9 @@
 package aut.bme.CAFFStore.controller;
 
-import aut.bme.CAFFStore.data.dto.BasicStringResponseDTO;
-import aut.bme.CAFFStore.data.dto.CaffDTO;
-import aut.bme.CAFFStore.data.dto.CaffDetailsDTO;
-import aut.bme.CAFFStore.data.dto.CaffDownloadDTO;
+import aut.bme.CAFFStore.data.dto.response.StringResponseDTO;
+import aut.bme.CAFFStore.data.dto.response.BitmapResponseDTO;
+import aut.bme.CAFFStore.data.dto.response.CaffDetailsResponseDTO;
+import aut.bme.CAFFStore.data.dto.response.CaffDownloadResponseDTO;
 import aut.bme.CAFFStore.data.entity.Caff;
 import aut.bme.CAFFStore.data.repository.CaffRepo;
 import aut.bme.CAFFStore.service.CaffService;
@@ -35,42 +35,42 @@ public class CaffController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<CaffDTO>> getAllCaffFiles() {
+    public ResponseEntity<List<BitmapResponseDTO>> getAllCaffFiles() {
         logger.info("Getting all caff");
-        return new ResponseEntity<>(CaffDTO.createCaffDTOs(caffRepo.findAll()), HttpStatus.OK);
+        return new ResponseEntity<>(BitmapResponseDTO.createCaffDTOs(caffRepo.findAll()), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<CaffDetailsDTO> getCaffDetailsById(@PathVariable String id) {
+    public ResponseEntity<CaffDetailsResponseDTO> getCaffDetailsById(@PathVariable String id) {
         logger.info("Finding caff file with id: " + id);
         Optional<Caff> caff = caffRepo.findById(id);
-        return caff.map(value -> new ResponseEntity<>(CaffDetailsDTO.createCaffDetailsDTO(value), HttpStatus.OK))
+        return caff.map(value -> new ResponseEntity<>(CaffDetailsResponseDTO.createCaffDetailsDTO(value), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<BasicStringResponseDTO> deleteCaff(@PathVariable String id) {
+    public ResponseEntity<StringResponseDTO> deleteCaff(@PathVariable String id) {
         logger.info("Deleting caff file with id: " + id);
         return caffService.deleteCaffAndConnectedFiles(id);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public ResponseEntity<BasicStringResponseDTO> uploadCaff(@RequestPart(name = "file", required = false) MultipartFile file,
-                                                             @RequestParam String userId,
-                                                             HttpServletRequest request) throws IOException, InterruptedException {
+    public ResponseEntity<StringResponseDTO> uploadCaff(@RequestPart(name = "file", required = false) MultipartFile file,
+                                                        @RequestParam String userId,
+                                                        HttpServletRequest request) throws IOException, InterruptedException {
         if(file != null){
             logger.info("Parsing caff file with filename: " + file.getOriginalFilename());
             return caffService.uploadCaff(file, userId);
         }
-        return new ResponseEntity<>(new BasicStringResponseDTO("File is missing."), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new StringResponseDTO("File is missing."), HttpStatus.BAD_REQUEST);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/download/{id}", method = RequestMethod.GET)
-    public ResponseEntity<CaffDownloadDTO> downloadCaff(@PathVariable String id) throws IOException {
+    public ResponseEntity<CaffDownloadResponseDTO> downloadCaff(@PathVariable String id) throws IOException {
         logger.info("Downloading caff file with id: " + id);
         return caffService.downloadCaff(id);
     }

@@ -1,29 +1,25 @@
 package aut.bme.CAFFStore.controller;
 
-import aut.bme.CAFFStore.data.dto.BasicStringResponseDTO;
-import aut.bme.CAFFStore.data.dto.UserDTO;
-import aut.bme.CAFFStore.data.dto.UserDetailsDTO;
+import aut.bme.CAFFStore.data.dto.response.StringResponseDTO;
+import aut.bme.CAFFStore.data.dto.response.UserDetailsResponseDTO;
+import aut.bme.CAFFStore.data.dto.response.UserResponseDTO;
 import aut.bme.CAFFStore.data.entity.User;
 import aut.bme.CAFFStore.data.repository.UserRepo;
 import aut.bme.CAFFStore.data.util.password.PasswordManager;
 import aut.bme.CAFFStore.service.UserService;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
+import static aut.bme.CAFFStore.security.JWTTokenGenerator.getJWTToken;
 
 @RestController
 public class UserController {
@@ -37,28 +33,28 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ResponseEntity<BasicStringResponseDTO> register(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<StringResponseDTO> register(@RequestBody Map<String, Object> body) {
         return userService.register(body);
     }
 
     @RequestMapping("/login")
-    public ResponseEntity<UserDTO> login(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password) {
+    public ResponseEntity<UserResponseDTO> login(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password) {
         Optional<User> user = userRepo.findByEmail(email);
 
         if (user.isEmpty())
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
         if (PasswordManager.match(user.get().getPassword(), password, user.get().getSalt())) {
-            UserDTO userDTO = UserDTO.createUserDTO(userRepo.save(user.get()));
-            userDTO.setToken(getJWTToken(userDTO.getUsername(), user.get().getRole().toString()));
-            return new ResponseEntity<>(userDTO, HttpStatus.OK);
+            UserResponseDTO userResponseDTO = UserResponseDTO.createUserDTO(userRepo.save(user.get()));
+            userResponseDTO.setToken(getJWTToken(userResponseDTO.getUsername(), user.get().getRole().toString()));
+            return new ResponseEntity<>(userResponseDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
-    public ResponseEntity<UserDetailsDTO> getUserDetailsById(@PathVariable String id) {
+    public ResponseEntity<UserDetailsResponseDTO> getUserDetailsById(@PathVariable String id) {
         logger.info("Getting user with id: " + id);
         Optional<User> user = userRepo.findById(id);
         return user.map(value -> new ResponseEntity<>(userService.createUserDetailsDTO(value), HttpStatus.OK))
@@ -67,22 +63,22 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @RequestMapping(value = "/users/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<BasicStringResponseDTO> updateUserName(@PathVariable String id, @RequestParam String username) {
+    public ResponseEntity<StringResponseDTO> updateUserName(@PathVariable String id, @RequestParam String username) {
         logger.info("Updating username to " + username + "for user with id: " + id);
         Optional<User> user = userRepo.findById(id);
         if (user.isPresent()) {
             user.get().setPersonName(username);
             userRepo.save(user.get());
-            return new ResponseEntity<>(new BasicStringResponseDTO("Successful update."), HttpStatus.OK);
+            return new ResponseEntity<>(new StringResponseDTO("Successful update."), HttpStatus.OK);
         }
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/users", method = RequestMethod.GET)
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         logger.info("Getting all users");
-        return new ResponseEntity<>(UserDTO.createUserDTOs(userRepo.findAll()), HttpStatus.OK);
+        return new ResponseEntity<>(UserResponseDTO.createUserDTOs(userRepo.findAll()), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -94,27 +90,5 @@ public class UserController {
             return new ResponseEntity<>("Successful deletion.", HttpStatus.OK);
         }
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-    }
-
-    private String getJWTToken(String username, String role) {
-        String secretKey = "mySecretKey";
-        logger.info("getJWTToken: " + role);
-        List<GrantedAuthority> grantedAuthorities = AuthorityUtils
-                .commaSeparatedStringToAuthorityList("ROLE_" + role);
-
-        String token = Jwts
-                .builder()
-                .setId("softtekJWT")
-                .setSubject(username)
-                .claim("authorities",
-                        grantedAuthorities.stream()
-                                .map(GrantedAuthority::getAuthority)
-                                .collect(Collectors.toList()))
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 600000))
-                .signWith(SignatureAlgorithm.HS512,
-                        secretKey.getBytes()).compact();
-
-        return "Bearer " + token;
     }
 }

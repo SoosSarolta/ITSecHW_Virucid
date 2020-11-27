@@ -1,4 +1,4 @@
-package aut.bme.CAFFStore.data.dto;
+package aut.bme.CAFFStore.data.dto.response;
 
 import aut.bme.CAFFStore.service.CaffService;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @EqualsAndHashCode
 @ToString
-public class UserDetailsDTO {
+public class UserDetailsResponseDTO {
 
     @Autowired
     CaffService caffService;
@@ -36,17 +36,17 @@ public class UserDetailsDTO {
 
     @Getter
     @Setter
-    private List<CaffDTO> caffFilesWithoutBitmap;
+    private List<BitmapResponseDTO> caffFilesWithoutBitmap;
 
-    public UserDetailsDTO() {
+    public UserDetailsResponseDTO() {
     }
 
     @JsonCreator
-    public UserDetailsDTO(@JsonProperty("id") String id,
-                          @JsonProperty("username") String username,
-                          @JsonProperty("email") String email,
-                          @JsonProperty("comments") List<CommentResponseDTO> comments,
-                          @JsonProperty("caffFilesWithoutBitmap") List<CaffDTO> caffFilesWithoutBitmap) {
+    public UserDetailsResponseDTO(@JsonProperty("id") String id,
+                                  @JsonProperty("username") String username,
+                                  @JsonProperty("email") String email,
+                                  @JsonProperty("comments") List<CommentResponseDTO> comments,
+                                  @JsonProperty("caffFilesWithoutBitmap") List<BitmapResponseDTO> caffFilesWithoutBitmap) {
 
         this.id = id;
         this.username = username;

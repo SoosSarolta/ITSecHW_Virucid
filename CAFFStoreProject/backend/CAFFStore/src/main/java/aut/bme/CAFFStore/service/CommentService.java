@@ -1,8 +1,8 @@
 package aut.bme.CAFFStore.service;
 
 import aut.bme.CAFFStore.controller.CommentController;
-import aut.bme.CAFFStore.data.dto.BasicStringResponseDTO;
-import aut.bme.CAFFStore.data.dto.CommentRequestDTO;
+import aut.bme.CAFFStore.data.dto.response.StringResponseDTO;
+import aut.bme.CAFFStore.data.dto.request.CommentRequestDTO;
 import aut.bme.CAFFStore.data.entity.Caff;
 import aut.bme.CAFFStore.data.entity.Comment;
 import aut.bme.CAFFStore.data.entity.User;
@@ -32,7 +32,7 @@ public class CommentService {
     @Autowired
     private CaffRepo caffRepo;
 
-    public ResponseEntity<BasicStringResponseDTO> saveComment(CommentRequestDTO commentRequestDTO, String userId, String caffId) {
+    public ResponseEntity<StringResponseDTO> saveComment(CommentRequestDTO commentRequestDTO, String userId, String caffId) {
         Comment comment = new Comment(commentRequestDTO);
         commentRepo.save(comment);
 
@@ -40,10 +40,10 @@ public class CommentService {
         Optional<Caff> caff = caffRepo.findById(caffId);
 
         if (user.isEmpty()) {
-            return new ResponseEntity<>(new BasicStringResponseDTO("User does not exist."), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new StringResponseDTO("User does not exist."), HttpStatus.BAD_REQUEST);
         }
         if (caff.isEmpty()) {
-            return new ResponseEntity<>(new BasicStringResponseDTO("Caff does not exist."), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new StringResponseDTO("Caff does not exist."), HttpStatus.BAD_REQUEST);
         }
 
         user.get().addComment(comment);
@@ -52,6 +52,6 @@ public class CommentService {
         caff.get().addComment(comment);
         caffRepo.save(caff.get());
 
-        return new ResponseEntity<>(new BasicStringResponseDTO("Comment added successfully."), HttpStatus.OK);
+        return new ResponseEntity<>(new StringResponseDTO("Comment added successfully."), HttpStatus.OK);
     }
 }

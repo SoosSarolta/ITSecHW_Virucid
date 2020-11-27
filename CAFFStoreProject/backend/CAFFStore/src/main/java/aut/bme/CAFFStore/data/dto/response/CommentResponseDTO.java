@@ -1,4 +1,4 @@
-package aut.bme.CAFFStore.data.dto;
+package aut.bme.CAFFStore.data.dto.response;
 
 import aut.bme.CAFFStore.data.entity.Comment;
 import com.fasterxml.jackson.annotation.JsonCreator;

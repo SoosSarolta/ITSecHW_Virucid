@@ -1,6 +1,6 @@
 package aut.bme.CAFFStore.data.entity;
 
-import aut.bme.CAFFStore.data.dto.CommentRequestDTO;
+import aut.bme.CAFFStore.data.dto.request.CommentRequestDTO;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;

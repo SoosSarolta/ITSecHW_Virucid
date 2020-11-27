@@ -1,4 +1,4 @@
-package aut.bme.CAFFStore.data.dto;
+package aut.bme.CAFFStore.data.dto.response;
 
 import aut.bme.CAFFStore.data.entity.Caff;
 import aut.bme.CAFFStore.data.entity.Comment;
@@ -13,13 +13,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static aut.bme.CAFFStore.Constants.CAFF_FILES_PATH;
-import static aut.bme.CAFFStore.Constants.ROOT_PATH;
+import static aut.bme.CAFFStore.Constants.*;
 import static aut.bme.CAFFStore.service.CaffService.getFileBytes;
 
 @EqualsAndHashCode
 @ToString
-public class CaffDetailsDTO {
+public class CaffDetailsResponseDTO {
 
     @Getter
     @Setter
@@ -46,12 +45,12 @@ public class CaffDetailsDTO {
     private List<CommentResponseDTO> comments;
 
     @JsonCreator
-    public CaffDetailsDTO(@JsonProperty("id") String id,
-                          @JsonProperty("originalFileName") String originalFileName,
-                          @JsonProperty("creatorId") String creatorId,
-                          @JsonProperty("gifFile") byte[] gifFile,
-                          @JsonProperty("caffFile") byte[] caffFile,
-                          @JsonProperty("comments") List<CommentResponseDTO> comments) {
+    public CaffDetailsResponseDTO(@JsonProperty("id") String id,
+                                  @JsonProperty("originalFileName") String originalFileName,
+                                  @JsonProperty("creatorId") String creatorId,
+                                  @JsonProperty("gifFile") byte[] gifFile,
+                                  @JsonProperty("caffFile") byte[] caffFile,
+                                  @JsonProperty("comments") List<CommentResponseDTO> comments) {
         this.id = id;
         this.originalFileName = originalFileName;
         this.creatorId = creatorId;
@@ -60,13 +59,13 @@ public class CaffDetailsDTO {
         this.comments = comments;
     }
 
-    public static CaffDetailsDTO createCaffDetailsDTO(Caff caff) {
-        return new CaffDetailsDTO(
+    public static CaffDetailsResponseDTO createCaffDetailsDTO(Caff caff) {
+        return new CaffDetailsResponseDTO(
                 caff.getId(),
                 caff.getOriginalFileName(),
                 caff.getCreatorId(),
-                getFileBytes(ROOT_PATH + caff.getId() + ".gif"),
-                getFileBytes(CAFF_FILES_PATH + caff.getId() + ".caff"),
+                getFileBytes(getGifFilePath(caff.getId())),
+                getFileBytes(getCaffFilePath(caff.getId())),
                 caff.getComments()
                         .stream()
                         .sorted(Comparator.comparing(Comment::getTimeStamp))
@@ -74,7 +73,7 @@ public class CaffDetailsDTO {
                         .collect(Collectors.toList()));
     }
 
-    public static List<CaffDetailsDTO> createCaffDetailsDTOs(List<Caff> caffs) {
-        return caffs.stream().map(CaffDetailsDTO::createCaffDetailsDTO).collect(Collectors.toList());
+    public static List<CaffDetailsResponseDTO> createCaffDetailsDTOs(List<Caff> caffs) {
+        return caffs.stream().map(CaffDetailsResponseDTO::createCaffDetailsDTO).collect(Collectors.toList());
     }
 }

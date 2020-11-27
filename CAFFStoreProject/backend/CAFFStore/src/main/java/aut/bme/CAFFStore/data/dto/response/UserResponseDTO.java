@@ -1,4 +1,4 @@
-package aut.bme.CAFFStore.data.dto;
+package aut.bme.CAFFStore.data.dto.response;
 
 import aut.bme.CAFFStore.data.entity.User;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @EqualsAndHashCode
 @ToString
-public class UserDTO {
+public class UserResponseDTO {
 
     @Getter
     @Setter
@@ -32,10 +32,10 @@ public class UserDTO {
     private String role;
 
     @JsonCreator
-    public UserDTO(@JsonProperty("id") String id,
-                   @JsonProperty("username") String username,
-                   @JsonProperty("token") String token,
-                   @JsonProperty("role") String role) {
+    public UserResponseDTO(@JsonProperty("id") String id,
+                           @JsonProperty("username") String username,
+                           @JsonProperty("token") String token,
+                           @JsonProperty("role") String role) {
 
         this.id = id;
         this.username = username;
@@ -43,15 +43,15 @@ public class UserDTO {
         this.role = role;
     }
 
-    public static UserDTO createUserDTO(User user) {
-        return new UserDTO(
+    public static UserResponseDTO createUserDTO(User user) {
+        return new UserResponseDTO(
                 user.getId(),
                 user.getPersonName(),
                 null,
                 user.getRole().toString());
     }
 
-    public static List<UserDTO> createUserDTOs(List<User> users) {
-        return users.stream().map(UserDTO::createUserDTO).collect(Collectors.toList());
+    public static List<UserResponseDTO> createUserDTOs(List<User> users) {
+        return users.stream().map(UserResponseDTO::createUserDTO).collect(Collectors.toList());
     }
 }

@@ -1,6 +1,6 @@
 package aut.bme.CAFFStore.unittests;
 
-import aut.bme.CAFFStore.data.dto.BasicStringResponseDTO;
+import aut.bme.CAFFStore.data.dto.response.StringResponseDTO;
 import aut.bme.CAFFStore.data.entity.Caff;
 import aut.bme.CAFFStore.data.entity.User;
 import aut.bme.CAFFStore.data.repository.CaffRepo;
@@ -23,8 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Optional;
 
-import static aut.bme.CAFFStore.Constants.CAFF_FILES_PATH;
-import static aut.bme.CAFFStore.Constants.ROOT_PATH;
+import static aut.bme.CAFFStore.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -57,15 +56,14 @@ public class CaffServiceTest {
 
         when(userRepo.findById(userId)).thenReturn(Optional.empty());
 
-        ResponseEntity<BasicStringResponseDTO> responseEntity = caffService.uploadCaff(file, userId);
+        ResponseEntity<StringResponseDTO> responseEntity = caffService.uploadCaff(file, userId);
 
         assertEquals("User does not exist!", Objects.requireNonNull(responseEntity.getBody()).getResponse());
     }
 
     @Test
     void testUploadCaffSaveFile() throws IOException, InterruptedException {
-        String caffFileName = "null.caff";
-        String caffFullPath = CAFF_FILES_PATH + caffFileName;
+        String caffFullPath = getCaffFilePath("null");
         String userId = "MyUserId";
         User user = new User();
         File caffFile = new File(caffFullPath);
@@ -80,7 +78,7 @@ public class CaffServiceTest {
 
         when(userRepo.findById(userId)).thenReturn(Optional.of(user));
 
-        ResponseEntity<BasicStringResponseDTO> responseEntity = caffService.uploadCaff(file, userId);
+        ResponseEntity<StringResponseDTO> responseEntity = caffService.uploadCaff(file, userId);
 
         assertTrue(caffFile.exists());
         assertEquals("CAFF CONTENT", FileUtils.readFileToString(caffFile, StandardCharsets.UTF_8));
@@ -93,8 +91,7 @@ public class CaffServiceTest {
 
     @Test
     void testSaveFile() throws IOException {
-        String caffFileName = "mycaff.caff";
-        String caffFullPath = CAFF_FILES_PATH + caffFileName;
+        String caffFullPath = getCaffFilePath("mycaff");
         File caffFile = new File(caffFullPath);
 
         MockMultipartFile file
@@ -116,22 +113,22 @@ public class CaffServiceTest {
     @Test
     void testDeleteCaffAndConnectedFiles() throws IOException {
         String caffId = "MyCaffId";
-        String caffFileName = caffId + ".caff";
-        String bitmapFileName = caffId + ".bmp";
-        String gifFileName = caffId + ".gif";
+        String caffFileName = getCaffFilePath(caffId);
+        String bitmapFileName = getBitmapFilePath(caffId);
+        String gifFileName = getGifFilePath(caffId);
 
-        File caff = new File(CAFF_FILES_PATH + caffFileName);
+        File caff = new File(caffFileName);
         caff.createNewFile();
 
-        File bitmap = new File(ROOT_PATH + bitmapFileName);
+        File bitmap = new File(bitmapFileName);
         bitmap.createNewFile();
 
-        File gif = new File(ROOT_PATH + gifFileName);
+        File gif = new File(gifFileName);
         gif.createNewFile();
 
         when(caffRepo.findById(caffId)).thenReturn(Optional.of(new Caff()));
 
-        ResponseEntity<BasicStringResponseDTO> responseEntity = caffService.deleteCaffAndConnectedFiles(caffId);
+        ResponseEntity<StringResponseDTO> responseEntity = caffService.deleteCaffAndConnectedFiles(caffId);
 
         assertFalse(caff.exists());
         assertFalse(bitmap.exists());
@@ -147,7 +144,7 @@ public class CaffServiceTest {
 
         when(caffRepo.findById(caffId)).thenReturn(Optional.empty());
 
-        ResponseEntity<BasicStringResponseDTO> responseEntity = caffService.deleteCaffAndConnectedFiles(caffId);
+        ResponseEntity<StringResponseDTO> responseEntity = caffService.deleteCaffAndConnectedFiles(caffId);
 
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
@@ -157,15 +154,14 @@ public class CaffServiceTest {
     @Test
     void testDeleteCaffAndConnectedFilesCaffWithNonExistingUser() throws IOException, InterruptedException {
         String caffId = "MyCaffId";
-        String caffFileName = caffId + ".caff";
-        String caffFullPath = CAFF_FILES_PATH + caffFileName;
+        String caffFullPath = getCaffFilePath(caffId);
         Caff caff = new Caff();
         caff.setCreatorId("NotRealUserId");
 
         when(caffRepo.findById(caffId)).thenReturn(Optional.of(caff));
         when(userRepo.findById(caff.getCreatorId())).thenReturn(Optional.empty());
 
-        ResponseEntity<BasicStringResponseDTO> responseEntity = caffService.deleteCaffAndConnectedFiles(caffId);
+        ResponseEntity<StringResponseDTO> responseEntity = caffService.deleteCaffAndConnectedFiles(caffId);
 
         File caffFile = new File(caffFullPath);
         assertFalse(caffFile.exists());
