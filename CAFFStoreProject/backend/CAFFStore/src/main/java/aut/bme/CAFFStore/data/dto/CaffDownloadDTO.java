@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static aut.bme.CAFFStore.Constants.CAFF_FILES_PATH;
-import static aut.bme.CAFFStore.service.CaffService.getFileBytes;
+import static aut.bme.CAFFStore.service.CaffService.getFileContent;
 
 @EqualsAndHashCode
 @ToString
@@ -28,12 +28,12 @@ public class CaffDownloadDTO {
 
     @Getter
     @Setter
-    private byte[] caffFile;
+    private String caffFile;
 
     @JsonCreator
     public CaffDownloadDTO(@JsonProperty("id") String id,
                            @JsonProperty("originalFileName") String originalFileName,
-                           @JsonProperty("caffFile") byte[] caffFile) {
+                           @JsonProperty("caffFile") String caffFile) {
         this.id = id;
         this.originalFileName = originalFileName;
         this.caffFile = caffFile;
@@ -43,7 +43,7 @@ public class CaffDownloadDTO {
         return new CaffDownloadDTO(
                 caff.getId(),
                 caff.getOriginalFileName(),
-                getFileBytes(caff.getId(), ".caff", CAFF_FILES_PATH));
+                getFileContent(CAFF_FILES_PATH + caff.getId() + ".caff"));
     }
 
     public static List<CaffDownloadDTO> createCaffDTOs(List<Caff> caffs) {

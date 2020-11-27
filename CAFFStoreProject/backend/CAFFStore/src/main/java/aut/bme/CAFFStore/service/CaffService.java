@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,12 +35,12 @@ public class CaffService {
     @Autowired
     private UserRepo userRepo;
 
-    public static byte[] getFileBytes(String fileName, String fileFormat, String basePath) {
+    public static byte[] getFileBytes(String path) {
         byte[] fileBytes = new byte[0];
-        File file = new File(basePath + fileName + fileFormat);
+        File file = new File(path);
         if (file.exists()) {
-            logger.info("File exist: " + basePath + fileName + fileFormat);
-            InputStream targetStream = null;
+            logger.info("File exist: " + path);
+            InputStream targetStream;
             try {
                 targetStream = new FileInputStream(file);
             } catch (FileNotFoundException e) {
@@ -51,9 +52,31 @@ public class CaffService {
                 throw new RuntimeException(e);
             }
         } else {
-            logger.info("File does not exist: " + basePath + fileName + fileFormat);
+            logger.info("File does not exist: " + path);
         }
         return fileBytes;
+    }
+
+    public static String getFileContent(String path) {
+        File file = new File(path);
+        if (file.exists()) {
+            try (FileInputStream fis = new FileInputStream(file);
+                 InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+                 BufferedReader reader = new BufferedReader(isr)
+            ) {
+
+                StringBuilder stringBuilder = new StringBuilder();
+                String str;
+                while ((str = reader.readLine()) != null) {
+                    stringBuilder.append(str);
+                }
+                return stringBuilder.toString();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return "";
     }
 
     public List<CaffDTO> getMultipleCaffDTOsById(List<String> ids) {
@@ -94,6 +117,8 @@ public class CaffService {
             }
             logger.info("File created: " + caffFullPath);
         }
+
+
     }
 
     private void parseCaffFile(Caff caff, String caffFullPath) throws IOException, InterruptedException {
@@ -112,15 +137,25 @@ public class CaffService {
     private void checkCaffDirectory() {
         File caffFileDir = new File(CAFF_FILES_DIR_PATH);
         if (!caffFileDir.exists()) {
-            caffFileDir.mkdir();
-            logger.info("Directory created: " + BASE_PATH);
+            if (caffFileDir.mkdir()) {
+                logger.info("Directory created: " + BASE_PATH);
+            } else {
+                logger.info("Was not able to create directory: " + BASE_PATH);
+            }
         }
     }
 
     public ResponseEntity<CaffDownloadDTO> downloadCaff(String id) {
         Optional<Caff> caff = caffRepo.findById(id);
-        return caff.map(value -> new ResponseEntity<>(CaffDownloadDTO.createCaffDownloadDTO(value), HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
+        if (caff.isPresent()) {
+            CaffDownloadDTO caffDownloadDTO = CaffDownloadDTO.createCaffDownloadDTO(caff.get());
+            if (caffDownloadDTO.getCaffFile().isEmpty()) {
+                return new ResponseEntity<>(null,
+                        HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            return new ResponseEntity<>(caffDownloadDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
     public ResponseEntity<BasicStringResponseDTO> deleteCaffAndConnectedFiles(String caffId) {
@@ -133,34 +168,49 @@ public class CaffService {
             return new ResponseEntity<>(new BasicStringResponseDTO("Caff does not exist."), HttpStatus.BAD_REQUEST);
         }
 
-        Optional<User> user = userRepo.findById(caff.get().getCreatorId());
-        if (!user.isEmpty()) {
-            user.get().removeCaffFileName(caff.get());
-            logger.info("Caff file name removed from user.");
-            userRepo.save(user.get());
-        } else {
-            logger.info("User does not exist.");
-        }
-
+        removeCaffFromUser(caff.get());
 
         caffRepo.deleteById(caffId);
         logger.info("Caff deleted from caff db.");
 
         File caffFile = new File(CAFF_FILES_PATH + caffFileName);
         if (caffFile.exists()) {
-            caffFile.delete();
+            if (caffFile.delete()) {
+                logger.info("Caff deleted: " + caffFile.getPath());
+            } else {
+                logger.info("Not able to delete caff, or it does not exist: " + caffFile.getPath());
+            }
         }
 
         File bitmapFile = new File(ROOT_PATH + bitmapFileName);
         if (bitmapFile.exists()) {
-            bitmapFile.delete();
+            if (bitmapFile.delete()) {
+                logger.info("Bitmap deleted: " + bitmapFile.getPath());
+            } else {
+                logger.info("Not able to delete bitmap, or it does not exist: " + bitmapFile.getPath());
+            }
         }
 
         File gifFile = new File(ROOT_PATH + gifFileName);
         if (gifFile.exists()) {
-            gifFile.delete();
+            if (gifFile.delete()) {
+                logger.info("Gif deleted: " + gifFile.getPath());
+            } else {
+                logger.info("Not able to delete gif, or it does not exist: " + gifFile.getPath());
+            }
         }
 
         return new ResponseEntity<>(new BasicStringResponseDTO("Successful deletion."), HttpStatus.OK);
+    }
+
+    private void removeCaffFromUser(Caff caff) {
+        Optional<User> user = userRepo.findById(caff.getCreatorId());
+        if (user.isPresent()) {
+            user.get().removeCaffFileName(caff);
+            logger.info("Caff file name removed from user.");
+            userRepo.save(user.get());
+        } else {
+            logger.info("User does not exist.");
+        }
     }
 }

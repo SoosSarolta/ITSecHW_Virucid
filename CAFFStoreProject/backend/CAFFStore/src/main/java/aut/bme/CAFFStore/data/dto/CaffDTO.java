@@ -43,7 +43,7 @@ public class CaffDTO {
         return new CaffDTO(
                 caff.getId(),
                 caff.getOriginalFileName(),
-                getFileBytes(caff.getId(), ".bmp", ROOT_PATH));
+                getFileBytes(ROOT_PATH + caff.getId() + ".bmp"));
     }
 
     public static CaffDTO createCaffDTOWithoutBitmap(Caff caff) {

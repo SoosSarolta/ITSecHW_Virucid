@@ -65,8 +65,8 @@ public class CaffDetailsDTO {
                 caff.getId(),
                 caff.getOriginalFileName(),
                 caff.getCreatorId(),
-                getFileBytes(caff.getId(), ".gif", ROOT_PATH),
-                getFileBytes(caff.getId(), ".caff", CAFF_FILES_PATH),
+                getFileBytes(ROOT_PATH + caff.getId() + ".gif"),
+                getFileBytes(CAFF_FILES_PATH + caff.getId() + ".caff"),
                 caff.getComments()
                         .stream()
                         .sorted(Comparator.comparing(Comment::getTimeStamp))
