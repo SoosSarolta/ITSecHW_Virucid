@@ -26,7 +26,8 @@ export class DetailComponent implements OnInit {
 
   ngOnInit(): void {
     this._router.queryParams.subscribe(params => {
-      console.log(params['id']);
+      console.log("caff id: ", params['id']);
+      console.log("token: ", localStorage.getItem('token'));
       this._network.details(params['id']).then(data => {
         console.log(data);
         var url = 'data:image/GIF;base64,' + encodeURIComponent(data.gifFile);
@@ -46,11 +47,9 @@ export class DetailComponent implements OnInit {
   downloadCaff() {
     console.log("downloading caff...");
     this._network.downloadCaff(this.currentCaff.id).then(data => {
-      console.log(data);
+      console.log("downloaded data: ", data);
       console.log("caff is downloaded!");
-      // TODO : fix this conversation between bytearray and caff file
-      //var byteArray = new Uint8Array(data.caffFile);
-      var blob = new Blob([data.caffFile], { type: "application/x-dbt" });
+      var blob = new Blob([data], { type: "application/zip" });
       FileSaver.saveAs(blob, data.originalFileName);
     }).catch(err => {
       console.log(err);

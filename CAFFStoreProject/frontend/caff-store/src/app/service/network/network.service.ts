@@ -86,8 +86,8 @@ export class NetworkService {
   downloadCaff(caffId: string): Promise<any> {
     this.resetHeader();
     this.addAuthHeader();
-    this.setResponseTypeHeader('json');
-    return this.getJSON(this.serverAddress, this.downloadCaffURL + '/' + caffId);
+    this.setResponseTypeHeader('application/octet-stream');
+    return this.getJSONFile(this.serverAddress, this.downloadCaffURL + '/' + caffId);
   }
 
   addComment(userId: string, caffId: string, commentMessage: string): Promise<any> {
@@ -137,26 +137,30 @@ export class NetworkService {
 
   // GET
   private async getJSON(address: string, url: string): Promise<any> {
-    return await this._http.get(address + url, {headers: this.header}).toPromise();
+    return await this._http.get(address + url, { headers: this.header }).toPromise();
+  }
+
+  private async getJSONFile(address: string, url: string): Promise<any> {
+    return await this._http.get(address + url, { headers: this.header, responseType: 'blob' }).toPromise();
   }
 
   // POST
   private async postJSON(address: string, url: string, json: string): Promise<any> {
-    return await this._http.post(address + url, json, {headers: this.header}).toPromise();
+    return await this._http.post(address + url, json, { headers: this.header }).toPromise();
   }
 
   private async postFile(address: string, url: string, formData: FormData): Promise<any> {
-    return await this._http.post(address + url, formData, {headers: this.header}).toPromise();
+    return await this._http.post(address + url, formData, { headers: this.header }).toPromise();
   }
 
   // PUT
   private async put(address: string, url: string): Promise<any> {
-    return await this._http.put(`${address}${url}`, '', {headers: this.header}).toPromise();
+    return await this._http.put(`${address}${url}`, '', { headers: this.header }).toPromise();
   }
 
   // DELETE
   private async delete(address: string, url: string): Promise<any> {
-    return await this._http.delete(address + url, {headers: this.header}).toPromise();
+    return await this._http.delete(address + url, { headers: this.header }).toPromise();
   }
 
 
@@ -178,14 +182,14 @@ export class NetworkService {
   }
 
   private setAccessControllAllowOrigin(): void {
-    this.header = this.header.append( 'Access-Control-Allow-Origin', '*');
+    this.header = this.header.append('Access-Control-Allow-Origin', '*');
   }
 
   private setAccessControlAllowMethods(): void {
-    this.header = this.header.append( 'Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+    this.header = this.header.append('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
   }
 
   private setAccessControlAllowHeaders(): void {
-    this.header = this.header.append( 'Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
+    this.header = this.header.append('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
   }
 }
