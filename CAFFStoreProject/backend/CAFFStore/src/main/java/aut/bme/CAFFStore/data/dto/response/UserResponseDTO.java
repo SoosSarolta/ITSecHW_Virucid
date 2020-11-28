@@ -31,16 +31,22 @@ public class UserResponseDTO {
     @Setter
     private String role;
 
+    @Getter
+    @Setter
+    private String email;
+
     @JsonCreator
     public UserResponseDTO(@JsonProperty("id") String id,
                            @JsonProperty("username") String username,
                            @JsonProperty("token") String token,
-                           @JsonProperty("role") String role) {
+                           @JsonProperty("role") String role,
+                           @JsonProperty("email") String email) {
 
         this.id = id;
         this.username = username;
         this.token = token;
         this.role = role;
+        this.email = email;
     }
 
     public static UserResponseDTO createUserDTO(User user) {
@@ -48,7 +54,8 @@ public class UserResponseDTO {
                 user.getId(),
                 user.getPersonName(),
                 null,
-                user.getRole().toString());
+                user.getRole().toString(),
+                user.getEmail());
     }
 
     public static List<UserResponseDTO> createUserDTOs(List<User> users) {
