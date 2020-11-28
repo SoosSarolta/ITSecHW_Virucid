@@ -104,9 +104,25 @@ public class CaffService {
         checkCaffDirectory();
 
         saveCaffFile(file, caffPath);
-        parseCaffFile(caff, caffPath);
+        parseCaffFile(caff.getId(), caffPath);
 
-        return new ResponseEntity<>(new StringResponseDTO(caff.getId()), HttpStatus.OK);
+        return checkBitmapAndGifFileExistence(caff.getId());
+    }
+
+    private ResponseEntity<StringResponseDTO> checkBitmapAndGifFileExistence(String id) {
+        File bitmapFile = new File(getBitmapFilePath(id));
+        File gifFile = new File(getGifFilePath(id));
+        if (!bitmapFile.exists() || !gifFile.exists()) {
+
+            deleteFile(getBitmapFilePath(id));
+            deleteFile(getGifFilePath(id));
+            deleteFile(getCaffFilePath(id));
+
+            return new ResponseEntity<>(new StringResponseDTO("Uploaded caff file is invalid."),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(new StringResponseDTO("Caff successfully parsed."), HttpStatus.OK);
     }
 
     public void saveCaffFile(MultipartFile file, String caffFullPath) throws IOException {
@@ -116,30 +132,6 @@ public class CaffService {
                 os.write(file.getBytes());
             }
             logger.info("File created: " + caffFullPath);
-        }
-    }
-
-    private void parseCaffFile(Caff caff, String caffFullPath) throws IOException, InterruptedException {
-        if (caff.getId() != null) {
-            Process process = Runtime.getRuntime().exec("cmd /c start /wait "
-                    + BASE_PATH
-                    + "/ciff_caff_parser.exe "
-                    + caffFullPath + " "
-                    + caff.getId());
-            logger.info("Waiting for parser to finish...");
-            process.waitFor();
-            logger.info("Parser finished successfully.");
-        }
-    }
-
-    private void checkCaffDirectory() {
-        File caffFileDir = new File(CAFF_FILE_DIR_PATH);
-        if (!caffFileDir.exists()) {
-            if (caffFileDir.mkdir()) {
-                logger.info("Directory created: " + CAFF_FILE_DIR_PATH);
-            } else {
-                logger.info("Was not able to create directory: " + CAFF_FILE_DIR_PATH);
-            }
         }
     }
 
@@ -207,9 +199,9 @@ public class CaffService {
     }
 
     public ResponseEntity<StringResponseDTO> deleteCaffAndConnectedFiles(String caffId) {
-        String caffFileName = getCaffFilePath(caffId);
-        String bitmapFileName = getBitmapFilePath(caffId);
-        String gifFileName = getGifFilePath(caffId);
+        String caffFilePath = getCaffFilePath(caffId);
+        String bitmapFilePath = getBitmapFilePath(caffId);
+        String gifFilePath = getGifFilePath(caffId);
 
         Optional<Caff> caff = caffRepo.findById(caffId);
         if (caff.isEmpty()) {
@@ -221,21 +213,52 @@ public class CaffService {
         caffRepo.deleteById(caffId);
         logger.info("Caff deleted from caff db.");
 
-        deleteFile(caffFileName);
-        deleteFile(bitmapFileName);
-        deleteFile(gifFileName);
+        deleteFile(caffFilePath);
+        deleteFile(bitmapFilePath);
+        deleteFile(gifFilePath);
 
         return new ResponseEntity<>(new StringResponseDTO("Successful deletion."), HttpStatus.OK);
     }
 
-    private void deleteFile(String fileName) {
-        File file = new File(fileName);
+    private void parseCaffFile(String caffId, String caffFullPath) throws IOException, InterruptedException {
+        if (caffId != null) {
+            try {
+                Process process = Runtime.getRuntime().exec("cmd /c start /B /wait "
+                        + BASE_PATH
+                        + "/ciff_caff_parser.exe "
+                        + caffFullPath + " "
+                        + caffId
+                        + " || exit /b");
+                logger.info("Waiting for parser to finish...");
+                process.waitFor();
+                logger.info("Parser finished.");
+            } catch (Exception e) {
+                logger.info("An error occurred during parsing the caff file.");
+            }
+        }
+    }
+
+    private void checkCaffDirectory() {
+        File caffFileDir = new File(CAFF_FILE_DIR_PATH);
+        if (!caffFileDir.exists()) {
+            if (caffFileDir.mkdir()) {
+                logger.info("Directory created: " + CAFF_FILE_DIR_PATH);
+            } else {
+                logger.info("Was not able to create directory: " + CAFF_FILE_DIR_PATH);
+            }
+        }
+    }
+
+    private void deleteFile(String filePath) {
+        File file = new File(filePath);
         if (file.exists()) {
             if (file.delete()) {
-                logger.info("File deleted: " + file.getPath());
+                logger.info("File deleted: " + filePath);
             } else {
-                logger.info("Not able to delete file, or it does not exist: " + file.getPath());
+                logger.info("Not able to delete file: " + filePath);
             }
+        } else {
+            logger.info("File does not exist: " + filePath);
         }
     }
 
