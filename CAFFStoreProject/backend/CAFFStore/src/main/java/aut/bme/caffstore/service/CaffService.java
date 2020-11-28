@@ -121,7 +121,7 @@ public class CaffService {
         }
     }
 
-    public ResponseEntity<byte[]> downloadCaff(String id) {
+    public ResponseEntity<byte[]> downloadCaff(String id) throws IOException {
         byte[] emptyResponse = new byte[0];
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -130,53 +130,20 @@ public class CaffService {
 
         File file = new File(getCaffFilePath(id));
         if (file.exists()) {
-            try {
-                zipOutputStream.putNextEntry(new ZipEntry(file.getName()));
-            } catch (IOException e) {
-                logger.info("Error during put next entry to zip.");
-                return new ResponseEntity<>(emptyResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            FileInputStream fileInputStream = null;
-            try {
-                fileInputStream = new FileInputStream(file);
-            } catch (FileNotFoundException e) {
-                logger.info("Error during creating input stream from file.");
-                return new ResponseEntity<>(emptyResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+            zipOutputStream.putNextEntry(new ZipEntry(file.getName()));
+            FileInputStream fileInputStream = new FileInputStream(file);
 
-            try {
-                IOUtils.copy(fileInputStream, zipOutputStream);
-            } catch (IOException e) {
-                logger.info("Error during copying file input stream to zip input stream.");
-                return new ResponseEntity<>(emptyResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+            IOUtils.copy(fileInputStream, zipOutputStream);
 
-            try {
-                fileInputStream.close();
-            } catch (IOException e) {
-                logger.info("Error during closing file input stream.");
-                return new ResponseEntity<>(emptyResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            try {
-                zipOutputStream.closeEntry();
-            } catch (IOException e) {
-                logger.info("Error during closing zip input stream.");
-                return new ResponseEntity<>(emptyResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+            fileInputStream.close();
+            zipOutputStream.closeEntry();
+        } else {
+            logger.info("File does not exist.");
+            return new ResponseEntity<>(emptyResponse, HttpStatus.BAD_REQUEST);
         }
 
-        try {
-            zipOutputStream.finish();
-        } catch (IOException e) {
-            logger.info("Error during finishing zip input stream.");
-            return new ResponseEntity<>(emptyResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        try {
-            zipOutputStream.flush();
-        } catch (IOException e) {
-            logger.info("Error during flushing zip input stream.");
-            return new ResponseEntity<>(emptyResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        zipOutputStream.finish();
+        zipOutputStream.flush();
 
         IOUtils.closeQuietly(zipOutputStream);
         IOUtils.closeQuietly(bufferedOutputStream);
@@ -264,6 +231,6 @@ public class CaffService {
     public ResponseEntity<CaffDetailsResponseDTO> getCaffDetailsById(String id) {
         Optional<Caff> caff = caffRepo.findById(id);
         return caff.map(value -> new ResponseEntity<>(CaffDetailsResponseDTO.createCaffDetailsDTO(value), HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
+                .orElseGet(() -> new ResponseEntity<>(new CaffDetailsResponseDTO(), HttpStatus.BAD_REQUEST));
     }
 }

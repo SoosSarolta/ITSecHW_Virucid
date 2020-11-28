@@ -1,22 +1,17 @@
 package aut.bme.caffstore.data.dto.response;
 
-import aut.bme.caffstore.service.CaffService;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 @EqualsAndHashCode
 @ToString
 public class UserDetailsResponseDTO {
-
-    @Autowired
-    CaffService caffService;
 
     @Getter
     @Setter

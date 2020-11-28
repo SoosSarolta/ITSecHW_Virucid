@@ -1,27 +1,20 @@
 package aut.bme.caffstore.service;
 
 import aut.bme.caffstore.EntityBuilderException;
-import aut.bme.caffstore.data.dto.response.CommentResponseDTO;
 import aut.bme.caffstore.data.dto.response.StringResponseDTO;
 import aut.bme.caffstore.data.dto.response.UserDetailsResponseDTO;
 import aut.bme.caffstore.data.dto.response.UserResponseDTO;
-import aut.bme.caffstore.data.entity.Caff;
-import aut.bme.caffstore.data.entity.Comment;
 import aut.bme.caffstore.data.entity.User;
 import aut.bme.caffstore.data.repository.UserRepo;
 import aut.bme.caffstore.data.util.password.PasswordManager;
-import com.google.common.collect.Lists;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static aut.bme.caffstore.security.JWTTokenGenerator.getJWTToken;
 
@@ -44,17 +37,6 @@ public class UserService {
                     HttpStatus.BAD_REQUEST);
         }
 
-        if (body.get("id") != null) {
-            String userId = body.get("id").toString();
-
-            Optional<User> userOptional = userRepo.findById(userId);
-            if (userOptional.isPresent()) {
-                body.put("password", Base64.encodeBase64String(userOptional.get().getPassword()));
-                body.put("salt", Base64.encodeBase64String(userOptional.get().getSalt()));
-            } else
-                return new ResponseEntity<>(new StringResponseDTO("User does not exist."), HttpStatus.BAD_REQUEST);
-        }
-
         User newUser;
         try {
             newUser = entityBuilder.buildUser(body);
@@ -69,20 +51,6 @@ public class UserService {
         }
     }
 
-    public UserDetailsResponseDTO createUserDetailsDTO(User user) {
-        return new UserDetailsResponseDTO(
-                user.getId(),
-                user.getPersonName(),
-                user.getEmail(),
-                user.getComments()
-                        .stream()
-                        .sorted(Comparator.comparing(Comment::getTimeStamp))
-                        .map(CommentResponseDTO::createCommentDTO)
-                        .collect(Collectors.toList()),
-                caffService.getMultipleCaffDTOsById(
-                        Lists.newArrayList(user.getCaffs().stream().map(Caff::getId).collect(Collectors.toList()))));
-    }
-
     public ResponseEntity<UserResponseDTO> login(String email, String password) {
         Optional<User> user = userRepo.findByEmail(email);
 
@@ -92,7 +60,9 @@ public class UserService {
         boolean match = PasswordManager.match(user.get().getPassword(), password, user.get().getSalt());
         if (match) {
             UserResponseDTO userResponseDTO = UserResponseDTO.createUserDTO(userRepo.save(user.get()));
-            userResponseDTO.setToken(getJWTToken(userResponseDTO.getUsername(), user.get().getRole().toString()));
+            userResponseDTO.setToken(getJWTToken(userResponseDTO.getUsername(),
+                    user.get().getRole().toString(),
+                    userResponseDTO.getId()));
             return new ResponseEntity<>(userResponseDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(new UserResponseDTO(), HttpStatus.BAD_REQUEST);
@@ -100,7 +70,7 @@ public class UserService {
 
     public ResponseEntity<UserDetailsResponseDTO> getUserDetailsById(String id) {
         Optional<User> user = userRepo.findById(id);
-        return user.map(value -> new ResponseEntity<>(createUserDetailsDTO(value), HttpStatus.OK))
+        return user.map(value -> new ResponseEntity<>(value.createUserDetailsDTO(), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(new UserDetailsResponseDTO(), HttpStatus.BAD_REQUEST));
     }
 

@@ -62,7 +62,7 @@ public class CaffController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping(value = "/download/{id}", produces = "application/zip")
-    public ResponseEntity<byte[]> downloadCaff(HttpServletResponse response, @PathVariable String id) {
+    public ResponseEntity<byte[]> downloadCaff(HttpServletResponse response, @PathVariable String id) throws IOException {
         response.setContentType("application/zip");
         logger.info("Downloading caff file with id: {}", id);
         return caffService.downloadCaff(id);

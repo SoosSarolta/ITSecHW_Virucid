@@ -14,14 +14,14 @@ public class JWTTokenGenerator {
     private JWTTokenGenerator() {
     }
 
-    public static String getJWTToken(String username, String role) {
+    public static String getJWTToken(String username, String role, String id) {
         String secretKey = "mySecretKey";
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils
                 .commaSeparatedStringToAuthorityList("ROLE_" + role);
 
         String token = Jwts
                 .builder()
-                .setId("softtekJWT")
+                .setId(id)
                 .setSubject(username)
                 .claim("authorities",
                         grantedAuthorities.stream()

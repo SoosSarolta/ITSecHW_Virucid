@@ -1,5 +1,7 @@
 package aut.bme.caffstore.unittests;
 
+import aut.bme.caffstore.data.dto.response.BitmapResponseDTO;
+import aut.bme.caffstore.data.dto.response.CaffDetailsResponseDTO;
 import aut.bme.caffstore.data.dto.response.StringResponseDTO;
 import aut.bme.caffstore.data.entity.Caff;
 import aut.bme.caffstore.data.entity.User;
@@ -20,14 +22,18 @@ import org.springframework.mock.web.MockMultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import static aut.bme.caffstore.Constants.*;
 import static aut.bme.caffstore.UnitTestConstants.getTestCaffFilePath;
 import static aut.bme.caffstore.service.CaffService.getFileBytes;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 class CaffServiceTest {
@@ -205,7 +211,7 @@ class CaffServiceTest {
     }
 
     @Test
-    void testDeleteCaffAndConnectedFilesCaffWithNonExistingUser() throws IOException, InterruptedException {
+    void testDeleteCaffAndConnectedFilesCaffWithNonExistingUser() {
         String caffId = "MyCaffId";
         String caffFullPath = getCaffFilePath(caffId);
         Caff caff = new Caff();
@@ -221,6 +227,71 @@ class CaffServiceTest {
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("Successful deletion.", Objects.requireNonNull(responseEntity.getBody()).getResponse());
-
     }
+
+    @Test
+    void testGetAllCaffs() {
+        Caff caff = new Caff();
+        caff.setId("CaffId");
+        caff.setOriginalFileName("Original");
+
+        when(caffRepo.findAll()).thenReturn(List.of(caff, caff));
+
+        ResponseEntity<List<BitmapResponseDTO>> responseEntity = caffService.getAllCaffs();
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(2, Objects.requireNonNull(responseEntity.getBody()).size());
+        assertEquals(BitmapResponseDTO.createCaffDTOs(List.of(caff, caff)), responseEntity.getBody());
+    }
+
+    @Test
+    void testGetCaffDetailsById() {
+        Caff caff = new Caff();
+        caff.setId("CaffId");
+        caff.setOriginalFileName("Original");
+        caff.setCreatorId("Creator");
+
+        when(caffRepo.findById(anyString())).thenReturn(Optional.of(caff));
+
+        ResponseEntity<CaffDetailsResponseDTO> responseEntity = caffService.getCaffDetailsById("CaffId");
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(CaffDetailsResponseDTO.createCaffDetailsDTO(caff), responseEntity.getBody());
+    }
+
+    @Test
+    void testGetCaffDetailsByIdWithWrongId() {
+        Caff caff = new Caff();
+        caff.setId("CaffId");
+        caff.setOriginalFileName("Original");
+        caff.setCreatorId("Creator");
+
+        when(caffRepo.findById(anyString())).thenReturn(Optional.empty());
+
+        ResponseEntity<CaffDetailsResponseDTO> responseEntity = caffService.getCaffDetailsById("CaffId");
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
+    @Test
+    void testDownloadCaff() throws IOException {
+        String caffFileName = getCaffFilePath("validCaffFile");
+
+        File caff = new File(caffFileName);
+        caff.createNewFile();
+
+        ResponseEntity<byte[]> responseEntity = caffService.downloadCaff("validCaffFile");
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        caff.delete();
+    }
+
+    @Test
+    void testDownloadCaffWithNotExistingCaff() throws IOException {
+        ResponseEntity<byte[]> responseEntity = caffService.downloadCaff("notExistingCaffFile");
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
 }

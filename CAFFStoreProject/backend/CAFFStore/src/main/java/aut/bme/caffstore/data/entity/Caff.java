@@ -35,7 +35,7 @@ public class Caff {
     @Column(name = "comments")
     @Getter
     @Setter
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     public void addComment(Comment comment) {
         if (comments == null) {

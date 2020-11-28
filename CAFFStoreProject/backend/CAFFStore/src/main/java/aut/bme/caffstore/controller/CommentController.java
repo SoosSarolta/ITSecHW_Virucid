@@ -1,7 +1,7 @@
 package aut.bme.caffstore.controller;
 
-import aut.bme.caffstore.data.dto.response.StringResponseDTO;
 import aut.bme.caffstore.data.dto.request.CommentRequestDTO;
+import aut.bme.caffstore.data.dto.response.StringResponseDTO;
 import aut.bme.caffstore.service.CommentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

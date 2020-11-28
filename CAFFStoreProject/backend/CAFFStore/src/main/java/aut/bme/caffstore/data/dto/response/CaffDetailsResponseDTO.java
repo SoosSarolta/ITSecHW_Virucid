@@ -40,6 +40,9 @@ public class CaffDetailsResponseDTO {
     @Setter
     private List<CommentResponseDTO> comments;
 
+    public CaffDetailsResponseDTO() {
+    }
+
     @JsonCreator
     public CaffDetailsResponseDTO(@JsonProperty("id") String id,
                                   @JsonProperty("originalFileName") String originalFileName,
