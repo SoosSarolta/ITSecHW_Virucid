@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NetworkService} from '../../service/network/network.service';
 import {Router} from '@angular/router';
 import {AuthService} from '../../service/auth/auth.service';
@@ -8,6 +8,8 @@ import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
 import { RouterPath } from 'src/app/util/router-path';
 import {Caff} from '../../model/caff';
+import {DomSanitizer} from "@angular/platform-browser";
+import {MatTabChangeEvent} from "@angular/material/tabs";
 
 @Component({
   selector: 'app-admin',
@@ -27,23 +29,24 @@ export class AdminComponent implements OnInit, AfterViewInit {
   constructor(
     private _network: NetworkService,
     private _router: Router,
-    private _auth: AuthService
+    private _auth: AuthService,
+    private _sanitization: DomSanitizer,
+    private changeDetectorRefs: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
     // TODO: load from backend
     this.users = new Array();
     this.caffs = new Array();
-    // let NagyLajosUser = new User();
-    // NagyLajosUser.id = '000001';
-    // NagyLajosUser.personName = 'Nagy Lajos';
-    // NagyLajosUser.email = 'lajos@caffstore.hu';
-    // this.users.push(NagyLajosUser);
-    /* this.users.push(new User('000002', 'Nagyne Iren', 'iren@caffstore.hu'));
-    this.users.push(new User('000003', 'Hurutos Sandor', 'sandor@caffstore.hu'));
-    this.users.push(new User('000004', 'Vegh Bela', 'bela@caffstore.hu')); */
     this.loadUsers();
     this.loadCaffs();
+  }
+
+  onTabChanged(event: MatTabChangeEvent) {
+    if (event.index === 0) {
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
+    }
   }
 
   private async loadUsers() {
@@ -53,7 +56,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
         const user = new User();
         user.id = element.id;
         user.personName = element.username;
-        user.email = 'Test email';
+        user.email = element.email;
         user.role = element.role;
         this.users.push(user);
         console.log(this.users);
@@ -71,29 +74,22 @@ export class AdminComponent implements OnInit, AfterViewInit {
     await this._network.getCaffs().then(data => {
       console.log(data);
       data.forEach(element => {
-        const caff = new Caff(null, null, null);
-        caff.id = element.id;
-        caff.originalFileName = element.originalFileName;
-        caff.bitmapFile = element.bitmapFile;
-        this.caffs.push(caff);
-        console.log(this.caffs);
+        var url = 'data:image/JPEG;base64,' + encodeURIComponent(element.bitmapFile);
+        var image = this._sanitization.bypassSecurityTrustResourceUrl(url);
+        this.caffs.push(new Caff(element.id, element.originalFileName, image));
+        console.log('this.caffs: ', this.caffs);
       });
     }).catch(err => {
       console.log(err);
     });
-//     this.caffs = new Array();
-//     for (let i = 0; i < 10; i++) {
-//       this.caffs.push(new Caff('1', 'abc', ''));
-//     }
   }
 
   ngAfterViewInit(): void {
+    this.changeDetectorRefs.detectChanges();
   }
 
   deleteUser(id: string): void {
-    // TODO: call deleteUser(id) in backend
     if (confirm('Are you sure to delete this profile with id "' + id + '"?')) {
-      console.log('Implement delete functionality here');
       this._network.deleteUser(id).then(data => {
         console.log(data);
       }).catch(err => {
@@ -107,17 +103,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this._router.navigate(['profil'], { queryParams: { id } });
   }
 
-  navigateToProfile(): void {
-    this._router.navigate(['profil'], { queryParams: { id: localStorage.getItem('user_id') } });
-  }
-
   navigateToDetails(id: string) {
     this._router.navigate(['detail'], { queryParams: { id: id } });
-  }
-
-  logout(): void {
-    this._auth.logout();
-    this._router.navigate(['login']);
   }
 
   deleteCaff(id: string): void {

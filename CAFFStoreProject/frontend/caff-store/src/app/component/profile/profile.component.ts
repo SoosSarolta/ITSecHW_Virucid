@@ -31,22 +31,22 @@ export class ProfileComponent implements OnInit {
     this.loadUserInfo();
   }
 
-  private async loadUserInfo() {
+  private async loadUserInfo(): Promise<any> {
     this._network.profile(this.userId).then(data => {
-      this.username = data["username"];
-      this.email = data["email"];
-      this.comments = new Array();
+      this.username = data.username;
+      this.email = data.email;
+      this.comments = [];
       data.comments.forEach(element => {
         this.comments.push(element.comment);
       });
-      this.caffFiles = new Array();
+      this.caffFiles = [];
       data.caffFilesWithoutBitmap.forEach(element => {
-        this.caffFiles.push(element)
-      })
+        this.caffFiles.push(element);
+      });
     });
   }
 
-  async updateUsername() {
+  async updateUsername(): Promise<any> {
     this._network.updateUsername(this.userId, this.username).then(data => {
       console.log(data);
     }).catch(err => {
@@ -54,12 +54,11 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  logout() {
-    this._auth.logout();
-    this._router.navigate(['/' + RouterPath.login]);
+  navigateToDetails(id: string): void {
+    this._router.navigate([RouterPath.detail], { queryParams: { id } });
   }
 
-  navigateToDetails(id: string) {
-    this._router.navigate(['/' + RouterPath.detail], { queryParams: { id: id } });
+  get isAdmin(): boolean {
+    return this._auth.hasRole('ADMIN');
   }
 }

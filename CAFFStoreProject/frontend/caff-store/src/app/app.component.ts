@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import {Router} from '@angular/router';
-import {AuthService} from './service/auth/auth.service';
-import {RouterPath} from "./util/router-path";
+import { Router } from '@angular/router';
+import { AuthService } from './service/auth/auth.service';
+import { RouterPath } from './util/router-path';
 
 @Component({
   selector: 'app-root',
@@ -15,19 +15,19 @@ export class AppComponent {
     private _router: Router,
     private _authService: AuthService) { }
 
-  get isAuthenticated() {
+  get isAuthenticated(): boolean {
     return this._authService.isAuthenticated();
   }
-  get isAdmin() {
+  get isAdmin(): boolean {
     return this._authService.hasRole('ADMIN');
   }
-  logout() {
+  logout(): void {
     this._authService.logout();
-    this._router.navigate(['login']);
+    this._router.navigate([RouterPath.login]);
   }
 
   navigateToProfile(): void {
-    this._router.navigate(['/' + RouterPath.profil], { queryParams: { id: localStorage.getItem('user_id') } });
+    this._router.navigate([RouterPath.profil], { queryParams: { id: localStorage.getItem('user_id') } });
   }
 }
 

@@ -54,11 +54,11 @@ export class RegistrationComponent implements OnInit {
     this.newUser = new User();
   }
 
-  register() {
+  register(): void {
     this._network.register(this.newUser).then(data => {
-      this._router.navigate(['/' + RouterPath.login]);
+      this._router.navigate([RouterPath.login]);
     }).catch(err => {
-      alert("This email is alredy registered!");
+      alert('This email is alredy registered!');
       window.location.reload();
     });
   }

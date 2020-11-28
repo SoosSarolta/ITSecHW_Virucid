@@ -1,5 +1,5 @@
 <div style="max-width: 1200px; margin: auto">
-    <div class="container">
+    <div class="container" *ngIf="!isAdmin">
         <ngx-file-drop dropZoneLabel="Drop files here" id="image-drop-box" (onFileDrop)="dropped($event)" accept=".caff"
             multiple="false">
             <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
@@ -15,12 +15,12 @@
         <br>
         <br>
     </div>
-    
+
     <div class="cards" *ngFor="let caff of caffs">
         <mat-card class="example-card">
             <img mat-card-image [src]="caff.bitmapFile" alt="Caff preview">
             <mat-card-actions>
-                <button mat-raised-button class="cardBtn" color="primary"
+                <button mat-raised-button class="cardBtn" color="primary" *ngIf="!isAdmin"
                     (click)="navigateToDetails(caff.id)">Details</button>
             </mat-card-actions>
         </mat-card>

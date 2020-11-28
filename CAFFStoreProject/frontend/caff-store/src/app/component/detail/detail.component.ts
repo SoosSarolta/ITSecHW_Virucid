@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FileSaverService } from 'ngx-filesaver';
 import { Caff } from 'src/app/model/caff';
 import { NetworkService } from 'src/app/service/network/network.service';
-import * as FileSaver from "file-saver";
+import * as FileSaver from 'file-saver';
 
 @Component({
   selector: 'app-detail',
@@ -26,9 +26,9 @@ export class DetailComponent implements OnInit {
 
   ngOnInit(): void {
     this._router.queryParams.subscribe(params => {
-      this._network.details(params['id']).then(data => {
-        var url = 'data:image/GIF;base64,' + encodeURIComponent(data.gifFile);
-        var image = this._sanitization.bypassSecurityTrustResourceUrl(url);
+      this._network.details(params.id).then(data => {
+        const url = 'data:image/GIF;base64,' + encodeURIComponent(data.gifFile);
+        const image = this._sanitization.bypassSecurityTrustResourceUrl(url);
         this.currentCaff = new Caff(data.id, data.originalFileName, image);
         this.comments = new Map();
         data.comments.forEach(element => {
@@ -40,18 +40,18 @@ export class DetailComponent implements OnInit {
     });
   }
 
-  downloadCaff() {
+  downloadCaff(): void {
     this._network.downloadCaff(this.currentCaff.id).then(data => {
-      var blob = new Blob([data], { type: "application/zip" });
+      const blob = new Blob([data], { type: 'application/zip' });
       FileSaver.saveAs(blob, data.originalFileName);
     }).catch(err => {
       console.log(err);
     });
   }
 
-  comment() {
-    this._network.addComment(localStorage.getItem("user_id"), this.currentCaff.id, this.commentText).then(data => {
-      this.commentText = "";
+  comment(): void {
+    this._network.addComment(localStorage.getItem('user_id'), this.currentCaff.id, this.commentText).then(data => {
+      this.commentText = '';
       window.location.reload();
     }).catch(err => {
       console.log(err);

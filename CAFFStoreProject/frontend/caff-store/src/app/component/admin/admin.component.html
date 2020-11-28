@@ -1,5 +1,5 @@
 <div style="max-width: 1200px; margin: auto">
-  <mat-tab-group dynamicHeight>
+  <mat-tab-group dynamicHeight (selectedTabChange)="onTabChanged($event)">
     <mat-tab label="Users">
       <ng-template matTabContent>
         <div class="mat-elevation-z8" style="display: block; max-width: 1200px"> <!--style="margin: 1px; border: 1px solid #ddd"-->
@@ -55,16 +55,13 @@
       <div class="cards" *ngFor="let caff of caffs">
         <mat-card class="example-card">
           <mat-card-header>
-            <div mat-card-avatar class="example-header-image"></div>
-            <mat-card-title>Shiba Inu</mat-card-title>
-            <mat-card-subtitle>Dog Breed</mat-card-subtitle>
+            <div mat-card-avatar></div>
+            <mat-card-title>{{caff.originalFileName}}</mat-card-title>
+            <mat-card-subtitle style="font-family: Consolas,serif">{{caff.id.substring(0, 6) + '...'}}</mat-card-subtitle>
           </mat-card-header>
-          <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+          <img mat-card-image [src]="caff.bitmapFile" alt="Caff preview">
           <mat-card-content>
-            <p>
-              The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
-              A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
-              bred for hunting.
+            <p style="font-size: 10px">
             </p>
           </mat-card-content>
           <mat-card-actions>
