@@ -41,12 +41,10 @@ public class CaffDownloadResponseDTO {
     }
 
     public static CaffDownloadResponseDTO createCaffDownloadDTO(Caff caff) {
-        String str = "";
-        str = new String(getFileBytes(getCaffFilePath(caff.getId())), StandardCharsets.ISO_8859_1);
         return new CaffDownloadResponseDTO(
                 caff.getId(),
                 caff.getOriginalFileName(),
-                str);
+                new String(getFileBytes(getCaffFilePath(caff.getId())), StandardCharsets.ISO_8859_1));
     }
 
     public static List<CaffDownloadResponseDTO> createCaffDTOs(List<Caff> caffs) {

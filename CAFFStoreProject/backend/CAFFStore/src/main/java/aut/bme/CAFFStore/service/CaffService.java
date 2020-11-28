@@ -1,13 +1,13 @@
 package aut.bme.CAFFStore.service;
 
 import aut.bme.CAFFStore.data.dto.response.BitmapResponseDTO;
-import aut.bme.CAFFStore.data.dto.response.CaffDownloadResponseDTO;
 import aut.bme.CAFFStore.data.dto.response.StringResponseDTO;
 import aut.bme.CAFFStore.data.entity.Caff;
 import aut.bme.CAFFStore.data.entity.User;
 import aut.bme.CAFFStore.data.repository.CaffRepo;
 import aut.bme.CAFFStore.data.repository.UserRepo;
 import com.google.common.io.ByteStreams;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static aut.bme.CAFFStore.Constants.*;
 
@@ -141,17 +143,67 @@ public class CaffService {
         }
     }
 
-    public ResponseEntity<CaffDownloadResponseDTO> downloadCaff(String id) {
-        Optional<Caff> caff = caffRepo.findById(id);
-        if (caff.isPresent()) {
-            CaffDownloadResponseDTO caffDownloadResponseDTO = CaffDownloadResponseDTO.createCaffDownloadDTO(caff.get());
-            if (caffDownloadResponseDTO.getCaffFile().isEmpty()) {
-                return new ResponseEntity<>(null,
-                        HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<byte[]> downloadCaff(String id) {
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream);
+        ZipOutputStream zipOutputStream = new ZipOutputStream(bufferedOutputStream);
+
+        File file = new File(getCaffFilePath(id));
+        if (file.exists()) {
+            try {
+                zipOutputStream.putNextEntry(new ZipEntry(file.getName()));
+            } catch (IOException e) {
+                logger.info("Error during put next entry to zip.");
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
-            return new ResponseEntity<>(caffDownloadResponseDTO, HttpStatus.OK);
+            FileInputStream fileInputStream = null;
+            try {
+                fileInputStream = new FileInputStream(file);
+            } catch (FileNotFoundException e) {
+                logger.info("Error during creating input stream from file.");
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            try {
+                IOUtils.copy(fileInputStream, zipOutputStream);
+            } catch (IOException e) {
+                logger.info("Error during copying file input stream to zip input stream.");
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            try {
+                fileInputStream.close();
+            } catch (IOException e) {
+                logger.info("Error during closing file input stream.");
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            try {
+                zipOutputStream.closeEntry();
+            } catch (IOException e) {
+                logger.info("Error during closing zip input stream.");
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
-        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+
+        try {
+            zipOutputStream.finish();
+        } catch (IOException e) {
+            logger.info("Error during finishing zip input stream.");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        try {
+            zipOutputStream.flush();
+        } catch (IOException e) {
+            logger.info("Error during flushing zip input stream.");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        IOUtils.closeQuietly(zipOutputStream);
+        IOUtils.closeQuietly(bufferedOutputStream);
+        IOUtils.closeQuietly(byteArrayOutputStream);
+
+        return new ResponseEntity<>(byteArrayOutputStream.toByteArray(), HttpStatus.OK);
     }
 
     public ResponseEntity<StringResponseDTO> deleteCaffAndConnectedFiles(String caffId) {
