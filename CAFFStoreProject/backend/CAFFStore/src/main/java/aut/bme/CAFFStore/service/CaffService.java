@@ -1,6 +1,7 @@
 package aut.bme.CAFFStore.service;
 
 import aut.bme.CAFFStore.data.dto.response.BitmapResponseDTO;
+import aut.bme.CAFFStore.data.dto.response.CaffDetailsResponseDTO;
 import aut.bme.CAFFStore.data.dto.response.StringResponseDTO;
 import aut.bme.CAFFStore.data.entity.Caff;
 import aut.bme.CAFFStore.data.entity.User;
@@ -89,7 +90,9 @@ public class CaffService {
         Caff caff = new Caff();
         caff.setOriginalFileName(file.getOriginalFilename());
         caff.setCreatorId(userId);
-        caffRepo.save(caff);
+        caff = caffRepo.save(caff);
+
+        String caffPath = getCaffFilePath(caff.getId());
 
         Optional<User> user = userRepo.findById(userId);
         if (user.isPresent()) {
@@ -98,8 +101,6 @@ public class CaffService {
         } else {
             return new ResponseEntity<>(new StringResponseDTO("User does not exist!"), HttpStatus.BAD_REQUEST);
         }
-
-        String caffPath = getCaffFilePath(caff.getId());
 
         checkCaffDirectory();
 
@@ -122,7 +123,7 @@ public class CaffService {
                     HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(new StringResponseDTO("Caff successfully parsed."), HttpStatus.OK);
+        return new ResponseEntity<>(new StringResponseDTO(id), HttpStatus.OK);
     }
 
     public void saveCaffFile(MultipartFile file, String caffFullPath) throws IOException {
@@ -249,7 +250,7 @@ public class CaffService {
         }
     }
 
-    private void deleteFile(String filePath) {
+    public void deleteFile(String filePath) {
         File file = new File(filePath);
         if (file.exists()) {
             if (file.delete()) {
@@ -271,5 +272,15 @@ public class CaffService {
         } else {
             logger.info("User does not exist.");
         }
+    }
+
+    public ResponseEntity<List<BitmapResponseDTO>> getAllCaffs() {
+        return new ResponseEntity<>(BitmapResponseDTO.createCaffDTOs(caffRepo.findAll()), HttpStatus.OK);
+    }
+
+    public ResponseEntity<CaffDetailsResponseDTO> getCaffDetailsById(String id) {
+        Optional<Caff> caff = caffRepo.findById(id);
+        return caff.map(value -> new ResponseEntity<>(CaffDetailsResponseDTO.createCaffDetailsDTO(value), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
     }
 }

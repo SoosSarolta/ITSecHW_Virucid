@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 public class PasswordManager {
     public static Boolean match(byte[] hashedPassword, String clearPassword, byte[] salt) {
-        Boolean isMatching = false;
+        boolean isMatching = false;
 
         byte[] newHashed = hashAndSalt(clearPassword, salt);
         isMatching = Arrays.equals(hashedPassword, newHashed);

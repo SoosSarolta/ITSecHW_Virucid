@@ -24,7 +24,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static aut.bme.CAFFStore.Constants.*;
+import static aut.bme.CAFFStore.UnitTestConstants.getTestCaffFilePath;
+import static aut.bme.CAFFStore.service.CaffService.getFileBytes;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class CaffServiceTest {
@@ -45,6 +48,9 @@ public class CaffServiceTest {
 
     @Test
     void testUploadCaffWithNonExistingUser() throws IOException, InterruptedException {
+        Caff caffWithId = new Caff();
+        caffWithId.setId("validCaffFile");
+
         MockMultipartFile file
                 = new MockMultipartFile(
                 "caffFile",
@@ -55,6 +61,7 @@ public class CaffServiceTest {
         String userId = "MyUserId";
 
         when(userRepo.findById(userId)).thenReturn(Optional.empty());
+        when(caffRepo.save(any(Caff.class))).thenReturn(caffWithId);
 
         ResponseEntity<StringResponseDTO> responseEntity = caffService.uploadCaff(file, userId);
 
@@ -62,31 +69,77 @@ public class CaffServiceTest {
     }
 
     @Test
-    void testUploadCaffSaveFile() throws IOException, InterruptedException {
-        String caffFullPath = getCaffFilePath("null");
+    void testUploadWithValidCaffFile() throws IOException, InterruptedException {
+        String caffTestFullPath = getTestCaffFilePath("validCaffFile");
         String userId = "MyUserId";
         User user = new User();
-        File caffFile = new File(caffFullPath);
 
-        MockMultipartFile file
+        Caff caffWithId = new Caff();
+        caffWithId.setOriginalFileName("validCaffFile.caff");
+        caffWithId.setCreatorId(userId);
+        caffWithId.setId("validCaffFile");
+
+        MockMultipartFile multipartFile
                 = new MockMultipartFile(
                 "caffFile",
-                "caff.caff",
+                "validCaffFile.caff",
                 MediaType.TEXT_PLAIN_VALUE,
-                "CAFF CONTENT".getBytes());
+                getFileBytes(caffTestFullPath));
 
 
         when(userRepo.findById(userId)).thenReturn(Optional.of(user));
+        when(caffRepo.save(any(Caff.class))).thenReturn(caffWithId);
 
-        ResponseEntity<StringResponseDTO> responseEntity = caffService.uploadCaff(file, userId);
+        ResponseEntity<StringResponseDTO> responseEntity = caffService.uploadCaff(multipartFile, userId);
 
-        assertTrue(caffFile.exists());
-        assertEquals("CAFF CONTENT", FileUtils.readFileToString(caffFile, StandardCharsets.UTF_8));
+        String responseCaffId = getCaffFilePath(Objects.requireNonNull(responseEntity.getBody()).getResponse());
+
+        assertTrue(new File(responseCaffId).exists());
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(200, responseEntity.getStatusCodeValue());
 
-        caffFile.delete();
+        caffService.deleteFile(getCaffFilePath("validCaffFile"));
+        caffService.deleteFile(getBitmapFilePath("validCaffFile"));
+        caffService.deleteFile(getGifFilePath("validCaffFile"));
+    }
+
+
+    @Test
+    void testUploadWithInvalidCaffFile() throws IOException, InterruptedException {
+        String caffTestFullPath = getTestCaffFilePath("invalidCaffFile");
+        String userId = "MyUserId";
+        User user = new User();
+
+        Caff caffWithId = new Caff();
+        caffWithId.setOriginalFileName("invalidCaffFile.caff");
+        caffWithId.setCreatorId(userId);
+        caffWithId.setId("invalidCaffFile");
+
+        MockMultipartFile multipartFile
+                = new MockMultipartFile(
+                "caffFile",
+                "invalidCaffFile.caff",
+                MediaType.TEXT_PLAIN_VALUE,
+                getFileBytes(caffTestFullPath));
+
+
+        when(userRepo.findById(userId)).thenReturn(Optional.of(user));
+        when(caffRepo.save(any(Caff.class))).thenReturn(caffWithId);
+
+        ResponseEntity<StringResponseDTO> responseEntity = caffService.uploadCaff(multipartFile, userId);
+
+        String responseCaffId = getCaffFilePath(Objects.requireNonNull(responseEntity.getBody()).getResponse());
+
+        assertFalse(new File(responseCaffId).exists());
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(400, responseEntity.getStatusCodeValue());
+        assertEquals("Uploaded caff file is invalid.", responseEntity.getBody().getResponse());
+
+        caffService.deleteFile(getCaffFilePath("validCaffFile"));
+        caffService.deleteFile(getBitmapFilePath("validCaffFile"));
+        caffService.deleteFile(getGifFilePath("validCaffFile"));
     }
 
     @Test
