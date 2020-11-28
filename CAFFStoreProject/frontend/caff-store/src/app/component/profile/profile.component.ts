@@ -43,6 +43,22 @@ export class ProfileComponent implements OnInit {
       data.caffFilesWithoutBitmap.forEach(element => {
         this.caffFiles.push(element);
       });
+    }).catch(err => {
+      console.log(err);
+      switch (err.status) {
+        case 400:
+          this._router.navigate(['error', 'bad-request']);
+          break;
+        case 403:
+          this._router.navigate(['error', 'forbidden']);
+          break;
+        case 404:
+          this._router.navigate(['error', 'not-found']);
+          break;
+        default:
+          this._router.navigate(['login']);
+          break;
+      }
     });
   }
 

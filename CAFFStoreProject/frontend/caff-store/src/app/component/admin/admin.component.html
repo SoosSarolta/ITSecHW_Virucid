@@ -60,12 +60,8 @@
             <mat-card-subtitle style="font-family: Consolas,serif">{{caff.id.substring(0, 6) + '...'}}</mat-card-subtitle>
           </mat-card-header>
           <img mat-card-image [src]="caff.bitmapFile" alt="Caff preview">
-          <mat-card-content>
-            <p style="font-size: 10px">
-            </p>
-          </mat-card-content>
-          <mat-card-actions>
-            <button mat-raised-button class="cardBtn" color="primary" (click)="navigateToDetails(caff.id)">Details</button>
+          <mat-card-actions style="display: flex; justify-content: center">
+            <!--<button mat-raised-button class="cardBtn" color="primary" (click)="navigateToDetails(caff.id)">Details</button>-->
             <button mat-raised-button class="cardBtn" color="primary" (click)="deleteCaff(caff.id)">Delete</button>
           </mat-card-actions>
         </mat-card>

@@ -22,12 +22,15 @@ import { MainComponent } from './component/main/main.component';
 import { AdminComponent } from './component/admin/admin.component';
 import { DetailComponent } from './component/detail/detail.component';
 import { ProfileComponent } from './component/profile/profile.component';
-import {MatTableModule} from '@angular/material/table';
-import {MatPaginatorModule} from '@angular/material/paginator';
-import {MatSortModule} from '@angular/material/sort';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatListModule} from '@angular/material/list';
-import {MatTabsModule} from '@angular/material/tabs';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule} from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatListModule } from '@angular/material/list';
+import { MatTabsModule } from '@angular/material/tabs';
+import { NotFoundComponent } from './component/error/not-found/not-found.component';
+import { BadRequestComponent } from './component/error/bad-request/bad-request.component';
+import { ForbiddenComponent } from './component/error/forbidden/forbidden.component';
 
 
 @NgModule({
@@ -38,7 +41,10 @@ import {MatTabsModule} from '@angular/material/tabs';
     MainComponent,
     AdminComponent,
     DetailComponent,
-    ProfileComponent
+    ProfileComponent,
+    BadRequestComponent,
+    ForbiddenComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,

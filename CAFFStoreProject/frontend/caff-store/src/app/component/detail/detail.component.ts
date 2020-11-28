@@ -1,7 +1,7 @@
 import { SecurityContext } from '@angular/compiler/src/core';
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FileSaverService } from 'ngx-filesaver';
 import { Caff } from 'src/app/model/caff';
 import { NetworkService } from 'src/app/service/network/network.service';
@@ -18,14 +18,15 @@ export class DetailComponent implements OnInit {
   commentText: string = '';
 
   constructor(
-    private _router: ActivatedRoute,
+    private _router: Router,
+    private _activatedRoute: ActivatedRoute,
     private _network: NetworkService,
     private _sanitization: DomSanitizer
   ) {
   }
 
   ngOnInit(): void {
-    this._router.queryParams.subscribe(params => {
+    this._activatedRoute.queryParams.subscribe(params => {
       this._network.details(params.id).then(data => {
         const url = 'data:image/GIF;base64,' + encodeURIComponent(data.gifFile);
         const image = this._sanitization.bypassSecurityTrustResourceUrl(url);
@@ -36,6 +37,20 @@ export class DetailComponent implements OnInit {
         });
       }).catch(err => {
         console.log(err);
+        switch (err.status) {
+          case 400:
+            this._router.navigate(['error', 'bad-request']);
+            break;
+          case 403:
+            this._router.navigate(['error', 'forbidden']);
+            break;
+          case 404:
+            this._router.navigate(['error', 'not-found']);
+            break;
+          default:
+            this._router.navigate(['login']);
+            break;
+        }
       });
     });
   }
