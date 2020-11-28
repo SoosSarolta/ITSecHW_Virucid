@@ -12,19 +12,16 @@ export class AuthService {
   constructor() { }
 
   public isAuthenticated(): boolean {
-    // console.log('isAuthenticated called');
     const token = localStorage.getItem('token');
 
     return !this.jwtHelper.isTokenExpired(token);
   }
 
   public hasRole(r: string): boolean {
-    // console.log('hasRole() called');
     return this.isAuthenticated() && localStorage.getItem('role') === r;
   }
 
   public logout(): void {
-    // console.log('logout() called');
     localStorage.removeItem('token');
     localStorage.removeItem('user_id');
     localStorage.removeItem('role');

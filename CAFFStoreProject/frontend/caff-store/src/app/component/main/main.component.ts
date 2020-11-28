@@ -40,15 +40,12 @@ export class MainComponent implements OnInit {
     this.caffs = new Array();
     this.userId = localStorage.getItem("user_id");
     this.token = localStorage.getItem("token");
-    console.log(this.token);
     this.isValidFile = false;
     this._network.home().then(data => {
-      console.log("home: ", data);
       data.forEach(element => {
         var url = 'data:image/JPEG;base64,' + encodeURIComponent(element.bitmapFile);
         var image = this._sanitization.bypassSecurityTrustResourceUrl(url);
         this.caffs.push(new Caff(element.id, element.originalFileName, image));
-        console.log("this.caffs: ", this.caffs);
       });
     }).catch(err => {
       console.log(err);
@@ -64,8 +61,6 @@ export class MainComponent implements OnInit {
         fileEntry.file((file: File) => {
           if (droppedFile.fileEntry.name.includes(this.allowedFileType) && files.length == 1) {
             this.caffData = new FormData();
-            console.log("file: ", file);
-            console.log("droppedFile.relativePath: ", droppedFile.relativePath);
             this.caffData.append('file', file);
             this.isValidFile = true;
           } else {
@@ -74,7 +69,6 @@ export class MainComponent implements OnInit {
         });
       } else {
         const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
-        console.log(droppedFile.relativePath, fileEntry);
       }
     }
   }
@@ -89,7 +83,6 @@ export class MainComponent implements OnInit {
 
   public uploadCaff() {
     if (this.isValidFile) {
-      console.log("this.caffData: ", this.caffData);
       this.isUploading = false;
       this._network.uploadCaff(this.userId, this.caffData).then(data => {
         alert("File uploaded!");
@@ -97,23 +90,17 @@ export class MainComponent implements OnInit {
         window.location.reload();
       }).catch(err => {
         alert("Uploading failed!");
-        console.log(err);
         window.location.reload();
       });
     }
   }
 
-  public fileOver(event) {
-    console.log(event);
-  }
+  public fileOver(event) {}
 
-  public fileLeave(event) {
-    console.log(event);
-  }
+  public fileLeave(event) {}
 
   logout() {
     this._auth.logout();
     this._router.navigate(['/' + RouterPath.login]);
   }
-
 }

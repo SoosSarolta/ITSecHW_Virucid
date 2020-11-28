@@ -47,13 +47,10 @@ export class LoginComponent implements OnInit {
   }
 
   async login() {
-    // console.log('login called');
     this._network.login(this.user.email, this.user.password).then(data => {
-      // console.log('data: ' + data.toString());
       this.user.id = data.id;
       this.user.personName = data.username;
       this.user.role = data.role;
-      // console.log('user: ' + this.user);
 
       this._auth.login(data.id, data.token, data.role);
       this._router.navigate(['/' + RouterPath.main]);
