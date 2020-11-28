@@ -10,7 +10,7 @@
             </ng-template>
         </ngx-file-drop>
         <div class="uploadBtn">
-            <button mat-raised-button color="primary" (click)="uploadCaff()">Upload</button>
+            <button mat-raised-button color="primary" (click)="uploadCaff()"  [disabled]="!isUploading">Upload</button>
         </div>
         <br>
         <br>

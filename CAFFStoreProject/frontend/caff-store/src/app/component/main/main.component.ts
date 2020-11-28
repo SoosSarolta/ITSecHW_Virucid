@@ -25,6 +25,7 @@ export class MainComponent implements OnInit {
   userId: string;
   token: string;
   isValidFile: boolean;
+  isUploading: boolean = true;
 
   constructor(
     private _sanitization: DomSanitizer,
@@ -89,12 +90,15 @@ export class MainComponent implements OnInit {
   public uploadCaff() {
     if (this.isValidFile) {
       console.log("this.caffData: ", this.caffData);
+      this.isUploading = false;
       this._network.uploadCaff(this.userId, this.caffData).then(data => {
         alert("File uploaded!");
         this.caffFiles = [];
         window.location.reload();
       }).catch(err => {
+        alert("Uploading failed!");
         console.log(err);
+        window.location.reload();
       });
     }
   }
