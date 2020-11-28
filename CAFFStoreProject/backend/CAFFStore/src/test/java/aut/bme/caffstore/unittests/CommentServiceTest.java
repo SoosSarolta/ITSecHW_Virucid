@@ -1,7 +1,7 @@
 package aut.bme.caffstore.unittests;
 
-import aut.bme.caffstore.data.dto.response.StringResponseDTO;
 import aut.bme.caffstore.data.dto.request.CommentRequestDTO;
+import aut.bme.caffstore.data.dto.response.StringResponseDTO;
 import aut.bme.caffstore.data.entity.Caff;
 import aut.bme.caffstore.data.entity.User;
 import aut.bme.caffstore.data.repository.CaffRepo;
@@ -42,7 +42,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void testSaveCommentWithNonExistingUser(){
+    void testSaveCommentWithNonExistingUser() {
         CommentRequestDTO commentRequestDTO = new CommentRequestDTO("mycomment");
         String userId = "MyUserId";
         String caffId = "MyCaffId";
@@ -56,7 +56,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void testSaveCommentWithNonExistingCaff(){
+    void testSaveCommentWithNonExistingCaff() {
         CommentRequestDTO commentRequestDTO = new CommentRequestDTO("mycomment");
         String userId = "MyUserId";
         String caffId = "MyCaffId";
@@ -71,7 +71,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void testSaveComment(){
+    void testSaveComment() {
         CommentRequestDTO commentRequestDTO = new CommentRequestDTO("mycomment");
         String userId = "MyUserId";
         String caffId = "MyCaffId";

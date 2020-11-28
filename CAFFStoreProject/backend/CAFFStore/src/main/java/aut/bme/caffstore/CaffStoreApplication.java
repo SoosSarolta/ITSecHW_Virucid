@@ -37,7 +37,7 @@ public class CaffStoreApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args){
+    public void run(String... args) {
         logger.info("\nServer is running ...");
     }
 
