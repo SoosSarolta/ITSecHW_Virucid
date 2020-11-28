@@ -25,10 +25,7 @@ import java.util.Optional;
 @RequestMapping("/caffs")
 public class CaffController {
 
-    Logger logger = LoggerFactory.getLogger(CaffController.class);
-
-    @Autowired
-    private CaffRepo caffRepo;
+    private final Logger logger = LoggerFactory.getLogger(CaffController.class);
 
     @Autowired
     private CaffService caffService;
@@ -36,17 +33,15 @@ public class CaffController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<BitmapResponseDTO>> getAllCaffFiles() {
-        logger.info("Getting all caff");
-        return new ResponseEntity<>(BitmapResponseDTO.createCaffDTOs(caffRepo.findAll()), HttpStatus.OK);
+        logger.info("Getting all caff.");
+        return caffService.getAllCaffs();
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<CaffDetailsResponseDTO> getCaffDetailsById(@PathVariable String id) {
         logger.info("Finding caff file with id: " + id);
-        Optional<Caff> caff = caffRepo.findById(id);
-        return caff.map(value -> new ResponseEntity<>(CaffDetailsResponseDTO.createCaffDetailsDTO(value), HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
+        return caffService.getCaffDetailsById(id);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")

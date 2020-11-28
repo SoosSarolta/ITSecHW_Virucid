@@ -21,7 +21,7 @@ import java.util.Optional;
 @Component
 public class CommentService {
 
-    Logger logger = LoggerFactory.getLogger(CommentController.class);
+    private final Logger logger = LoggerFactory.getLogger(CommentController.class);
 
     @Autowired
     UserRepo userRepo;

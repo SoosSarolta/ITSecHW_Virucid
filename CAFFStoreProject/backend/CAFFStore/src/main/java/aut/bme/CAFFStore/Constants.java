@@ -2,10 +2,10 @@ package aut.bme.CAFFStore;
 
 public class Constants {
 
-    public static String BASE_PATH = "src/main/resources";
-    public static String CAFF_FILE_DIR_PATH = "src/main/resources/CaffFiles/";
-    private static String CAFF_FILE_PATH = "src/main/resources/CaffFiles/";
-    private static String ROOT_PATH = "";
+    public static final String BASE_PATH = "src/main/resources";
+    public static final String CAFF_FILE_DIR_PATH = "src/main/resources/CaffFiles/";
+    private static final String CAFF_FILE_PATH = "src/main/resources/CaffFiles/";
+    private static final String ROOT_PATH = "";
 
 
     public static String getBasePath() {
