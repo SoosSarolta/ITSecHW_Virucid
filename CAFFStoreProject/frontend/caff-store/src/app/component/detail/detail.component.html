@@ -1,6 +1,6 @@
 <div class="container">
     <div>
-        <img mat-card-image *ngIf="currentCaff.id" [src]="currentCaff.bitmapFile" alt="Photo of a Caff preview">
+        <img mat-card-image *ngIf="currentCaff" [src]="currentCaff.bitmapFile" alt="Photo of a Caff preview">
         <mat-card-actions>
             <button mat-raised-button class="cardBtn" color="primary" (click)="downloadCaff()">Download</button>
         </mat-card-actions>
