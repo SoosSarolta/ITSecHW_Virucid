@@ -119,6 +119,9 @@ public class CaffService {
             deleteFile(getGifFilePath(id));
             deleteFile(getCaffFilePath(id));
 
+            caffRepo.findById(id).ifPresent(this::removeCaffFromUser);
+            caffRepo.deleteById(id);
+
             return new ResponseEntity<>(new StringResponseDTO("Uploaded caff file is invalid."),
                     HttpStatus.BAD_REQUEST);
         }
@@ -266,7 +269,7 @@ public class CaffService {
     private void removeCaffFromUser(Caff caff) {
         Optional<User> user = userRepo.findById(caff.getCreatorId());
         if (user.isPresent()) {
-            user.get().removeCaffFileName(caff);
+            user.get().removeCaff(caff);
             logger.info("Caff file name removed from user.");
             userRepo.save(user.get());
         } else {

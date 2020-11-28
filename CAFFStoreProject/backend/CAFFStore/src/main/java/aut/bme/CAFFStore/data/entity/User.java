@@ -88,7 +88,7 @@ public class User {
         comments.add(comment);
     }
 
-    public void removeCaffFileName(Caff caff) {
+    public void removeCaff(Caff caff) {
         caffs.remove(caff);
     }
 
