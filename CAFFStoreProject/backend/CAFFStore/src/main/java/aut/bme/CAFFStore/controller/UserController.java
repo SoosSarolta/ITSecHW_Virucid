@@ -52,7 +52,7 @@ public class UserController {
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
     public ResponseEntity<UserDetailsResponseDTO> getUserDetailsById(@PathVariable String id) {
         logger.info("Getting user with id: " + id);
