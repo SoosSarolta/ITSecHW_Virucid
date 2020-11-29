@@ -26,6 +26,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   caffs: Array<Caff>;
 
+
   constructor(
     private _network: NetworkService,
     private _router: Router,
@@ -40,13 +41,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.caffs = [];
     this.loadUsers();
     this.loadCaffs();
-  }
-
-  onTabChanged(event: MatTabChangeEvent): void {
-    if (event.index === 0) {
-      this.dataSource.sort = this.sort;
-      this.dataSource.paginator = this.paginator;
-    }
   }
 
   private async loadUsers(): Promise<any> {
@@ -109,7 +103,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
       }).catch(err => {
         console.log(err);
       });
-      window.location.reload();
+      this.windowReload();
     }
   }
 
@@ -125,7 +119,18 @@ export class AdminComponent implements OnInit, AfterViewInit {
       }).catch(err => {
         console.log(err);
       });
-      window.location.reload();
+      this.windowReload();
     }
+  }
+
+  onTabChanged(event: MatTabChangeEvent): void {
+    if (event.index === 0) {
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
+    }
+  }
+
+  windowReload(): void {
+    window.location.reload();
   }
 }
